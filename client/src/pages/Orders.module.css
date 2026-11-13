@@ -1,0 +1,265 @@
+.page {
+  padding: 40px 0 80px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid var(--color-graphite);
+  padding-bottom: 20px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  color: #b99a58;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.header h1 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: #FFFFFF;
+}
+
+.rentalLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #b99a58;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.orderList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.orderCard {
+  background: #111111;
+  border: 1px solid #242424;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.orderTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #202020;
+  padding-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.orderNoLabel {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: #888888;
+}
+
+.orderTop strong {
+  display: block;
+  font-size: 1.15rem;
+  color: #FFFFFF;
+  margin: 2px 0 4px;
+}
+
+.orderDate {
+  font-size: 0.8rem;
+  color: #777777;
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statusPill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+}
+
+.pending {
+  background: #252213;
+  color: #c9a44c;
+  border: 1px solid #4a3e1b;
+}
+
+.confirmed {
+  background: #102416;
+  color: #4ade80;
+  border: 1px solid #1c4a27;
+}
+
+.shipped {
+  background: #101c2b;
+  color: #60a5fa;
+  border: 1px solid #1d3a5c;
+}
+
+.delivered {
+  background: #11291b;
+  color: #34d399;
+  border: 1px solid #1e5235;
+}
+
+.cancelled {
+  background: #291212;
+  color: #f87171;
+  border: 1px solid #541d1d;
+}
+
+.pdfBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #1c1c1c;
+  border: 1px solid #333333;
+  color: #FFFFFF;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.pdfBtn:hover {
+  background: #b99a58;
+  color: #080808;
+  border-color: #b99a58;
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #161616;
+  padding: 12px;
+}
+
+.itemImg {
+  width: 50px;
+  height: 66px;
+  object-fit: cover;
+  background: #080808;
+  flex-shrink: 0;
+}
+
+.itemInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.itemName {
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.itemName:hover {
+  color: #b99a58;
+}
+
+.itemMeta {
+  font-size: 0.78rem;
+  color: #888888;
+}
+
+.itemTotal {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.orderBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #202020;
+  padding-top: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.deliveryNote {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: #888888;
+}
+
+.deliveryNote strong {
+  color: #c0c0c0;
+}
+
+.totalBlock {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #888888;
+}
+
+.totalPrice {
+  font-size: 1.35rem;
+  color: #b99a58;
+}
+
+.empty {
+  text-align: center;
+  padding: 80px 20px;
+  background: #111111;
+  border: 1px solid #222222;
+}
+
+.emptyIcon {
+  color: #b99a58;
+  margin-bottom: 16px;
+}
+
+.empty h3 {
+  font-size: 1.5rem;
+  color: #FFFFFF;
+  margin-bottom: 8px;
+}
+
+.empty p {
+  color: #888888;
+  max-width: 440px;
+  margin: 0 auto 24px;
+}
+
+.shopBtn {
+  background: #FFFFFF;
+  color: #080808;
+  padding: 10px 24px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+}
+

@@ -1,0 +1,37 @@
+import { Router } from 'express';
+import authRoutes from './authRoutes.js';
+import productRoutes from './productRoutes.js';
+import categoryRoutes from './categoryRoutes.js';
+import orderRoutes from './orderRoutes.js';
+import rentalRoutes from './rentalRoutes.js';
+import customerRoutes from './customerRoutes.js';
+import inventoryRoutes from './inventoryRoutes.js';
+import paymentRoutes from './paymentRoutes.js';
+import invoiceRoutes from './invoiceRoutes.js';
+import analyticsRoutes from './analyticsRoutes.js';
+import settingsRoutes from './settingsRoutes.js';
+import couponRoutes from './couponRoutes.js';
+import wishlistRoutes from './wishlistRoutes.js';
+import reviewRoutes from './reviewRoutes.js';
+import contactRoutes from './contactRoutes.js';
+import uploadRoutes from './uploadRoutes.js';
+
+const router = Router();
+router.use('/auth', authRoutes);
+router.use('/products', productRoutes);
+router.use('/categories', categoryRoutes);
+router.use('/orders', orderRoutes);
+router.use('/rentals', rentalRoutes);
+router.use('/customers', customerRoutes);
+router.use('/inventory', inventoryRoutes);
+router.use('/payments', paymentRoutes);
+router.use('/invoices', invoiceRoutes);
+router.use('/analytics', analyticsRoutes);
+router.use('/settings', settingsRoutes);
+router.use('/coupons', couponRoutes);
+router.use('/wishlist', wishlistRoutes);
+router.use('/reviews', reviewRoutes);
+router.use('/contact', contactRoutes);
+router.use('/upload', uploadRoutes);
+
+export default router;

@@ -1,0 +1,98 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import Logo from '../common/Logo';
+import { useToast } from '../../context/ToastContext';
+import styles from './Footer.module.css';
+
+export const BUSINESS = {
+  name: 'Majestic Blazer',
+  tagline: 'Style That Speaks',
+  address: 'Sathy Road, Kurumbampalayam, Coimbatore - 641107',
+  phone: '8903238882',
+  email: 'contact@majesticblazer.com',
+  hours: 'Mon – Sat: 10:00 AM – 9:00 PM | Sunday: 11:00 AM – 8:00 PM',
+};
+
+export default function Footer() {
+  const [email, setEmail] = useState('');
+  const { success } = useToast();
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (email.trim()) {
+      success('Thank you for subscribing to Majestic Blazer private invitations.');
+      setEmail('');
+    }
+  };
+
+  return (
+    <footer className={styles.footer}>
+      <div className={`container ${styles.grid}`}>
+        <div className={styles.brand}>
+          <Logo height={56} />
+          <p className={styles.tagline}>{BUSINESS.tagline}</p>
+          <address className={styles.address}>
+            <p>{BUSINESS.address}</p>
+            <p><a href={`tel:+91${BUSINESS.phone}`} className={styles.phoneLink}>Phone: +91 {BUSINESS.phone}</a></p>
+            <p><a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a></p>
+            <p className={styles.hours}>{BUSINESS.hours}</p>
+          </address>
+        </div>
+
+        <div className={styles.col}>
+          <h3>Sartorial Collections</h3>
+          <ul>
+            <li><Link to="/shop">All Blazers</Link></li>
+            <li><Link to="/shop?category=wedding-partywear">Wedding & Partywear</Link></li>
+            <li><Link to="/shop?category=formal-blazers">Formal & Corporate</Link></li>
+            <li><Link to="/shop?category=tuxedos-black-tie">Tuxedos & Black Tie</Link></li>
+            <li><Link to="/shop?category=casual-smart">Casual & Smart</Link></li>
+          </ul>
+        </div>
+
+        <div className={styles.col}>
+          <h3>Blazer Rentals</h3>
+          <ul>
+            <li><Link to="/rent">Browse Rental Blazers</Link></li>
+            <li><Link to="/rental-bookings">My Rental Bookings</Link></li>
+            <li><Link to="/terms-and-conditions#rental-policy">Rental Terms & Deposit Policy</Link></li>
+            <li><Link to="/contact">Private Fitting Appointments</Link></li>
+          </ul>
+        </div>
+
+        <div className={styles.col}>
+          <h3>Client Service</h3>
+          <ul>
+            <li><Link to="/profile">My Account</Link></li>
+            <li><Link to="/orders">Order History & Invoices</Link></li>
+            <li><Link to="/wishlist">Saved Pieces</Link></li>
+            <li><Link to="/contact">Contact Our Tailors</Link></li>
+            <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+            <li><Link to="/terms-and-conditions">Terms & Conditions</Link></li>
+          </ul>
+        </div>
+
+        <div className={styles.newsletter}>
+          <h3>The Private Gazette</h3>
+          <p>Receive exclusive access to new fabric drops, trunk shows and seasonal rental collections.</p>
+          <form onSubmit={handleSubscribe} className={styles.newsForm}>
+            <input
+              type="email"
+              placeholder="Enter your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className={styles.newsInput}
+            />
+            <button type="submit" className={styles.newsBtn}>Subscribe</button>
+          </form>
+        </div>
+      </div>
+
+      <div className={`container ${styles.bottom}`}>
+        <p>© {new Date().getFullYear()} {BUSINESS.name}. All rights reserved.</p>
+        <p className={styles.signature}>Crafted for distinguished gentlemen in Coimbatore, India.</p>
+      </div>
+    </footer>
+  );
+}

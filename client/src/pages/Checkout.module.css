@@ -1,0 +1,707 @@
+.checkoutPage {
+  padding: 40px 0 80px;
+}
+
+/* Stepper Bar */
+.stepperBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 48px;
+  gap: 16px;
+}
+
+.stepIndicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #666666;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.stepNum {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #181818;
+  border: 1px solid #333333;
+  color: #888888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.stepActive {
+  color: #FFFFFF;
+}
+
+.stepActive .stepNum {
+  background: #b99a58;
+  color: #080808;
+  border-color: #b99a58;
+}
+
+.stepConnector {
+  width: 50px;
+  height: 1px;
+  background: #252525;
+}
+
+/* Layout */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.leftCol {
+  background: #111111;
+  border: 1px solid #222222;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.leftCol h2 {
+  font-size: 1.6rem;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+/* Delivery Options */
+.deliverySelector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.methodBtn {
+  background: #141414;
+  border: 1px solid #282828;
+  padding: 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.methodBtn:hover {
+  border-color: #444444;
+}
+
+.methodActive {
+  background: #181818;
+  border-color: #b99a58;
+}
+
+.methodIcon {
+  color: #b99a58;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.methodBtn strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+}
+
+.methodBtn span {
+  display: block;
+  font-size: 0.78rem;
+  color: #888888;
+  line-height: 1.4;
+}
+
+/* Address Form */
+.addressFormBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-top: 1px solid #1f1f1f;
+  padding-top: 24px;
+}
+
+.addressFormBlock h3 {
+  font-size: 1.15rem;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.savedAddresses label {
+  display: block;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: #888888;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.addressRadioList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.addressRadioCard {
+  background: #141414;
+  border: 1px solid #282828;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+
+.addrSelected {
+  border-color: #b99a58;
+  background: #181611;
+}
+
+.addressRadioCard input {
+  accent-color: #b99a58;
+  margin-top: 3px;
+}
+
+.addressRadioCard strong {
+  display: block;
+  color: #FFFFFF;
+}
+
+.addressRadioCard span {
+  display: block;
+  color: #888888;
+  font-size: 0.8rem;
+}
+
+.manualAddress {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.manualAddress h4 {
+  font-size: 0.95rem;
+  color: #c0c0c0;
+  margin: 0;
+}
+
+.formRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formRow label,
+.formGrid3 label {
+  font-size: 0.78rem;
+  color: #888888;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.formRow input,
+.formGrid3 input {
+  background: #141414;
+  border: 1px solid #333333;
+  color: #FFFFFF;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.formGrid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.formGrid3 div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pickupCard {
+  background: #141414;
+  border: 1px solid #282828;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pickupCard h3 {
+  font-size: 1.15rem;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.pickupCard p {
+  color: #888888;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.pickupAddress {
+  font-style: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #b0b0b0;
+  border-left: 2px solid #b99a58;
+  padding-left: 14px;
+}
+
+.pickupAddress strong {
+  color: #FFFFFF;
+}
+
+.notesBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notesBlock label {
+  font-size: 0.78rem;
+  color: #888888;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.notesBlock textarea {
+  background: #141414;
+  border: 1px solid #333333;
+  color: #FFFFFF;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  outline: none;
+}
+
+/* Payment Methods */
+.paymentMethods {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.paymentCard {
+  background: #141414;
+  border: 1px solid #282828;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.paymentCard input {
+  accent-color: #b99a58;
+  margin-top: 4px;
+}
+
+.paySelected {
+  border-color: #b99a58;
+  background: #181611;
+}
+
+.payIcon {
+  color: #b99a58;
+  flex-shrink: 0;
+}
+
+.paymentCard strong {
+  display: block;
+  font-size: 1rem;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+}
+
+.paymentCard span {
+  display: block;
+  font-size: 0.82rem;
+  color: #888888;
+}
+
+.reviewBlock {
+  border-top: 1px solid #1f1f1f;
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reviewBlock h3 {
+  font-size: 1.15rem;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.reviewTable {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #141414;
+  border: 1px solid #242424;
+  padding: 20px;
+}
+
+.reviewRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #888888;
+}
+
+.reviewRow strong {
+  color: #FFFFFF;
+}
+
+.goldRow strong {
+  color: #b99a58;
+}
+
+.freeText {
+  color: #28a745 !important;
+}
+
+.depositRow {
+  background: #1a1711;
+  border: 1px solid #382e1a;
+  padding: 10px;
+}
+
+.depositRow small {
+  display: block;
+  font-size: 0.72rem;
+  color: #b99a58;
+}
+
+.reviewTotalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 1px solid #292929;
+  padding-top: 14px;
+  font-size: 1.05rem;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.totalBig {
+  font-size: 1.6rem;
+  color: #b99a58;
+  font-weight: 700;
+}
+
+.stepActionRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.nextBtn,
+.placeOrderBtn {
+  background: #FFFFFF;
+  color: #080808;
+  border: none;
+  padding: 14px 28px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nextBtn:hover,
+.placeOrderBtn:hover:not(:disabled) {
+  background: #b99a58;
+  color: #FFFFFF;
+}
+
+.placeOrderBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.backBtn {
+  background: transparent;
+  border: 1px solid #333333;
+  color: #c0c0c0;
+  padding: 14px 20px;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.backBtn:hover {
+  border-color: #666666;
+  color: #FFFFFF;
+}
+
+/* Mini summary */
+.rightCol {
+  position: sticky;
+  top: 96px;
+}
+
+.miniSummary {
+  background: #111111;
+  border: 1px solid #222222;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.miniSummary h3 {
+  font-size: 1rem;
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #202020;
+}
+
+.miniList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.miniItem {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.miniImg {
+  width: 50px;
+  height: 66px;
+  object-fit: cover;
+  background: #080808;
+  flex-shrink: 0;
+}
+
+.miniItem div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.miniItem strong {
+  font-size: 0.85rem;
+  color: #FFFFFF;
+}
+
+.miniItem span {
+  font-size: 0.75rem;
+  color: #888888;
+}
+
+.miniPrice {
+  color: #b99a58 !important;
+  font-weight: 600;
+}
+
+.miniTotals {
+  border-top: 1px solid #202020;
+  padding-top: 14px;
+}
+
+.miniRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.9rem;
+  color: #888888;
+}
+
+.miniRow strong {
+  color: #FFFFFF;
+  font-size: 1.15rem;
+}
+
+/* Confirmation Page */
+.confirmWrap {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.confirmCard {
+  background: #111111;
+  border: 1px solid #222222;
+  padding: 60px 40px;
+  max-width: 680px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.successIcon {
+  color: #b99a58;
+}
+
+.confirmCard h1 {
+  font-size: 2.2rem;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.confirmLead {
+  color: #a0a0a0;
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 520px;
+}
+
+.confirmDetails {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 16px 0;
+  text-align: left;
+}
+
+.confirmItem {
+  background: #151515;
+  border: 1px solid #282828;
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.refLabel {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: #c0c0c0;
+}
+
+.rentRefLabel {
+  color: #b99a58;
+}
+
+.confirmItem strong {
+  display: block;
+  font-size: 1.1rem;
+  color: #FFFFFF;
+  margin: 2px 0 4px;
+}
+
+.confirmItem span {
+  display: block;
+  font-size: 0.8rem;
+  color: #888888;
+}
+
+.downloadInvoiceBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #202020;
+  border: 1px solid #333333;
+  color: #FFFFFF;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.downloadInvoiceBtn:hover {
+  background: #b99a58;
+  color: #080808;
+  border-color: #b99a58;
+}
+
+.confirmActions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.ordersLink,
+.rentalsLink,
+.homeLink {
+  padding: 10px 20px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.ordersLink {
+  background: #FFFFFF;
+  color: #080808;
+}
+
+.rentalsLink {
+  background: #b99a58;
+  color: #080808;
+}
+
+.homeLink {
+  border: 1px solid #444444;
+  color: #FFFFFF;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .deliverySelector {
+    grid-template-columns: 1fr;
+  }
+
+  .formGrid3 {
+    grid-template-columns: 1fr;
+  }
+
+  .confirmItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

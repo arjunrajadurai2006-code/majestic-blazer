@@ -1,0 +1,25 @@
+:root {
+  /* Brand palette */
+  --color-black: #080808;
+  --color-charcoal: #151515;
+  --color-graphite: #252525;
+  --color-silver: #c0c0c0;
+  --color-silver-light: #e5e5e5;
+  --color-white: #ffffff;
+  --color-gold: #b99a58; /* Logo accents only. Do not use for UI elements. */
+
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --space-5: 4rem;
+  --space-6: 6.5rem;
+
+  --container: 1200px;
+  --header-height: 76px;
+  --radius: 2px;
+  --border: 1px solid var(--color-graphite);
+}

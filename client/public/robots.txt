@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /checkout
+Disallow: /profile
+Disallow: /orders
+Disallow: /rental-bookings
+
+Sitemap: https://majesticblazer.com/sitemap.xml
+

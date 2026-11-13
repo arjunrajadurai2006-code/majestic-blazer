@@ -1,0 +1,17 @@
+.shell { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; }
+.sidebar { background: var(--color-charcoal); border-right: var(--border); padding: var(--space-3); display: flex; flex-direction: column; gap: var(--space-3); position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.logo { height: 56px; width: auto; align-self: flex-start; }
+.nav { display: grid; gap: 2px; }
+.link { display: block; padding: 0.6rem var(--space-2); border-left: 2px solid transparent; font-size: 0.95rem; }
+.link:hover { color: var(--color-white); background: var(--color-graphite); }
+.active { color: var(--color-white); border-left-color: var(--color-silver); background: var(--color-graphite); }
+.logout { margin-top: auto; min-height: 44px; background: none; border: 1px solid var(--color-graphite); cursor: pointer; }
+.logout:hover { background: var(--color-graphite); color: var(--color-white); }
+.content { padding: var(--space-4); min-width: 0; }
+
+@media (max-width: 860px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; }
+  .nav { grid-template-columns: repeat(2, 1fr); }
+  .content { padding: var(--space-3); }
+}

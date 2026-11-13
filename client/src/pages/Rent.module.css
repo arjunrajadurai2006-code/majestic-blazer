@@ -1,0 +1,122 @@
+.page {
+  padding-bottom: 80px;
+}
+
+.hero {
+  background: linear-gradient(180deg, #0e0e0e 0%, #060606 100%);
+  border-bottom: 1px solid var(--color-graphite);
+  padding: 80px 0 60px;
+  text-align: center;
+}
+
+.heroInner {
+  max-width: 840px;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  color: #b99a58;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: #FFFFFF;
+  margin-bottom: 16px;
+}
+
+.lead {
+  color: #b0b0b0;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  background: #111111;
+  border: 1px solid #222222;
+  padding: 24px;
+  text-align: left;
+}
+
+.feat {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.featIcon {
+  color: #b99a58;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.feat strong {
+  display: block;
+  color: #FFFFFF;
+  font-size: 0.9rem;
+  margin-bottom: 2px;
+}
+
+.feat span {
+  display: block;
+  color: #888888;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.main {
+  margin-top: 40px;
+}
+
+.countBar {
+  padding-bottom: 16px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid #1f1f1f;
+  font-size: 0.88rem;
+  color: #888888;
+}
+
+.countBar strong {
+  color: #FFFFFF;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+
+.skeleton {
+  background: #141414;
+  aspect-ratio: 3 / 4;
+}
+
+.empty {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 580px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+

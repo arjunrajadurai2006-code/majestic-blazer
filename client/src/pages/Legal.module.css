@@ -1,0 +1,103 @@
+.page {
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-10);
+  max-width: 860px;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
+.page h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  color: var(--color-silver-light);
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-1);
+}
+
+.updated {
+  font-size: 0.85rem;
+  color: var(--color-silver-muted);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-4);
+}
+
+.content section {
+  margin-bottom: var(--space-6);
+}
+
+.content h2 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  letter-spacing: 0.05em;
+  color: var(--color-silver);
+  margin-bottom: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.content p {
+  color: var(--color-silver-muted);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  margin-bottom: var(--space-3);
+}
+
+.content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-3) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.content li {
+  position: relative;
+  padding-left: var(--space-4);
+  color: var(--color-silver-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.content li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--color-gold);
+}
+
+.content strong {
+  color: var(--color-silver-light);
+}
+
+.highlightBox {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-gold);
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  margin: var(--space-4) 0;
+}
+
+.highlightBox h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-gold);
+  margin-bottom: var(--space-1);
+}
+
+.highlightBox p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+

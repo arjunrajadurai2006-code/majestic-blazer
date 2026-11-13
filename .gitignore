@@ -1,0 +1,12 @@
+# Root gitignore for Majestic Blazer Monorepo
+node_modules/
+.env
+.env.local
+.env.*.local
+dist/
+dist-ssr/
+*.log
+.DS_Store
+Thumbs.db
+server/uploads/*
+!server/uploads/.gitkeep

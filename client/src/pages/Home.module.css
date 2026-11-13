@@ -1,0 +1,594 @@
+.home {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 1. Hero Section */
+.hero {
+  position: relative;
+  min-height: 84vh;
+  display: flex;
+  align-items: center;
+  background-color: #060606;
+  background-image: radial-gradient(circle at 75% 30%, rgba(35, 35, 35, 0.45) 0%, rgba(6, 6, 6, 0.95) 70%),
+    url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1800&q=80');
+  background-size: cover;
+  background-position: center 25%;
+  border-bottom: 1px solid var(--color-graphite);
+  overflow: hidden;
+}
+
+.heroBackdrop {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(6, 6, 6, 0.96) 0%, rgba(6, 6, 6, 0.8) 55%, rgba(6, 6, 6, 0.4) 100%);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  padding: 80px 0;
+}
+
+.heroEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-silver);
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.goldDot {
+  width: 7px;
+  height: 7px;
+  background: #b99a58;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.heroTitle {
+  font-size: clamp(3rem, 6.5vw, 5.2rem);
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.05;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+  margin-bottom: 24px;
+}
+
+.goldText {
+  color: #b99a58;
+  font-style: italic;
+}
+
+.heroSubtitle {
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  line-height: 1.7;
+  color: #c4c4c4;
+  margin-bottom: 40px;
+  font-weight: 300;
+  max-width: 620px;
+}
+
+.heroCtas {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  background: #FFFFFF;
+  color: #080808;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+}
+
+.primaryBtn:hover {
+  background: #b99a58;
+  color: #FFFFFF;
+}
+
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 16px 32px;
+  border: 1px solid #444444;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+}
+
+.secondaryBtn:hover {
+  border-color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.heroBadges {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.badgeItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #999999;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+}
+
+.badgeIcon {
+  color: #b99a58;
+  flex-shrink: 0;
+}
+
+/* 2. Distinction Section */
+.distinction {
+  background: #0b0b0b;
+  border-bottom: 1px solid #1c1c1c;
+  padding: 60px 0;
+}
+
+.distinctionGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.distinctionCard {
+  background: #141414;
+  border: 1px solid #242424;
+  padding: 40px;
+  position: relative;
+  transition: border-color 0.3s ease;
+}
+
+.distinctionCard:hover {
+  border-color: #3d3d3d;
+}
+
+.rentCard {
+  border-color: #2e281b;
+  background: linear-gradient(135deg, #141414 0%, #171510 100%);
+}
+
+.distinctionMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.metaTag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #888888;
+}
+
+.goldMetaTag {
+  color: #b99a58;
+}
+
+.distinctionMeta h2 {
+  font-size: 1.85rem;
+  color: #FFFFFF;
+}
+
+.distinctionMeta p {
+  color: #a4a4a4;
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+.distinctionBtn {
+  align-self: flex-start;
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 3. Section Common */
+.section {
+  padding: 90px 0;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.sectionEyebrow {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: #b99a58;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.sectionHeader h2 {
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  color: #FFFFFF;
+}
+
+.sectionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-silver);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.sectionLink:hover {
+  color: #b99a58;
+  gap: 12px;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+
+.skeletonCard {
+  background: #141414;
+  aspect-ratio: 3 / 4;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}
+
+/* 4. Curated Category Paths */
+.categoriesSection {
+  background: #050505;
+  border-top: 1px solid #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
+  padding: 90px 0;
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.categoryCard {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  display: block;
+  border: 1px solid #202020;
+}
+
+.categoryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.categoryCard:hover .categoryImage {
+  transform: scale(1.08);
+}
+
+.categoryOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 8, 8, 0.1) 0%, rgba(8, 8, 8, 0.85) 75%, #080808 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+  gap: 8px;
+}
+
+.catLabel {
+  font-size: 0.72rem;
+  color: #b99a58;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.categoryOverlay h3 {
+  font-size: 1.35rem;
+  color: #FFFFFF;
+}
+
+.catExplore {
+  font-size: 0.8rem;
+  color: var(--color-silver);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.categoryCard:hover .catExplore {
+  color: #FFFFFF;
+  transform: translateX(4px);
+}
+
+/* 5. How Renting Works */
+.howItWorks {
+  background: #0d0d0d;
+  border-bottom: 1px solid #222222;
+  padding: 100px 0;
+}
+
+.howHeader {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 60px;
+}
+
+.howSubtitle {
+  color: #999999;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-top: 14px;
+}
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+
+.stepCard {
+  background: #141414;
+  border: 1px solid #242424;
+  padding: 32px 24px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.stepNo {
+  font-size: 1.8rem;
+  font-family: var(--font-display);
+  color: #b99a58;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.stepCard h3 {
+  font-size: 1.25rem;
+  color: #FFFFFF;
+  margin-bottom: 12px;
+}
+
+.stepCard p {
+  color: #8c8c8c;
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+.howAction {
+  margin-top: 48px;
+  display: flex;
+  justify-content: center;
+}
+
+/* 6. Craftsmanship */
+.craftsmanship {
+  background: #070707;
+  padding: 90px 0;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.craftHeader {
+  text-align: center;
+  margin-bottom: 54px;
+}
+
+.advantagesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+
+.advCard {
+  background: #111111;
+  border: 1px solid #202020;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.advIconWrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 1px solid #333333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.advIcon {
+  color: #b99a58;
+}
+
+.advCard h3 {
+  font-size: 1.15rem;
+  color: #FFFFFF;
+}
+
+.advCard p {
+  color: #888888;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+/* 7. Testimonials */
+.testimonialsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.testCard {
+  background: #121212;
+  border: 1px solid #242424;
+  padding: 36px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+}
+
+.stars {
+  color: #b99a58;
+  letter-spacing: 2px;
+  font-size: 1rem;
+}
+
+.quote {
+  color: #d1d1d1;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  font-style: italic;
+  flex: 1;
+}
+
+.testAuthor {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px solid #1f1f1f;
+  padding-top: 14px;
+}
+
+.testAuthor strong {
+  color: #FFFFFF;
+  font-size: 0.95rem;
+}
+
+.testAuthor span {
+  color: #888888;
+  font-size: 0.8rem;
+}
+
+/* 8. Boutique Section */
+.boutiqueSection {
+  background: linear-gradient(90deg, #090909 0%, #151515 100%);
+  border-top: 1px solid #222222;
+  border-bottom: 1px solid #222222;
+  padding: 80px 0;
+}
+
+.boutiqueInner {
+  max-width: 800px;
+}
+
+.boutiqueInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.boutiqueInfo h2 {
+  font-size: 2.4rem;
+  color: #FFFFFF;
+}
+
+.boutiqueInfo p {
+  color: #a4a4a4;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.boutiqueAddress {
+  font-style: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #c0c0c0;
+  margin-top: 8px;
+  padding-left: 18px;
+  border-left: 2px solid #b99a58;
+}
+
+.boutiqueAddress strong {
+  color: #FFFFFF;
+}
+
+.boutiqueAddress a {
+  color: #b99a58;
+}
+
+.boutiqueBtns {
+  margin-top: 12px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .productGrid,
+  .categoryGrid,
+  .stepsGrid,
+  .advantagesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .testimonialsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .distinctionGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .productGrid,
+  .categoryGrid,
+  .stepsGrid,
+  .advantagesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroTitle {
+    font-size: 2.8rem;
+  }
+
+  .heroCtas {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

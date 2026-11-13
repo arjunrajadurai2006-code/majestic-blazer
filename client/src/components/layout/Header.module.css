@@ -1,0 +1,271 @@
+.announcement {
+  background: #000000;
+  border-bottom: 1px solid #1c1c1c;
+  color: var(--color-silver);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  padding: 6px 0;
+  text-align: center;
+}
+
+.announcementInner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.divider {
+  color: #b99a58;
+}
+
+.phoneLink {
+  color: #FFFFFF;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.phoneLink:hover {
+  color: #b99a58;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(8, 8, 8, 0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-graphite);
+  transition: background 0.3s ease;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 76px;
+  gap: 24px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+}
+
+.mobileToggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  padding: 6px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.link {
+  color: var(--color-silver);
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  position: relative;
+  padding: 8px 0;
+  transition: color 0.25s ease;
+}
+
+.link:hover,
+.link.active {
+  color: var(--color-white);
+}
+
+.link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #b99a58;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.iconBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-silver);
+  cursor: pointer;
+  padding: 6px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.iconBtn:hover {
+  color: var(--color-white);
+  transform: translateY(-1px);
+}
+
+.userBtn {
+  text-decoration: none;
+}
+
+.userLabel {
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: var(--color-silver);
+}
+
+.badge {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  background: #b99a58;
+  color: #080808;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Search Overlay */
+.searchOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 120px;
+  animation: fadeIn 0.25s ease;
+}
+
+.searchModal {
+  width: 100%;
+  max-width: 640px;
+  background: #141414;
+  border: 1px solid #333333;
+  padding: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid #333333;
+  padding-bottom: 14px;
+}
+
+.searchIcon {
+  color: var(--color-silver);
+}
+
+.searchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #FFFFFF;
+  font-size: 1.15rem;
+  outline: none;
+}
+
+.closeSearch {
+  background: transparent;
+  border: none;
+  color: var(--color-silver);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.searchSuggestions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 0.82rem;
+  color: #888888;
+}
+
+.searchSuggestions button {
+  background: #202020;
+  border: 1px solid #333333;
+  color: var(--color-silver);
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  transition: all 0.2s ease;
+}
+
+.searchSuggestions button:hover {
+  background: #2a2a2a;
+  color: #FFFFFF;
+  border-color: #555555;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 880px) {
+  .mobileToggle {
+    display: block;
+  }
+
+  .nav {
+    position: fixed;
+    top: 110px;
+    left: 0;
+    right: 0;
+    background: #0e0e0e;
+    border-bottom: 1px solid #252525;
+    padding: 24px;
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav.open {
+    display: flex;
+  }
+
+  .links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    width: 100%;
+  }
+
+  .userLabel {
+    display: none;
+  }
+}

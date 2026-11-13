@@ -1,0 +1,185 @@
+.page {
+  padding: 40px 0 80px;
+}
+
+.header {
+  border-bottom: 1px solid var(--color-graphite);
+  padding-bottom: 20px;
+  margin-bottom: 36px;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  color: #b99a58;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.header h1 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: #FFFFFF;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+
+.card {
+  background: #121212;
+  border: 1px solid #242424;
+  display: flex;
+  flex-direction: column;
+}
+
+.imgWrap {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #080808;
+  display: block;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .img {
+  transform: scale(1.05);
+}
+
+.body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.title {
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.title a {
+  color: #FFFFFF;
+}
+
+.title a:hover {
+  color: #b99a58;
+}
+
+.prices {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #888888;
+}
+
+.prices strong {
+  color: #FFFFFF;
+}
+
+.rentPrice strong {
+  color: #b99a58;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid #202020;
+}
+
+.viewBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  color: #080808;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+}
+
+.viewBtn:hover {
+  background: #b99a58;
+  color: #FFFFFF;
+}
+
+.removeBtn {
+  background: transparent;
+  border: none;
+  color: #666666;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.removeBtn:hover {
+  color: #d9534f;
+}
+
+.emptyPage {
+  padding: 90px 0;
+}
+
+.emptyCard {
+  text-align: center;
+  background: #111111;
+  border: 1px solid #222222;
+  padding: 80px 24px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.emptyIcon {
+  color: #b99a58;
+  margin-bottom: 16px;
+}
+
+.emptyCard h2 {
+  font-size: 2rem;
+  color: #FFFFFF;
+  margin-bottom: 12px;
+}
+
+.emptyCard p {
+  color: #888888;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.exploreBtn {
+  background: #FFFFFF;
+  color: #080808;
+  padding: 12px 28px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 580px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+

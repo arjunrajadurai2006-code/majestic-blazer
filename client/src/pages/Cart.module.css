@@ -1,0 +1,511 @@
+.page {
+  padding: 40px 0 80px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid var(--color-graphite);
+  padding-bottom: 20px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header h1 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: #FFFFFF;
+}
+
+.continueLink {
+  color: #b99a58;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.continueLink:hover {
+  color: #FFFFFF;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+/* Items List */
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-size: 1.15rem;
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rentSectionTitle {
+  color: #b99a58;
+}
+
+.itemsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.itemRow {
+  background: #111111;
+  border: 1px solid #222222;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.rentalRow {
+  background: #13120f;
+  border-color: #2b2518;
+}
+
+.itemImg {
+  width: 80px;
+  height: 106px;
+  object-fit: cover;
+  background: #080808;
+  flex-shrink: 0;
+}
+
+.itemDetails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rentBadge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #b99a58;
+  letter-spacing: 0.1em;
+}
+
+.itemName {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #FFFFFF;
+  transition: color 0.2s ease;
+}
+
+.itemName:hover {
+  color: #b99a58;
+}
+
+.itemMeta {
+  display: flex;
+  gap: 14px;
+  font-size: 0.8rem;
+  color: #888888;
+}
+
+.itemMeta strong {
+  color: #FFFFFF;
+}
+
+.itemPrice {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #c0c0c0;
+}
+
+.rentalSchedule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #c0c0c0;
+}
+
+.calIcon {
+  color: #b99a58;
+}
+
+.rentalFinancials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.8rem;
+  color: #888888;
+}
+
+.rentalFinancials strong {
+  color: #FFFFFF;
+}
+
+.depositNotice {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #b99a58;
+}
+
+.qtyControls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  background: #181818;
+  border: 1px solid #333333;
+}
+
+.stepper button {
+  background: transparent;
+  border: none;
+  color: #FFFFFF;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.stepper span {
+  padding: 0 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.lineTotal {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.rentalTotalCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.rentalTotalLabel {
+  font-size: 0.72rem;
+  color: #888888;
+  text-transform: uppercase;
+}
+
+.removeBtn {
+  background: transparent;
+  border: none;
+  color: #666666;
+  cursor: pointer;
+  padding: 6px;
+  transition: color 0.2s ease;
+}
+
+.removeBtn:hover {
+  color: #d9534f;
+}
+
+/* Summary */
+.summaryWrap {
+  position: sticky;
+  top: 96px;
+}
+
+.summaryCard {
+  background: #121212;
+  border: 1px solid #242424;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.summaryCard h3 {
+  font-size: 1.15rem;
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #222222;
+}
+
+/* Coupon Box */
+.couponBox {
+  background: #181818;
+  border: 1px solid #2c2c2c;
+  padding: 12px;
+}
+
+.couponForm {
+  display: flex;
+  gap: 8px;
+}
+
+.couponInput {
+  flex: 1;
+  background: #0d0d0d;
+  border: 1px solid #383838;
+  color: #FFFFFF;
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  outline: none;
+}
+
+.couponBtn {
+  background: #FFFFFF;
+  color: #080808;
+  border: none;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.couponApplied {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.couponInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+}
+
+.tagIcon {
+  color: #b99a58;
+}
+
+.couponInfo strong {
+  color: #FFFFFF;
+  margin-right: 6px;
+}
+
+.couponInfo span {
+  color: #b99a58;
+}
+
+.removeCouponBtn {
+  background: transparent;
+  border: none;
+  color: #888888;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.removeCouponBtn:hover {
+  color: #d9534f;
+}
+
+/* Summary Rows */
+.summaryRows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  color: #888888;
+}
+
+.summaryRow span:last-child {
+  color: #FFFFFF;
+}
+
+.discountRow {
+  color: #b99a58;
+}
+
+.discountRow span:last-child {
+  color: #b99a58;
+}
+
+.freeDelivery {
+  color: #28a745 !important;
+}
+
+.depositRow {
+  background: #171510;
+  border: 1px solid #332a18;
+  padding: 10px;
+}
+
+.depositRow span:first-child {
+  color: #FFFFFF;
+}
+
+.depositSubtext {
+  display: block;
+  font-size: 0.72rem;
+  color: #b99a58;
+}
+
+.totalDivider {
+  height: 1px;
+  background: #282828;
+  margin: 6px 0;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 1.05rem;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.totalAmount {
+  font-size: 1.5rem;
+  color: #b99a58;
+  font-weight: 700;
+}
+
+.checkoutBtn {
+  background: #FFFFFF;
+  color: #080808;
+  border: none;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.checkoutBtn:hover {
+  background: #b99a58;
+  color: #FFFFFF;
+}
+
+.assurances {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid #202020;
+  padding-top: 16px;
+}
+
+.assurance {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #888888;
+}
+
+/* Empty Page */
+.emptyPage {
+  padding: 90px 0;
+}
+
+.emptyCard {
+  text-align: center;
+  background: #111111;
+  border: 1px solid #222222;
+  padding: 80px 24px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.emptyIcon {
+  color: #b99a58;
+  margin-bottom: 20px;
+}
+
+.emptyCard h2 {
+  font-size: 2rem;
+  color: #FFFFFF;
+  margin-bottom: 12px;
+}
+
+.emptyCard p {
+  color: #888888;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.emptyBtns {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.exploreBtn {
+  background: #FFFFFF;
+  color: #080808;
+  padding: 12px 28px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+}
+
+.rentBtn {
+  border: 1px solid #444444;
+  color: #FFFFFF;
+  padding: 12px 28px;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .itemRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .qtyControls {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+

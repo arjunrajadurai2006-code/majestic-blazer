@@ -1,0 +1,165 @@
+.footer {
+  background: #040404;
+  border-top: 1px solid var(--color-graphite);
+  padding: 80px 0 30px;
+  color: #a0a0a0;
+  font-size: 0.9rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.8fr;
+  gap: 40px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tagline {
+  color: #b99a58;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.address {
+  font-style: normal;
+  line-height: 1.7;
+  color: #888888;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.phoneLink {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+.phoneLink:hover {
+  color: #b99a58;
+}
+
+.hours {
+  color: #c0c0c0;
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+
+.col h3,
+.newsletter h3 {
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.col a {
+  color: #888888;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+
+.col a:hover {
+  color: #FFFFFF;
+  transform: translateX(4px);
+}
+
+.newsletter {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.newsletter p {
+  color: #888888;
+  line-height: 1.6;
+}
+
+.newsForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.newsInput {
+  background: #111111;
+  border: 1px solid #333333;
+  color: #FFFFFF;
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.newsInput:focus {
+  border-color: #b99a58;
+}
+
+.newsBtn {
+  background: #FFFFFF;
+  color: #080808;
+  border: none;
+  padding: 12px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.newsBtn:hover {
+  background: #b99a58;
+  color: #FFFFFF;
+}
+
+.bottom {
+  margin-top: 60px;
+  padding-top: 24px;
+  border-top: 1px solid #1a1a1a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.8rem;
+  color: #666666;
+}
+
+.signature {
+  letter-spacing: 0.04em;
+  color: #888888;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
