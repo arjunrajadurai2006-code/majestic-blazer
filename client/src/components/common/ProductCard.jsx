@@ -54,7 +54,7 @@ export default function ProductCard({ product, onQuickView }) {
           onClick={handleWishlistClick}
           aria-label={wish ? 'Remove from wishlist' : 'Save to wishlist'}
         >
-          <Heart size={18} fill={wish ? '#b99a58' : 'none'} color={wish ? '#b99a58' : '#FFFFFF'} />
+          <Heart size={18} fill={wish ? '#FFFFFF' : 'none'} color={wish ? '#FFFFFF' : '#C0C0C0'} />
         </button>
 
         {onQuickView && (

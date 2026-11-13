@@ -104,12 +104,12 @@ export default function Home() {
         <div className={styles.heroBackdrop} />
         <div className={`container ${styles.heroContent}`}>
           <div className={styles.heroEyebrow}>
-            <span className={styles.goldDot} />
+            <span className={styles.silverDot} />
             <span>HAUTE COUTURE MENSWEAR • COIMBATORE</span>
           </div>
 
           <h1 className={styles.heroTitle}>
-            STYLE THAT <span className={styles.goldText}>SPEAKS.</span>
+            STYLE THAT <span className={styles.silverItalic}>SPEAKS.</span>
           </h1>
 
           <p className={styles.heroSubtitle}>
@@ -164,7 +164,7 @@ export default function Home() {
 
           <div className={`${styles.distinctionCard} ${styles.rentCard}`}>
             <div className={styles.distinctionMeta}>
-              <span className={`${styles.metaTag} ${styles.goldMetaTag}`}>BORROW IT</span>
+              <span className={`${styles.metaTag} ${styles.silverMetaTag}`}>BORROW IT</span>
               <h2>Luxury Rentals for the Occasion</h2>
               <p>
                 Wear opulence without commitment. Rent luxury tuxedos, royal velvets and brocade

@@ -1,165 +1,183 @@
 .footer {
-  background: #040404;
-  border-top: 1px solid var(--color-graphite);
-  padding: 80px 0 30px;
-  color: #a0a0a0;
+  background: var(--color-obsidian);
+  border-top: 1px solid var(--color-border);
+  padding: 88px 0 36px;
+  color: var(--color-muted);
   font-size: 0.9rem;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 1.8fr;
-  gap: 40px;
+  gap: 48px;
 }
 
 .brand {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 .tagline {
-  color: #b99a58;
-  font-size: 0.82rem;
-  letter-spacing: 0.18em;
+  color: var(--color-silver);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
 }
 
 .address {
   font-style: normal;
-  line-height: 1.7;
-  color: #888888;
+  line-height: 1.75;
+  color: var(--color-muted);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  font-size: 0.88rem;
 }
 
 .phoneLink {
-  color: #FFFFFF;
+  color: var(--color-platinum);
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 .phoneLink:hover {
-  color: #b99a58;
+  color: var(--color-white);
 }
 
 .hours {
-  color: #c0c0c0;
-  font-size: 0.85rem;
+  color: var(--color-silver);
+  font-size: 0.82rem;
   margin-top: 6px;
 }
 
 .col h3,
 .newsletter h3 {
-  color: #FFFFFF;
-  font-size: 0.95rem;
+  color: var(--color-white);
+  font-size: 0.82rem;
   font-family: var(--font-body);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   font-weight: 600;
 }
 
 .col ul {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .col a {
-  color: #888888;
+  color: var(--color-muted);
   text-decoration: none;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition: all var(--transition-fast);
   display: inline-block;
+  font-size: 0.88rem;
 }
 
 .col a:hover {
-  color: #FFFFFF;
+  color: var(--color-white);
   transform: translateX(4px);
 }
 
 .newsletter {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .newsletter p {
-  color: #888888;
+  color: var(--color-muted);
   line-height: 1.6;
+  font-size: 0.86rem;
 }
 
 .newsForm {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 6px;
+  gap: 12px;
+  margin-top: 8px;
 }
 
 .newsInput {
-  background: #111111;
-  border: 1px solid #333333;
-  color: #FFFFFF;
-  padding: 12px 14px;
-  font-size: 0.9rem;
+  background: var(--color-rich-black);
+  border: 1px solid var(--color-border);
+  color: var(--color-white);
+  padding: 13px 16px;
+  font-size: 0.88rem;
+  border-radius: var(--radius-sm);
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: border-color var(--transition-fast);
 }
 
 .newsInput:focus {
-  border-color: #b99a58;
+  border-color: var(--color-silver);
 }
 
 .newsBtn {
-  background: #FFFFFF;
-  color: #080808;
-  border: none;
-  padding: 12px 20px;
-  font-size: 0.85rem;
+  background: var(--color-white);
+  color: var(--color-obsidian);
+  border: 1px solid var(--color-white);
+  padding: 13px 20px;
+  font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: all var(--transition-smooth);
 }
 
 .newsBtn:hover {
-  background: #b99a58;
-  color: #FFFFFF;
+  background: var(--color-platinum);
+  border-color: var(--color-platinum);
+  transform: translateY(-1px);
 }
 
 .bottom {
-  margin-top: 60px;
-  padding-top: 24px;
-  border-top: 1px solid #1a1a1a;
+  margin-top: 64px;
+  padding-top: 28px;
+  border-top: 1px solid var(--color-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
-  font-size: 0.8rem;
-  color: #666666;
+  font-size: 0.78rem;
+  color: var(--color-muted);
 }
 
 .signature {
-  letter-spacing: 0.04em;
-  color: #888888;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
 }
 
 @media (max-width: 1024px) {
   .grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+  .brand {
+    grid-column: span 2;
+  }
+  .newsletter {
+    grid-column: span 2;
   }
 }
 
 @media (max-width: 640px) {
   .grid {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 36px;
   }
-
+  .brand, .newsletter {
+    grid-column: auto;
+  }
   .bottom {
     flex-direction: column;
-    align-items: flex-start;
+    text-align: center;
+    gap: 12px;
   }
 }

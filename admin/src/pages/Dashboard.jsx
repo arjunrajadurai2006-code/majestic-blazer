@@ -66,7 +66,7 @@ export default function Dashboard() {
         <div className={styles.kpiCard}>
           <div className={styles.kpiLabel}>
             <span>Total Gross Revenue</span>
-            <TrendingUp size={18} color="#b99a58" />
+            <TrendingUp size={18} color="#e5e5e5" />
           </div>
           <div className={styles.kpiValue}>{formatCurrency(summary?.total_revenue)}</div>
           <div className={styles.kpiMeta}>
@@ -123,7 +123,7 @@ export default function Dashboard() {
         <div className={styles.kpiCard}>
           <div className={styles.kpiLabel}>
             <span>Active Blazer Catalog</span>
-            <Package size={18} color="#b99a58" />
+            <Package size={18} color="#c0c0c0" />
           </div>
           <div className={styles.kpiValue}>{summary?.total_products || 0}</div>
           <div className={styles.kpiMeta}>
@@ -141,12 +141,12 @@ export default function Dashboard() {
               <AreaChart data={revenueTrends} margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#c0c0c0" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#c0c0c0" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#ffffff" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#ffffff" stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorRent" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#b99a58" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#b99a58" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#c0c0c0" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#c0c0c0" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#252525" />
@@ -157,8 +157,8 @@ export default function Dashboard() {
                   formatter={(val) => [formatCurrency(val), '']}
                 />
                 <Legend />
-                <Area type="monotone" dataKey="sales" name="Sartorial Sales" stroke="#e5e5e5" fillOpacity={1} fill="url(#colorSales)" />
-                <Area type="monotone" dataKey="rentals" name="Rental Fees" stroke="#b99a58" fillOpacity={1} fill="url(#colorRent)" />
+                <Area type="monotone" dataKey="sales" name="Sartorial Sales" stroke="#ffffff" fillOpacity={1} fill="url(#colorSales)" />
+                <Area type="monotone" dataKey="rentals" name="Rental Fees" stroke="#c0c0c0" fillOpacity={1} fill="url(#colorRent)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>

@@ -15,31 +15,32 @@
   align-items: center;
   gap: 12px;
   padding: 14px 20px;
-  background: #161616;
-  border: 1px solid #333333;
-  color: #FFFFFF;
-  font-size: 0.9rem;
+  background: var(--color-rich-black);
+  border: 1px solid var(--color-border);
+  color: var(--color-white);
+  font-size: 0.88rem;
   letter-spacing: 0.02em;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--shadow-luxury);
+  border-radius: var(--radius-sm);
   animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  max-width: 380px;
+  max-width: 400px;
 }
 
 .success {
-  border-left: 3px solid #b99a58;
+  border-left: 3px solid var(--color-silver);
 }
 
 .error {
-  border-left: 3px solid #d9534f;
+  border-left: 3px solid #e06c75;
 }
 
 .info {
-  border-left: 3px solid #c0c0c0;
+  border-left: 3px solid var(--color-platinum);
 }
 
 .icon {
   font-size: 1rem;
-  color: #b99a58;
+  color: var(--color-platinum);
   flex-shrink: 0;
 }
 

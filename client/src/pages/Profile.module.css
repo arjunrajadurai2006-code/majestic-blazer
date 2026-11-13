@@ -1,30 +1,33 @@
 .page {
-  padding: 40px 0 80px;
+  padding: 48px 0 96px;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  border-bottom: 1px solid var(--color-graphite);
-  padding-bottom: 20px;
-  margin-bottom: 32px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 24px;
+  margin-bottom: 36px;
   flex-wrap: wrap;
   gap: 16px;
 }
 
 .eyebrow {
   display: block;
-  font-size: 0.75rem;
-  letter-spacing: 0.16em;
-  color: #b99a58;
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  color: var(--color-silver);
+  font-weight: 600;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .header h1 {
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
-  color: #FFFFFF;
+  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  color: var(--color-white);
+  font-weight: 500;
 }
 
 .logoutBtn {
@@ -32,47 +35,49 @@
   align-items: center;
   gap: 8px;
   background: transparent;
-  border: 1px solid #333333;
-  color: #c0c0c0;
-  padding: 8px 16px;
-  font-size: 0.82rem;
+  border: 1px solid var(--color-border);
+  color: var(--color-silver);
+  padding: 8px 18px;
+  font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   cursor: pointer;
-  transition: all 0.2s ease;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
 }
 
 .logoutBtn:hover {
-  border-color: #d9534f;
-  color: #d9534f;
+  border-color: #e06c75;
+  color: #e06c75;
 }
 
 /* Quick Access Tiles */
 .tileGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 36px;
+  gap: 24px;
+  margin-bottom: 40px;
 }
 
 .tile {
-  background: #111111;
-  border: 1px solid #222222;
-  padding: 24px;
+  background: var(--color-rich-black);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 26px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   text-decoration: none;
-  transition: all 0.25s ease;
+  transition: all var(--transition-smooth);
 }
 
 .tile:hover {
-  border-color: #3b3b3b;
+  border-color: var(--color-silver);
   transform: translateY(-2px);
 }
 
 .tileIcon {
-  color: #b99a58;
+  color: var(--color-platinum);
   flex-shrink: 0;
 }
 
@@ -83,12 +88,13 @@
 }
 
 .tile strong {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 1.05rem;
+  font-weight: 500;
 }
 
 .tile span {
-  color: #888888;
+  color: var(--color-muted);
   font-size: 0.8rem;
 }
 
@@ -100,258 +106,127 @@
   align-items: flex-start;
 }
 
-.leftCol {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.rightCol {
-  display: flex;
-  flex-direction: column;
-}
-
 .card {
-  background: #111111;
-  border: 1px solid #242424;
+  background: var(--color-rich-black);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 .card h2 {
-  font-size: 1.25rem;
-  color: #FFFFFF;
-  margin: 0;
-  padding-bottom: 14px;
-  border-bottom: 1px solid #202020;
-}
-
-.cardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #202020;
-  padding-bottom: 14px;
-}
-
-.cardHeader h2 {
-  border: none;
-  padding: 0;
-}
-
-.addAddrToggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #1e1e1e;
-  border: 1px solid #333333;
-  color: #FFFFFF;
-  padding: 6px 12px;
-  font-size: 0.78rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.addAddrToggle:hover {
-  background: #b99a58;
-  color: #080808;
+  font-size: 1.35rem;
+  color: var(--color-white);
+  font-weight: 500;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
-.formGroup {
+.form label {
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
-
-.formGroup label {
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
-  color: #888888;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  color: var(--color-silver);
   text-transform: uppercase;
 }
 
-.formGroup input {
-  background: #161616;
-  border: 1px solid #333333;
-  color: #FFFFFF;
-  padding: 10px 12px;
-  font-size: 0.9rem;
+.form input {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-white);
+  padding: 11px 14px;
+  font-size: 0.88rem;
   outline: none;
 }
 
-.formGroup small {
-  color: #666666;
-  font-size: 0.72rem;
-}
-
-.disabledInput {
-  background: #111111 !important;
-  color: #777777 !important;
-  cursor: not-allowed;
+.form input:focus {
+  border-color: var(--color-silver);
 }
 
 .saveBtn {
   align-self: flex-start;
-  background: #FFFFFF;
-  color: #080808;
-  border: none;
-  padding: 10px 24px;
-  font-size: 0.85rem;
+  background: var(--color-white);
+  color: var(--color-obsidian);
+  border: 1px solid var(--color-white);
+  border-radius: var(--radius-sm);
+  padding: 12px 28px;
+  font-size: 0.82rem;
   font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 6px;
+  transition: all var(--transition-smooth);
 }
 
 .saveBtn:hover:not(:disabled) {
-  background: #b99a58;
-  color: #FFFFFF;
+  background: var(--color-platinum);
+  border-color: var(--color-platinum);
 }
 
-/* Address Form */
-.addAddrForm {
-  background: #161616;
-  border: 1px solid #2a2a2a;
-  padding: 20px;
+.addressList {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.formRow3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.formRow3 div {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.formRow3 label {
-  font-size: 0.75rem;
-  color: #888888;
-  text-transform: uppercase;
-}
-
-.formRow3 input {
-  background: #111111;
-  border: 1px solid #333333;
-  color: #FFFFFF;
-  padding: 8px 10px;
-  font-size: 0.85rem;
-  outline: none;
-}
-
-.checkboxLabel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: #a0a0a0;
-  cursor: pointer;
-}
-
-.checkboxLabel input {
-  accent-color: #b99a58;
-}
-
-.formBtns {
-  display: flex;
-  gap: 12px;
-  margin-top: 6px;
-}
-
-.cancelBtn {
-  background: transparent;
-  border: 1px solid #333333;
-  color: #888888;
-  padding: 10px 16px;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-/* Address List */
-.addressList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.addressItem {
-  background: #141414;
-  border: 1px solid #262626;
-  padding: 16px;
+.addressCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
 }
 
-.addrText {
+.addressInfo {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 0.85rem;
-  color: #888888;
+  font-size: 0.88rem;
+  color: var(--color-silver);
 }
 
-.addrTitleRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.addressInfo strong {
+  color: var(--color-white);
 }
 
-.addrTitleRow strong {
-  color: #FFFFFF;
-  font-size: 0.95rem;
+.defaultBadge {
+  font-size: 0.68rem;
+  color: var(--color-platinum);
+  background: var(--color-charcoal);
+  border: 1px solid var(--color-border);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  width: fit-content;
+  margin-top: 4px;
 }
 
-.defaultPill {
-  background: #b99a58;
-  color: #080808;
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 2px 6px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.delAddrBtn {
+.deleteAddrBtn {
   background: transparent;
   border: none;
-  color: #666666;
+  color: var(--color-muted);
   cursor: pointer;
-  padding: 4px;
-  transition: color 0.2s ease;
+  padding: 6px;
+  transition: color var(--transition-fast);
 }
 
-.delAddrBtn:hover {
-  color: #d9534f;
+.deleteAddrBtn:hover {
+  color: #e06c75;
 }
 
-.noAddresses {
-  color: #777777;
-  font-style: italic;
-  font-size: 0.88rem;
-}
-
-@media (max-width: 900px) {
+@media (max-width: 880px) {
   .tileGrid,
   .grid {
     grid-template-columns: 1fr;
   }
 }
-

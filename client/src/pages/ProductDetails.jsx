@@ -300,7 +300,7 @@ export default function ProductDetails() {
                   onClick={() => toggleWishlist(product)}
                   aria-label="Wishlist"
                 >
-                  <Heart size={20} fill={wish ? '#b99a58' : 'none'} color={wish ? '#b99a58' : '#FFFFFF'} />
+                  <Heart size={20} fill={wish ? '#FFFFFF' : 'none'} color={wish ? '#FFFFFF' : '#C0C0C0'} />
                 </button>
               </div>
             </div>
@@ -394,7 +394,7 @@ export default function ProductDetails() {
                   onClick={() => toggleWishlist(product)}
                   aria-label="Wishlist"
                 >
-                  <Heart size={20} fill={wish ? '#b99a58' : 'none'} color={wish ? '#b99a58' : '#FFFFFF'} />
+                  <Heart size={20} fill={wish ? '#FFFFFF' : 'none'} color={wish ? '#FFFFFF' : '#C0C0C0'} />
                 </button>
               </div>
             </div>

@@ -1,25 +1,52 @@
 :root {
-  /* Brand palette */
-  --color-black: #080808;
-  --color-charcoal: #151515;
+  /* Brand Luxury Palette — Black & Silver */
+  --color-obsidian: #080808;
+  --color-rich-black: #101010;
+  --color-charcoal: #171717;
+  --color-surface: #202020;
+  --color-silver: #C0C0C0;
+  --color-platinum: #E5E5E5;
+  --color-white: #FFFFFF;
+  --color-muted: #858585;
+  --color-border: #303030;
+  --color-border-subtle: rgba(192, 192, 192, 0.12);
+  --color-border-glow: rgba(192, 192, 192, 0.35);
+
+  /* Semantic aliases for backward compatibility */
+  --color-black: var(--color-obsidian);
   --color-graphite: #252525;
-  --color-silver: #c0c0c0;
-  --color-silver-light: #e5e5e5;
-  --color-white: #ffffff;
-  --color-gold: #b99a58; /* Logo accents only. Do not use for UI elements. */
+  --color-silver-light: var(--color-platinum);
+  --color-gold: #B99A58; /* Muted crest accent only */
 
-  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-  --font-body: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+  /* Luxury Typography */
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  --space-1: 0.5rem;
-  --space-2: 1rem;
-  --space-3: 1.5rem;
-  --space-4: 2.5rem;
-  --space-5: 4rem;
-  --space-6: 6.5rem;
+  /* Spacing Scale */
+  --space-1: 0.5rem;   /* 8px */
+  --space-2: 1rem;     /* 16px */
+  --space-3: 1.5rem;   /* 24px */
+  --space-4: 2.5rem;   /* 40px */
+  --space-5: 4rem;     /* 64px */
+  --space-6: 6.5rem;   /* 104px */
+  --space-8: 8.5rem;   /* 136px */
 
-  --container: 1200px;
-  --header-height: 76px;
-  --radius: 2px;
-  --border: 1px solid var(--color-graphite);
+  /* Layout Containers */
+  --container: 1240px;
+  --container-wide: 1400px;
+  --header-height: 80px;
+  --radius-sm: 2px;
+  --radius: 3px;
+  --radius-lg: 4px;
+
+  /* Elevation and Borders */
+  --border: 1px solid var(--color-border);
+  --border-active: 1px solid var(--color-silver);
+  --shadow-luxury: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  --shadow-subtle: 0 4px 16px rgba(0, 0, 0, 0.4);
+
+  /* Transitions */
+  --transition-fast: 0.18s ease;
+  --transition-smooth: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-editorial: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }

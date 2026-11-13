@@ -14,7 +14,7 @@ const TIME_RANGES = [
   { label: 'This Year', value: '1y' },
 ];
 
-const PIE_COLORS = ['#c0c0c0', '#b99a58', '#3498db', '#2ed573', '#9b59b6', '#e67e22'];
+const PIE_COLORS = ['#ffffff', '#e5e5e5', '#c0c0c0', '#858585', '#3498db', '#2ed573'];
 
 export default function Analytics() {
   const [range, setRange] = useState('30d');
@@ -104,16 +104,16 @@ export default function Analytics() {
         <div className={styles.kpiCard}>
           <div className={styles.kpiLabel}>
             <span>Total Rental Revenue</span>
-            <Calendar size={16} color="#b99a58" />
+            <Calendar size={16} color="#c0c0c0" />
           </div>
-          <div className={styles.kpiValue} style={{ color: '#b99a58' }}>{formatCurrency(overview?.rentalRevenue || overview?.rental_revenue)}</div>
+          <div className={styles.kpiValue}>{formatCurrency(overview?.rentalRevenue || overview?.rental_revenue)}</div>
           <div className={styles.kpiMeta}>{overview?.totalRentals || 0} rental reservations</div>
         </div>
 
         <div className={styles.kpiCard}>
           <div className={styles.kpiLabel}>
             <span>Combined Gross Turnover</span>
-            <Award size={16} color="#2ed573" />
+            <Award size={16} color="#ffffff" />
           </div>
           <div className={styles.kpiValue}>{formatCurrency(overview?.totalRevenue || overview?.total_revenue)}</div>
           <div className={styles.kpiMeta}>Across sales and rental operations</div>
@@ -138,12 +138,12 @@ export default function Analytics() {
               <AreaChart data={revenueTrends} margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="salesGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#e5e5e5" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#e5e5e5" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#ffffff" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#ffffff" stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="rentGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#b99a58" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#b99a58" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#c0c0c0" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#c0c0c0" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#252525" />
@@ -154,8 +154,8 @@ export default function Analytics() {
                   formatter={(val) => [formatCurrency(val), '']}
                 />
                 <Legend />
-                <Area type="monotone" dataKey="sales" name="Purchase Sales" stroke="#e5e5e5" fillOpacity={1} fill="url(#salesGrad)" />
-                <Area type="monotone" dataKey="rentals" name="Rental Fees" stroke="#b99a58" fillOpacity={1} fill="url(#rentGrad)" />
+                <Area type="monotone" dataKey="sales" name="Purchase Sales" stroke="#ffffff" fillOpacity={1} fill="url(#salesGrad)" />
+                <Area type="monotone" dataKey="rentals" name="Rental Fees" stroke="#c0c0c0" fillOpacity={1} fill="url(#rentGrad)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>

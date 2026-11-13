@@ -9,7 +9,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--color-gold);
+  color: var(--color-silver);
   font-weight: 600;
   margin-bottom: var(--space-2);
 }
@@ -73,7 +73,7 @@
   content: '—';
   position: absolute;
   left: 0;
-  color: var(--color-gold);
+  color: var(--color-silver);
 }
 
 .content strong {
@@ -83,7 +83,7 @@
 .highlightBox {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-left: 3px solid var(--color-gold);
+  border-left: 3px solid var(--color-silver);
   padding: var(--space-4);
   border-radius: var(--radius-sm);
   margin: var(--space-4) 0;
@@ -92,7 +92,7 @@
 .highlightBox h3 {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--color-gold);
+  color: var(--color-white);
   margin-bottom: var(--space-1);
 }
 

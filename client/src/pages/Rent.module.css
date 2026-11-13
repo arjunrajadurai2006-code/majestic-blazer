@@ -1,90 +1,96 @@
 .page {
-  padding-bottom: 80px;
+  padding-bottom: 96px;
 }
 
 .hero {
-  background: linear-gradient(180deg, #0e0e0e 0%, #060606 100%);
-  border-bottom: 1px solid var(--color-graphite);
-  padding: 80px 0 60px;
+  background: var(--color-obsidian);
+  border-bottom: 1px solid var(--color-border);
+  padding: 88px 0 68px;
   text-align: center;
 }
 
 .heroInner {
-  max-width: 840px;
+  max-width: 860px;
 }
 
 .eyebrow {
   display: block;
-  font-size: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.74rem;
   letter-spacing: 0.22em;
-  color: #b99a58;
+  color: var(--color-silver);
+  font-weight: 600;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .hero h1 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  color: #FFFFFF;
-  margin-bottom: 16px;
+  font-size: clamp(2.6rem, 5.2vw, 4.2rem);
+  color: var(--color-white);
+  margin-bottom: 18px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
 }
 
 .lead {
-  color: #b0b0b0;
+  color: var(--color-silver);
   font-size: 1.1rem;
-  line-height: 1.7;
-  margin-bottom: 40px;
+  line-height: 1.75;
+  margin-bottom: 44px;
 }
 
 .features {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
-  background: #111111;
-  border: 1px solid #222222;
-  padding: 24px;
+  background: var(--color-rich-black);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 28px 24px;
   text-align: left;
 }
 
 .feat {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 14px;
 }
 
 .featIcon {
-  color: #b99a58;
+  color: var(--color-silver);
   flex-shrink: 0;
   margin-top: 2px;
 }
 
 .feat strong {
   display: block;
-  color: #FFFFFF;
-  font-size: 0.9rem;
-  margin-bottom: 2px;
+  color: var(--color-white);
+  font-size: 0.92rem;
+  margin-bottom: 4px;
+  font-weight: 500;
 }
 
 .feat span {
   display: block;
-  color: #888888;
-  font-size: 0.78rem;
-  line-height: 1.4;
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
 }
 
 .main {
-  margin-top: 40px;
+  margin-top: 48px;
 }
 
 .countBar {
-  padding-bottom: 16px;
-  margin-bottom: 28px;
-  border-bottom: 1px solid #1f1f1f;
-  font-size: 0.88rem;
-  color: #888888;
+  padding-bottom: 18px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.85rem;
+  color: var(--color-muted);
 }
 
 .countBar strong {
-  color: #FFFFFF;
+  color: var(--color-white);
 }
 
 .grid {
@@ -94,13 +100,18 @@
 }
 
 .skeleton {
-  background: #141414;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   aspect-ratio: 3 / 4;
 }
 
 .empty {
   text-align: center;
-  padding: 80px 20px;
+  padding: 88px 24px;
+  background: var(--color-rich-black);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
 }
 
 @media (max-width: 1024px) {
@@ -110,7 +121,7 @@
 
   .features {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 18px;
   }
 }
 
@@ -119,4 +130,3 @@
     grid-template-columns: 1fr;
   }
 }
-
