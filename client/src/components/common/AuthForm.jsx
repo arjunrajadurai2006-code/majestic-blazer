@@ -39,6 +39,7 @@ export default function AuthForm({ mode }) {
   const [busy, setBusy] = useState(false);
   const [demoExpanded, setDemoExpanded] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [demoMode, setDemoMode] = useState(true);
 
   // Forgot password modal
   const [showForgot, setShowForgot] = useState(false);
@@ -47,26 +48,55 @@ export default function AuthForm({ mode }) {
   const [forgotBusy, setForgotBusy] = useState(false);
 
   const copy = COPY[mode];
-  const isProduction = import.meta.env.PROD;
 
-  // Development-only: ensure demo account is seeded in PostgreSQL
+  // Fetch demo mode configuration from backend
   useEffect(() => {
-    if (mode === 'login' && !isProduction) {
-      api.get('/auth/demo-customer').catch(() => {
-        // Handled silently; backend script also seeds on server
+    api('/auth/config', { auth: false })
+      .then((res) => {
+        if (res.data?.demoMode !== undefined) {
+          setDemoMode(Boolean(res.data.demoMode));
+        }
+      })
+      .catch(() => {
+        // Silently default to true
       });
-    }
-  }, [mode, isProduction]);
+  }, []);
 
   const onSubmit = async (event) => {
     event.preventDefault();
     setError('');
+
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      setError('Please enter your email address.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      setError('Please enter a valid email address (e.g. patron@example.com).');
+      return;
+    }
+    if (!password) {
+      setError('Please enter a password.');
+      return;
+    }
+    if (!demoMode && mode === 'register') {
+      if (password.length < 8) {
+        setError('Password must be at least 8 characters long.');
+        return;
+      }
+      if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+        setError('Password must include both a letter and a number.');
+        return;
+      }
+    }
+
     setBusy(true);
 
     const payload =
       mode === 'login'
-        ? { email: email.trim(), password }
-        : { fullName: fullName.trim(), phone: phone.trim(), email: email.trim(), password };
+        ? { email: trimmedEmail, password }
+        : { fullName: fullName.trim(), phone: phone.trim(), email: trimmedEmail, password };
 
     try {
       await (mode === 'login' ? login(payload) : register(payload));
@@ -135,6 +165,32 @@ export default function AuthForm({ mode }) {
             : 'Register to manage your bespoke blazer orders and reserve rentals seamlessly.'}
         </p>
 
+        {demoMode && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '10px',
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            borderRadius: '6px',
+            padding: '0.85rem 1rem',
+            marginBottom: '1.25rem',
+            color: '#e0e0e0',
+            fontSize: '0.82rem',
+            lineHeight: '1.4',
+          }}>
+            <Sparkles size={16} style={{ color: '#c5a059', flexShrink: 0, marginTop: '2px' }} />
+            <div>
+              <strong style={{ color: '#ffffff', display: 'block', marginBottom: '2px' }}>
+                DEMO ACCESS ACTIVE
+              </strong>
+              <span>
+                Enter any valid email and non-empty password to sign in or auto-create a demo account. No email verification required.
+              </span>
+            </div>
+          </div>
+        )}
+
         {location.state?.message && (
           <div style={{
             display: 'flex',
@@ -200,7 +256,7 @@ export default function AuthForm({ mode }) {
             <input
               name="password"
               type="password"
-              placeholder={mode === 'register' ? 'Min 8 chars, 1 letter, 1 number' : 'Your account password'}
+              placeholder={demoMode ? 'Any non-empty password' : (mode === 'register' ? 'Min 8 chars, 1 letter, 1 number' : 'Your account password')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
@@ -231,8 +287,8 @@ export default function AuthForm({ mode }) {
           </p>
         </form>
 
-        {/* Expandable DEMO CUSTOMER ACCESS Section (Development-only) */}
-        {mode === 'login' && !isProduction && (
+        {/* Expandable DEMO CUSTOMER ACCESS Section */}
+        {mode === 'login' && demoMode && (
           <div className={styles.demoSection}>
             <button
               type="button"

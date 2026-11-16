@@ -1,10 +1,14 @@
 import app from './app.js';
 import { env } from './config/env.js';
 import { pool, testConnection } from './config/db.js';
+import { ensureDemoAdmin } from './controllers/authController.js';
 
 try {
   await testConnection();
   console.log('PostgreSQL connected');
+  if (env.demoMode) {
+    await ensureDemoAdmin();
+  }
 } catch (err) {
   console.error('PostgreSQL connection failed:', err.message);
   process.exit(1);

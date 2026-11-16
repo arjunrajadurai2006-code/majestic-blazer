@@ -2,6 +2,8 @@ import crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import * as User from '../models/userModel.js';
 import * as Address from '../models/addressModel.js';
+import { env } from '../config/env.js';
+import { pool } from '../config/db.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
 import { signToken, revokeToken } from '../utils/token.js';
@@ -18,28 +20,147 @@ const publicUser = (u) => ({
   createdAt: u.created_at,
 });
 
+export const getAuthConfig = (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      demoMode: Boolean(env.demoMode),
+    },
+  });
+};
+
+export const ensureDemoAdmin = async () => {
+  const adminEmail = 'admin@majesticblazer.com';
+  const adminPass = 'MajesticAdmin2026!Secure';
+  let admin = await User.findByEmail(adminEmail);
+  if (!admin) {
+    const passwordHash = await bcrypt.hash(adminPass, BCRYPT_ROUNDS);
+    await User.create({
+      fullName: 'Atelier Administrator',
+      email: adminEmail,
+      phone: '8903238882',
+      passwordHash,
+      role: 'admin',
+    });
+  } else if (admin.role !== 'admin' || !admin.is_active) {
+    await pool.query("UPDATE users SET role = 'admin', is_active = true WHERE id = $1", [admin.id]);
+  }
+};
+
 export const register = asyncHandler(async (req, res) => {
   const { fullName, email, phone, password } = req.body;
-  if (await User.findByEmail(email)) throw new AppError('An account with this email already exists', 409);
+  const normalizedEmail = (email || '').trim().toLowerCase();
+
+  const existing = await User.findByEmail(normalizedEmail);
+
+  if (env.demoMode) {
+    if (existing) {
+      if (existing.role !== 'customer') {
+        throw new AppError('An account with this email already exists', 409);
+      }
+      return res.status(200).json({
+        success: true,
+        data: { token: signToken(existing), user: publicUser(existing) },
+      });
+    }
+
+    const defaultName = (fullName && fullName.trim()) || (normalizedEmail.split('@')[0] || 'Patron');
+    const name = defaultName.charAt(0).toUpperCase() + defaultName.slice(1);
+    const passwordHash = await bcrypt.hash(password || 'DemoPassword123!', BCRYPT_ROUNDS);
+    const id = await User.create({
+      fullName: name,
+      email: normalizedEmail,
+      phone: (phone || '').trim(),
+      passwordHash,
+      role: 'customer',
+    });
+    const user = await User.findById(id);
+    return res.status(201).json({
+      success: true,
+      data: { token: signToken(user), user: publicUser(user) },
+    });
+  }
+
+  // Non-demo mode
+  if (existing) throw new AppError('An account with this email already exists', 409);
   const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
-  const id = await User.create({ fullName, email, phone, passwordHash, role: 'customer' });
+  const id = await User.create({
+    fullName: fullName.trim(),
+    email: normalizedEmail,
+    phone: (phone || '').trim(),
+    passwordHash,
+    role: 'customer',
+  });
   const user = await User.findById(id);
   res.status(201).json({ success: true, data: { token: signToken(user), user: publicUser(user) } });
 });
 
-const buildLogin = (requiredRole) =>
-  asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
-    const user = await User.findByEmail(email);
-    const valid = await bcrypt.compare(password, user ? user.password_hash : DUMMY_HASH);
-    if (!user || !valid || !user.is_active || user.role !== requiredRole) {
-      throw new AppError('Invalid email or password', 401);
-    }
-    res.json({ success: true, data: { token: signToken(user), user: publicUser(user) } });
-  });
+export const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const normalizedEmail = (email || '').trim().toLowerCase();
 
-export const login = buildLogin('customer');
-export const adminLogin = buildLogin('admin');
+  let user = await User.findByEmail(normalizedEmail);
+
+  if (env.demoMode) {
+    if (user) {
+      if (user.role !== 'customer') {
+        throw new AppError('Invalid email or password', 401);
+      }
+      if (!user.is_active) {
+        throw new AppError('Account is inactive', 401);
+      }
+      // In demo mode: accept any valid password without blocking customer
+      return res.json({
+        success: true,
+        data: { token: signToken(user), user: publicUser(user) },
+      });
+    } else {
+      // Auto-create customer in demo mode
+      const namePrefix = normalizedEmail.split('@')[0] || 'Demo Patron';
+      const formattedName = namePrefix.charAt(0).toUpperCase() + namePrefix.slice(1);
+      const passwordHash = await bcrypt.hash(password || 'DemoPassword123!', BCRYPT_ROUNDS);
+      const id = await User.create({
+        fullName: formattedName,
+        email: normalizedEmail,
+        phone: '',
+        passwordHash,
+        role: 'customer',
+      });
+      user = await User.findById(id);
+      return res.status(200).json({
+        success: true,
+        data: { token: signToken(user), user: publicUser(user) },
+      });
+    }
+  }
+
+  // DEMO_MODE=false: strict customer verification
+  const valid = await bcrypt.compare(password, user ? user.password_hash : DUMMY_HASH);
+  if (!user || !valid || !user.is_active || user.role !== 'customer') {
+    throw new AppError('Invalid email or password', 401);
+  }
+  res.json({
+    success: true,
+    data: { token: signToken(user), user: publicUser(user) },
+  });
+});
+
+export const adminLogin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const normalizedEmail = (email || '').trim().toLowerCase();
+
+  const user = await User.findByEmail(normalizedEmail);
+  const valid = await bcrypt.compare(password, user ? user.password_hash : DUMMY_HASH);
+
+  if (!user || !valid || !user.is_active || user.role !== 'admin') {
+    throw new AppError('Invalid email or password', 401);
+  }
+
+  res.json({
+    success: true,
+    data: { token: signToken(user), user: publicUser(user) },
+  });
+});
 
 export const logout = asyncHandler(async (req, res) => {
   const [scheme, token] = (req.headers.authorization || '').split(' ');
@@ -126,16 +247,15 @@ export const deleteAddress = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'Address removed' });
 });
 
-// Development-only demo customer credentials & seeding mechanism
+// Demo customer info endpoint (controlled by DEMO_MODE)
 export const getDemoCustomer = asyncHandler(async (req, res) => {
-  if (process.env.NODE_ENV === 'production') {
-    throw new AppError('Demo customer seeding is disabled in production', 403);
+  if (!env.demoMode) {
+    throw new AppError('Demo customer access is disabled', 403);
   }
   const demoEmail = 'customer.demo@majesticblazer.com';
-  const demoPassword = 'CustomerDemo2026!';
   let user = await User.findByEmail(demoEmail);
   if (!user) {
-    const passwordHash = await bcrypt.hash(demoPassword, BCRYPT_ROUNDS);
+    const passwordHash = await bcrypt.hash('CustomerDemo2026!', BCRYPT_ROUNDS);
     const id = await User.create({
       fullName: 'Demo Patron',
       email: demoEmail,
@@ -149,39 +269,24 @@ export const getDemoCustomer = asyncHandler(async (req, res) => {
     success: true,
     data: {
       email: demoEmail,
-      password: demoPassword,
       role: 'customer',
-      note: 'Development demo access only',
+      note: 'Demo mode active: Any valid email and password are accepted.',
     },
   });
 });
 
-// Development-only demo admin credentials & seeding mechanism
+// Demo admin info endpoint (controlled by DEMO_MODE)
 export const getDemoAdmin = asyncHandler(async (req, res) => {
-  if (process.env.NODE_ENV === 'production') {
-    throw new AppError('Demo admin seeding is disabled in production', 403);
+  if (!env.demoMode) {
+    throw new AppError('Demo admin access is disabled', 403);
   }
-  const demoEmail = 'admin.demo@majesticblazer.com';
-  const demoPassword = 'MajesticAdmin2026!Secure';
-  let user = await User.findByEmail(demoEmail);
-  if (!user) {
-    const passwordHash = await bcrypt.hash(demoPassword, BCRYPT_ROUNDS);
-    const id = await User.create({
-      fullName: 'Atelier Demo Administrator',
-      email: demoEmail,
-      phone: '8903238882',
-      passwordHash,
-      role: 'admin',
-    });
-    user = await User.findById(id);
-  }
+  await ensureDemoAdmin();
   res.json({
     success: true,
     data: {
-      email: demoEmail,
-      password: demoPassword,
+      email: 'admin@majesticblazer.com',
       role: 'admin',
-      note: 'Development demo administrator access only',
+      note: 'Enter the designated administrator credentials',
     },
   });
 });

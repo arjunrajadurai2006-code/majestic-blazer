@@ -17,6 +17,7 @@ router.put('/profile', authenticate, ctrl.updateProfile);
 router.put('/password', authenticate, ctrl.changePassword);
 router.post('/forgot-password', authLimiter, ctrl.forgotPassword);
 router.post('/reset-password', authLimiter, ctrl.resetPassword);
+router.get('/config', ctrl.getAuthConfig);
 router.get('/demo-customer', ctrl.getDemoCustomer);
 router.get('/demo-admin', ctrl.getDemoAdmin);
 

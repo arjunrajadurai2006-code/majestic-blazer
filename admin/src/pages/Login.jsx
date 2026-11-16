@@ -6,8 +6,7 @@ import { api } from '../services/api';
 import logo from '../assets/majestic-blazer-logo.jpeg';
 import styles from './Login.module.css';
 
-const DEMO_ADMIN_EMAIL = 'admin.demo@majesticblazer.com';
-const DEMO_ADMIN_PASSWORD = 'MajesticAdmin2026!Secure';
+const DEMO_ADMIN_EMAIL = 'admin@majesticblazer.com';
 
 export default function Login() {
   const { admin, login } = useAuth();
@@ -20,27 +19,40 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [demoMode, setDemoMode] = useState(true);
 
   // Demo section states
   const [demoExpanded, setDemoExpanded] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
-  const isProduction = import.meta.env.PROD;
-
-  // Development-only seed verification
+  // Check demo mode from backend configuration
   useEffect(() => {
-    if (!isProduction) {
-      api('/auth/demo-admin', { auth: false }).catch(() => {
-        // Silently handled; server-side script also seeds
+    api('/auth/config', { auth: false })
+      .then((res) => {
+        if (res.data?.demoMode !== undefined) {
+          setDemoMode(Boolean(res.data.demoMode));
+        }
+      })
+      .catch(() => {
+        // Fallback gracefully
       });
-    }
-  }, [isProduction]);
+  }, []);
 
   if (admin) return <Navigate to="/" replace />;
 
   const onSubmit = async (event) => {
     event.preventDefault();
     setError('');
+
+    if (!email.trim()) {
+      setError('Please enter your administrator email address.');
+      return;
+    }
+    if (!password) {
+      setError('Please enter your administrator password.');
+      return;
+    }
+
     setBusy(true);
 
     try {
@@ -57,7 +69,6 @@ export default function Login() {
 
   const handleAutoFillDemo = () => {
     setEmail(DEMO_ADMIN_EMAIL);
-    setPassword(DEMO_ADMIN_PASSWORD);
     setError('');
   };
 
@@ -65,23 +76,6 @@ export default function Login() {
     navigator.clipboard?.writeText(DEMO_ADMIN_EMAIL);
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2000);
-  };
-
-  const handleQuickDemoSignIn = async () => {
-    setEmail(DEMO_ADMIN_EMAIL);
-    setPassword(DEMO_ADMIN_PASSWORD);
-    setError('');
-    setBusy(true);
-
-    try {
-      // Real authentication via existing login system — server-side RBAC enforced
-      await login({ email: DEMO_ADMIN_EMAIL, password: DEMO_ADMIN_PASSWORD });
-      navigate('/', { replace: true });
-    } catch (err) {
-      setError(err.message || 'Authentication failed');
-    } finally {
-      setBusy(false);
-    }
   };
 
   // Determine customer storefront URL for quick return
@@ -159,8 +153,8 @@ export default function Login() {
           </button>
         </form>
 
-        {/* Expandable DEVELOPMENT DEMO ACCESS Section */}
-        {!isProduction && (
+        {/* Expandable DEMO ACCESS Section */}
+        {demoMode && (
           <div className={styles.demoSection}>
             <button
               type="button"
@@ -170,7 +164,7 @@ export default function Login() {
             >
               <div className={styles.demoToggleLeft}>
                 <ShieldCheck size={16} className={styles.demoShield} />
-                <span>DEVELOPMENT DEMO ACCESS</span>
+                <span>DEMO ADMINISTRATOR ACCESS</span>
               </div>
               <div className={styles.demoToggleRight}>
                 <span className={styles.demoBadge}>ADMIN RBAC</span>
@@ -181,7 +175,7 @@ export default function Login() {
             {demoExpanded && (
               <div className={styles.demoContent}>
                 <p className={styles.demoDesc}>
-                  Pre-configured development administrator account with full privileges across catalog, orders, rentals, inventory and analytics.
+                  Enter the designated administrator credentials. Access is strictly verified by the backend using bcrypt hashing.
                 </p>
 
                 <div className={styles.demoCreds}>
@@ -201,7 +195,7 @@ export default function Login() {
                   </div>
                   <div className={styles.credRow}>
                     <span className={styles.credLabel}>Password:</span>
-                    <code className={styles.credValue}>{DEMO_ADMIN_PASSWORD}</code>
+                    <span style={{ fontSize: '0.85rem', color: '#a0a0a0' }}>Use designated administrator password</span>
                   </div>
                 </div>
 
@@ -211,16 +205,7 @@ export default function Login() {
                     className={styles.autoFillBtn}
                     onClick={handleAutoFillDemo}
                   >
-                    Auto-fill Admin Credentials
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.quickSignInBtn}
-                    onClick={handleQuickDemoSignIn}
-                    disabled={busy}
-                  >
-                    <span>{busy ? 'Authenticating...' : 'Sign in as Demo Admin'}</span>
-                    <ArrowRight size={14} />
+                    Auto-fill Admin Email
                   </button>
                 </div>
               </div>

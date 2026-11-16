@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { pool } from '../src/config/db.js';
 import * as User from '../src/models/userModel.js';
 
-const DEMO_ADMIN_EMAIL = 'admin.demo@majesticblazer.com';
+const DEMO_ADMIN_EMAIL = 'admin@majesticblazer.com';
 const DEMO_ADMIN_PASSWORD = 'MajesticAdmin2026!Secure';
 const BCRYPT_ROUNDS = 12;
 
