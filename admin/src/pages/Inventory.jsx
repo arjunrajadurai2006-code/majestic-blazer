@@ -138,7 +138,7 @@ export default function Inventory() {
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <img
-                          src={item.image_url || 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=100'}
+                          src={item.image_url || '/assets/products/imperial-navy-velvet-front.webp'}
                           alt={item.product_name}
                           style={{ width: '38px', height: '48px', objectFit: 'cover', borderRadius: '2px', border: '1px solid #333' }}
                         />

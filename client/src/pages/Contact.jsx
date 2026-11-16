@@ -114,33 +114,38 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.formRow2}>
-                  <div className={styles.field}>
-                    <label>Full Name</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Arvind Rajan"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className={styles.field}>
-                    <label>Phone Number</label>
-                    <input
-                      type="tel"
-                      placeholder="e.g. 8903238882"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      required
-                    />
-                  </div>
+                <div className={styles.field}>
+                  <label htmlFor="contact-name" className={styles.label}>Full Name</label>
+                  <input
+                    id="contact-name"
+                    type="text"
+                    className={styles.input}
+                    placeholder="e.g. Arvind Rajan"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
                 </div>
 
                 <div className={styles.field}>
-                  <label>Email Address</label>
+                  <label htmlFor="contact-phone" className={styles.label}>Phone Number</label>
                   <input
+                    id="contact-phone"
+                    type="tel"
+                    className={styles.input}
+                    placeholder="e.g. 8903238882"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className={styles.field}>
+                  <label htmlFor="contact-email" className={styles.label}>Email Address</label>
+                  <input
+                    id="contact-email"
                     type="email"
+                    className={styles.input}
                     placeholder="e.g. arvind@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -149,19 +154,28 @@ export default function Contact() {
                 </div>
 
                 <div className={styles.field}>
-                  <label>Subject</label>
-                  <select value={subject} onChange={(e) => setSubject(e.target.value)}>
-                    <option value="Private Fitting Consultation">Private Fitting Consultation</option>
-                    <option value="Wedding & Partywear Rental Inquiry">Wedding & Partywear Rental Inquiry</option>
-                    <option value="Corporate Bulk / Group Tailoring">Corporate Bulk / Group Tailoring</option>
-                    <option value="Order & Delivery Tracking">Order & Delivery Tracking</option>
-                    <option value="Other Sartorial Question">Other Sartorial Question</option>
-                  </select>
+                  <label htmlFor="contact-subject" className={styles.label}>Subject</label>
+                  <div className={styles.selectWrap}>
+                    <select
+                      id="contact-subject"
+                      className={styles.select}
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
+                    >
+                      <option value="Private Fitting Consultation">Private Fitting Consultation</option>
+                      <option value="Wedding & Partywear Rental Inquiry">Wedding & Partywear Rental Inquiry</option>
+                      <option value="Corporate Bulk / Group Tailoring">Corporate Bulk / Group Tailoring</option>
+                      <option value="Order & Delivery Tracking">Order & Delivery Tracking</option>
+                      <option value="Other Sartorial Question">Other Sartorial Question</option>
+                    </select>
+                  </div>
                 </div>
 
-                <div className={styles.field}>
-                  <label>Message / Details</label>
+                <div className={`${styles.field} ${styles.fieldTop}`}>
+                  <label htmlFor="contact-message" className={styles.label}>Message / Details</label>
                   <textarea
+                    id="contact-message"
+                    className={styles.textarea}
                     rows={5}
                     placeholder="Mention event dates, preferred blazer style, or your specific requirements..."
                     value={message}
@@ -170,10 +184,12 @@ export default function Contact() {
                   />
                 </div>
 
-                <button type="submit" disabled={submitting} className={styles.submitBtn}>
-                  <Send size={16} />
-                  <span>{submitting ? 'Transmitting...' : 'Send Message'}</span>
-                </button>
+                <div className={styles.buttonRow}>
+                  <button type="submit" disabled={submitting} className={styles.submitBtn}>
+                    <Send size={16} />
+                    <span>{submitting ? 'Transmitting...' : 'Send Message'}</span>
+                  </button>
+                </div>
               </form>
             )}
           </div>

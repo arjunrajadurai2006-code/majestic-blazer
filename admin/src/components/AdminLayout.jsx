@@ -1,6 +1,9 @@
-import { NavLink, Navigate, Outlet } from 'react-router-dom';
+import { useState } from 'react';
+import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { LogOut, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/majestic-blazer-logo.jpeg';
+import AdminHeader from './AdminHeader';
 import styles from './AdminLayout.module.css';
 
 export const ADMIN_NAV = [
@@ -12,6 +15,8 @@ export const ADMIN_NAV = [
   { to: '/rental-bookings', label: 'Rental bookings' },
   { to: '/customers', label: 'Customers' },
   { to: '/payments', label: 'Payments' },
+  { to: '/coupons', label: 'Coupons' },
+  { to: '/reviews', label: 'Reviews' },
   { to: '/invoices', label: 'Invoices' },
   { to: '/analytics', label: 'Analytics' },
   { to: '/settings', label: 'Settings' },
@@ -20,8 +25,28 @@ export const ADMIN_NAV = [
 // Guards every admin route: redirects to /login unless a valid admin session exists.
 export default function AdminLayout() {
   const { admin, loading, logout } = useAuth();
+  const [sidebarSignOutModal, setSidebarSignOutModal] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const navigate = useNavigate();
+
   if (loading) return null;
   if (!admin) return <Navigate to="/login" replace />;
+
+  const handleSidebarSignOut = async () => {
+    try {
+      setSigningOut(true);
+      await logout();
+      navigate('/login', { 
+        replace: true,
+        state: { message: 'You have been signed out of the Atelier Portal.' }
+      });
+    } catch {
+      navigate('/login', { replace: true });
+    } finally {
+      setSigningOut(false);
+      setSidebarSignOutModal(false);
+    }
+  };
 
   return (
     <div className={styles.shell}>
@@ -38,9 +63,115 @@ export default function AdminLayout() {
             ))}
           </ul>
         </nav>
-        <button className={styles.logout} onClick={logout}>Sign out</button>
+        <button 
+          type="button"
+          className={styles.logout} 
+          onClick={() => setSidebarSignOutModal(true)}
+          title="Sign out of Atelier Console"
+        >
+          <LogOut size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+          Sign out
+        </button>
       </aside>
-      <main className={styles.content}><Outlet /></main>
+
+      <div className={styles.mainWrapper}>
+        <AdminHeader />
+        <main className={styles.content}>
+          <Outlet />
+        </main>
+      </div>
+
+      {/* Confirmation Modal for Sidebar Sign Out */}
+      {sidebarSignOutModal && (
+        <div 
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 2000,
+            padding: '1rem',
+          }}
+          onClick={() => !signingOut && setSidebarSignOutModal(false)}
+        >
+          <div 
+            style={{
+              background: '#141414',
+              border: '1px solid #333',
+              borderRadius: '4px',
+              padding: '1.75rem',
+              maxWidth: '440px',
+              width: '100%',
+              boxShadow: '0 15px 35px rgba(0, 0, 0, 0.8)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+              <div style={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                background: 'rgba(255, 107, 107, 0.1)',
+                border: '1px solid rgba(255, 107, 107, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ff6b6b'
+              }}>
+                <AlertCircle size={22} />
+              </div>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', color: '#fff', margin: 0 }}>
+                Confirm Sign Out
+              </h2>
+            </div>
+
+            <p style={{ fontSize: '0.88rem', color: '#aaa', lineHeight: '1.5', marginBottom: '1.5rem' }}>
+              Are you sure you want to end your active administrative session for <strong style={{ color: '#fff' }}>{admin?.email}</strong>?
+            </p>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button
+                type="button"
+                style={{
+                  padding: '0.6rem 1.2rem',
+                  background: 'transparent',
+                  border: '1px solid var(--color-border)',
+                  color: 'var(--color-silver)',
+                  borderRadius: 'var(--radius-sm)',
+                  fontSize: '0.85rem',
+                  cursor: 'pointer'
+                }}
+                onClick={() => setSidebarSignOutModal(false)}
+                disabled={signingOut}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                style={{
+                  padding: '0.6rem 1.2rem',
+                  background: '#e02424',
+                  border: '1px solid #c81e1e',
+                  color: '#ffffff',
+                  borderRadius: 'var(--radius-sm)',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+                onClick={handleSidebarSignOut}
+                disabled={signingOut}
+              >
+                {signingOut ? 'Signing out...' : 'Sign Out Now'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

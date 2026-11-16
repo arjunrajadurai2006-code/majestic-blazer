@@ -91,8 +91,8 @@ async function seed() {
       rentPricePerDay: 1799.0,
       securityDeposit: 6000.0,
       images: [
-        { url: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1000&q=80', alt: 'Imperial Navy Velvet Blazer Front', isPrimary: true },
-        { url: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1000&q=80', alt: 'Imperial Navy Velvet Blazer Detail', isPrimary: false },
+        { url: '/assets/products/imperial-navy-velvet-front.webp', alt: 'Imperial Navy Velvet Blazer Front', isPrimary: true },
+        { url: '/assets/products/imperial-navy-velvet-detail.webp', alt: 'Imperial Navy Velvet Blazer Detail', isPrimary: false },
       ],
       variants: [
         { sku: 'MB-INV-38R', size: '38R', stock: 8, rentalStock: 4 },
@@ -118,8 +118,8 @@ async function seed() {
       rentPricePerDay: 2299.0,
       securityDeposit: 8000.0,
       images: [
-        { url: 'https://images.unsplash.com/photo-1598808503746-f34c53b9323e?auto=format&fit=crop&w=1000&q=80', alt: 'Regal Black Tuxedo Front', isPrimary: true },
-        { url: 'https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=1000&q=80', alt: 'Regal Black Tuxedo Cuff and Lapel', isPrimary: false },
+        { url: '/assets/products/regal-black-tuxedo-front.webp', alt: 'Regal Black Tuxedo Front', isPrimary: true },
+        { url: '/assets/products/regal-black-tuxedo-detail.webp', alt: 'Regal Black Tuxedo Cuff and Lapel', isPrimary: false },
       ],
       variants: [
         { sku: 'MB-RBT-38R', size: '38R', stock: 5, rentalStock: 3 },
@@ -145,7 +145,8 @@ async function seed() {
       rentPricePerDay: 1499.0,
       securityDeposit: 5000.0,
       images: [
-        { url: 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=1000&q=80', alt: 'Sovereign Charcoal Grey Blazer', isPrimary: true },
+        { url: '/assets/products/sovereign-charcoal-check-front.webp', alt: 'Sovereign Charcoal Grey Blazer Front', isPrimary: true },
+        { url: '/assets/products/sovereign-charcoal-check-detail.webp', alt: 'Sovereign Charcoal Grey Blazer Detail', isPrimary: false },
       ],
       variants: [
         { sku: 'MB-SCG-36R', size: '36R', stock: 4, rentalStock: 2 },
@@ -172,7 +173,8 @@ async function seed() {
       rentPricePerDay: 2499.0,
       securityDeposit: 7500.0,
       images: [
-        { url: 'https://images.unsplash.com/photo-1585856557672-d5cb367606cb?auto=format&fit=crop&w=1000&q=80', alt: 'Monarch Burgundy Bandhgala Blazer', isPrimary: true },
+        { url: '/assets/products/monarch-burgundy-bandhgala-front.webp', alt: 'Monarch Burgundy Bandhgala Blazer Front', isPrimary: true },
+        { url: '/assets/products/monarch-burgundy-bandhgala-detail.webp', alt: 'Monarch Burgundy Bandhgala Blazer Detail', isPrimary: false },
       ],
       variants: [
         { sku: 'MB-MBB-38R', size: '38R', stock: 6, rentalStock: 3 },
@@ -197,7 +199,8 @@ async function seed() {
       rentPricePerDay: 1299.0,
       securityDeposit: 4000.0,
       images: [
-        { url: 'https://images.unsplash.com/photo-1593032465175-481ac7f401a0?auto=format&fit=crop&w=1000&q=80', alt: 'Ascot Sand Tan Linen Blazer', isPrimary: true },
+        { url: '/assets/products/ascot-sand-tan-linen-front.webp', alt: 'Ascot Sand Tan Linen Blazer Front', isPrimary: true },
+        { url: '/assets/products/ascot-sand-tan-linen-detail.webp', alt: 'Ascot Sand Tan Linen Texture Detail', isPrimary: false },
       ],
       variants: [
         { sku: 'MB-AST-38R', size: '38R', stock: 5, rentalStock: 2 },
@@ -222,7 +225,8 @@ async function seed() {
       rentPricePerDay: 1699.0,
       securityDeposit: 5500.0,
       images: [
-        { url: 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=1000&q=80', alt: 'Crown Double-Breasted Navy Blazer', isPrimary: true },
+        { url: '/assets/products/crown-oxford-double-breasted-front.webp', alt: 'Crown Double-Breasted Navy Blazer Front', isPrimary: true },
+        { url: '/assets/products/crown-oxford-double-breasted-detail.webp', alt: 'Crown Double-Breasted Crest & Lapel Detail', isPrimary: false },
       ],
       variants: [
         { sku: 'MB-CDB-38R', size: '38R', stock: 6, rentalStock: 3 },

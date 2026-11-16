@@ -1,0 +1,22 @@
+{
+  "name": "majestic-blazer",
+  "version": "1.0.0",
+  "description": "MAJESTIC BLAZER — Style That Speaks | Luxury Menswear & Blazer Rental Platform",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k --names \"SERVER,CLIENT,ADMIN\" -c \"blue.bold,green.bold,magenta.bold\" --prefix \"[{name}]\" \"npm --prefix server run dev\" \"npm --prefix client run dev\" \"npm --prefix admin run dev\"",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "dev:admin": "npm --prefix admin run dev",
+    "build": "npm --prefix client run build && npm --prefix admin run build",
+    "build:client": "npm --prefix client run build",
+    "build:admin": "npm --prefix admin run build",
+    "test": "npm --prefix server run test",
+    "test:regression": "node server/scripts/regressionAudit.js",
+    "install:all": "npm --prefix server install && npm --prefix client install && npm --prefix admin install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
+

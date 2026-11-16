@@ -104,9 +104,14 @@ export default function Profile() {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  const handleLogout = async () => {
+    if (!window.confirm('Are you sure you want to sign out of your Majestic Blazer account?')) return;
+    await logout();
+    success('You have been signed out successfully.');
+    navigate('/login', { 
+      replace: true,
+      state: { message: 'You have been signed out successfully. We look forward to your return.' } 
+    });
   };
 
   return (

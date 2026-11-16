@@ -3,7 +3,7 @@ import { Search, Eye, FileText, Truck, Check, X, ExternalLink } from 'lucide-rea
 import { api } from '../services/api';
 import styles from '../styles/adminShared.module.css';
 
-const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+const ORDER_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled', 'refunded'];
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -86,10 +86,12 @@ export default function Orders() {
   const getStatusBadge = (st) => {
     switch (st) {
       case 'delivered': return `${styles.badge} ${styles.badgeSuccess}`;
-      case 'shipped': return `${styles.badge} ${styles.badgeInfo}`;
-      case 'processing': return `${styles.badge} ${styles.badgeWarning}`;
-      case 'cancelled': return `${styles.badge} ${styles.badgeDanger}`;
-      default: return `${styles.badge} ${styles.badgeDefault}`;
+      case 'shipped':
+      case 'confirmed': return `${styles.badge} ${styles.badgeInfo}`;
+      case 'cancelled':
+      case 'refunded': return `${styles.badge} ${styles.badgeDanger}`;
+      case 'pending':
+      default: return `${styles.badge} ${styles.badgeWarning}`;
     }
   };
 
@@ -175,11 +177,11 @@ export default function Orders() {
                     </span>
                   </td>
                   <td>
-                    <strong style={{ color: '#fff' }}>{formatCurrency(o.total_amount)}</strong>
+                    <strong style={{ color: '#fff' }}>{formatCurrency(o.total || o.total_amount)}</strong>
                   </td>
                   <td>
-                    <span style={{ fontSize: '0.85rem', color: o.fulfillment_type === 'pickup' ? '#b99a58' : '#aaa' }}>
-                      {o.fulfillment_type === 'pickup' ? 'Coimbatore Atelier Pickup' : 'Courier Delivery'}
+                    <span style={{ fontSize: '0.85rem', color: (o.delivery_type || o.fulfillment_type) === 'pickup' ? '#b99a58' : '#aaa' }}>
+                      {(o.delivery_type || o.fulfillment_type) === 'pickup' ? 'Coimbatore Atelier Pickup' : 'Courier Delivery'}
                     </span>
                   </td>
                   <td>
@@ -299,21 +301,21 @@ export default function Orders() {
               <div style={{ width: '260px', display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', color: '#aaa' }}>
                   <span>Subtotal:</span>
-                  <span>{formatCurrency(selectedOrder.subtotal_amount)}</span>
+                  <span>{formatCurrency(selectedOrder.subtotal ?? selectedOrder.subtotal_amount)}</span>
                 </div>
-                {Number(selectedOrder.discount_amount) > 0 && (
+                {Number(selectedOrder.discount ?? selectedOrder.discount_amount) > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: '#2ed573' }}>
                     <span>Coupon Discount:</span>
-                    <span>- {formatCurrency(selectedOrder.discount_amount)}</span>
+                    <span>- {formatCurrency(selectedOrder.discount ?? selectedOrder.discount_amount)}</span>
                   </div>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', color: '#aaa' }}>
                   <span>GST Tax:</span>
-                  <span>{formatCurrency(selectedOrder.tax_amount)}</span>
+                  <span>{formatCurrency(selectedOrder.tax ?? selectedOrder.tax_amount)}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff', fontWeight: 700, fontSize: '1rem', borderTop: '1px solid #333', paddingTop: '6px', marginTop: '4px' }}>
                   <span>Grand Total:</span>
-                  <span>{formatCurrency(selectedOrder.total_amount)}</span>
+                  <span>{formatCurrency(selectedOrder.total ?? selectedOrder.total_amount)}</span>
                 </div>
               </div>
             </div>

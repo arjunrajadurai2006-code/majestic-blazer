@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Filter, SlidersHorizontal, X, Search, RotateCcw } from 'lucide-react';
 import ProductCard from '../components/common/ProductCard';
+import QuickViewModal from '../components/common/QuickViewModal';
 import { api } from '../services/api';
 import styles from './Shop.module.css';
 
@@ -16,6 +17,7 @@ export default function Shop() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
 
   // Filter states derived from search params
   const currentCategory = searchParams.get('category') || '';
@@ -252,6 +254,14 @@ export default function Shop() {
                 />
               </div>
             </div>
+
+            <button
+              type="button"
+              className={styles.applyMobileBtn}
+              onClick={() => setMobileFilterOpen(false)}
+            >
+              Apply & View Results
+            </button>
           </aside>
 
           {/* Catalog Content Area */}
@@ -328,7 +338,11 @@ export default function Shop() {
             ) : products.length > 0 ? (
               <div className={styles.grid}>
                 {products.map((p) => (
-                  <ProductCard key={p.id} product={p} />
+                  <ProductCard
+                    key={p.id}
+                    product={p}
+                    onQuickView={(prod) => setQuickViewProduct(prod)}
+                  />
                 ))}
               </div>
             ) : (
@@ -366,6 +380,12 @@ export default function Shop() {
           </main>
         </div>
       </div>
+
+      <QuickViewModal
+        productSummary={quickViewProduct}
+        isOpen={Boolean(quickViewProduct)}
+        onClose={() => setQuickViewProduct(null)}
+      />
     </div>
   );
 }

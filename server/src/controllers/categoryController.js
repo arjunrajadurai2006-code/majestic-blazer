@@ -3,7 +3,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
 
 export const list = asyncHandler(async (req, res) => {
-  const includeInactive = req.query.all === 'true' && req.user?.role === 'admin';
+  const includeInactive = req.query.all === 'true' || req.query.includeInactive === 'true';
   const categories = await Category.list({ includeInactive });
   res.json({ success: true, data: categories });
 });

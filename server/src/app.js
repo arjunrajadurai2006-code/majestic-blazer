@@ -4,9 +4,18 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import { env } from './config/env.js';
 import routes from './routes/index.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsDir = path.resolve(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 const app = express();
 
@@ -59,7 +68,7 @@ app.use('/api/auth/register', authLimiter);
 app.use('/api/auth/admin/login', authLimiter);
 
 // Serve uploaded product photography statically
-app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
+app.use('/uploads', express.static(uploadsDir));
 
 // Razorpay webhook signature verification needs the raw body: keep this BEFORE express.json().
 app.use('/api/payments/razorpay/webhook', express.raw({ type: 'application/json' }));

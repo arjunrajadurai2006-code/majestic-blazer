@@ -2,11 +2,16 @@ import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import { pool } from '../config/db.js';
 import { AppError } from '../utils/AppError.js';
+import { isTokenRevoked } from '../utils/token.js';
 
 // Verifies the Bearer token, validates account status against database, and attaches { id, role } to req.user.
 export const authenticate = async (req, res, next) => {
   const [scheme, token] = (req.headers.authorization || '').split(' ');
   if (scheme !== 'Bearer' || !token) return next(new AppError('Authentication required', 401));
+
+  if (isTokenRevoked(token)) {
+    return next(new AppError('Session has ended or token was revoked. Please sign in again.', 401));
+  }
 
   try {
     const payload = jwt.verify(token, env.jwt.secret);

@@ -623,13 +623,80 @@
 }
 
 @media (max-width: 640px) {
+  .checkoutPage {
+    padding: 32px 0 64px;
+  }
+
+  .stepperBar {
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .stepConnector {
+    width: 24px;
+    flex-shrink: 1;
+  }
+
+  .stepIndicator span:last-child {
+    display: none;
+  }
+
   .deliverySelector {
     grid-template-columns: 1fr;
   }
+
   .formGrid {
     grid-template-columns: 1fr;
   }
+
   .leftCol {
-    padding: 24px;
+    padding: 24px 18px;
+  }
+
+  .sidebarReview {
+    padding: 20px 16px;
+  }
+
+  .confirmWrap {
+    padding: 32px 18px;
+  }
+
+  .confirmWrap h2 {
+    font-size: 1.75rem;
+  }
+
+  .recordCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 14px;
+  }
+
+  .recordCard .invoiceBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .confirmBtns {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .homeBtn,
+  .ordersBtn {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 380px) {
+  .leftCol {
+    padding: 18px 14px;
+  }
+
+  .methodBtn {
+    padding: 16px 12px;
   }
 }

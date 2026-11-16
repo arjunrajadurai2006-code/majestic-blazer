@@ -3,7 +3,7 @@ import { Search, Calendar, Shield, AlertTriangle, CheckCircle, FileText, RotateC
 import { api } from '../services/api';
 import styles from '../styles/adminShared.module.css';
 
-const RENTAL_STATUSES = ['booked', 'active', 'returned', 'overdue', 'cancelled'];
+const RENTAL_STATUSES = ['requested', 'confirmed', 'picked_up', 'returned', 'overdue', 'cancelled'];
 
 export default function RentalBookings() {
   const [rentals, setRentals] = useState([]);
@@ -51,11 +51,22 @@ export default function RentalBookings() {
     if (!window.confirm(`Mark rental #${booking.booking_number} as Dispatched / In Client Possession?`)) return;
     try {
       setError('');
-      await api.patch(`/rentals/${booking.id}/status`, { status: 'active' });
-      setSuccess(`Rental #${booking.booking_number} marked as Active`);
+      await api.patch(`/rentals/${booking.id}/status`, { status: 'picked_up' });
+      setSuccess(`Rental #${booking.booking_number} marked as Picked Up`);
       loadRentals();
     } catch (err) {
       setError(err.message || 'Failed to update status');
+    }
+  };
+
+  const handleConfirmBooking = async (booking) => {
+    try {
+      setError('');
+      await api.patch(`/rentals/${booking.id}/status`, { status: 'confirmed' });
+      setSuccess(`Rental #${booking.booking_number} confirmed`);
+      loadRentals();
+    } catch (err) {
+      setError(err.message || 'Failed to confirm booking');
     }
   };
 
@@ -78,7 +89,7 @@ export default function RentalBookings() {
 
   const calculateDepositRefund = () => {
     if (!returnModalBooking) return 0;
-    const deposit = Number(returnModalBooking.security_deposit) || 0;
+    const deposit = Number(returnModalBooking.deposit_amount || returnModalBooking.security_deposit) || 0;
     const totalDeductions = (Number(damageFee) || 0) + (Number(lateFee) || 0);
     return Math.max(0, deposit - totalDeductions);
   };
@@ -112,11 +123,26 @@ export default function RentalBookings() {
 
   const getStatusBadge = (st) => {
     switch (st) {
+      case 'picked_up':
       case 'active': return `${styles.badge} ${styles.badgeInfo}`;
+      case 'confirmed': return `${styles.badge} ${styles.badgeSuccess}`;
       case 'returned': return `${styles.badge} ${styles.badgeSuccess}`;
       case 'overdue': return `${styles.badge} ${styles.badgeDanger}`;
       case 'cancelled': return `${styles.badge} ${styles.badgeDanger}`;
+      case 'requested':
       default: return `${styles.badge} ${styles.badgeWarning}`;
+    }
+  };
+
+  const formatStatus = (st) => {
+    switch (st) {
+      case 'picked_up': return 'Picked Up';
+      case 'requested': return 'Requested';
+      case 'confirmed': return 'Confirmed';
+      case 'returned': return 'Returned';
+      case 'overdue': return 'Overdue';
+      case 'cancelled': return 'Cancelled';
+      default: return st ? st.charAt(0).toUpperCase() + st.slice(1) : '';
     }
   };
 
@@ -154,7 +180,7 @@ export default function RentalBookings() {
         >
           <option value="">All Rental Statuses</option>
           {RENTAL_STATUSES.map(s => (
-            <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+            <option key={s} value={s}>{formatStatus(s)}</option>
           ))}
         </select>
         <button type="submit" className={styles.btnSecondary}>Search</button>
@@ -203,15 +229,15 @@ export default function RentalBookings() {
                       {new Date(r.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </div>
                     <div style={{ fontSize: '0.75rem', color: '#888' }}>
-                      {r.duration_days} Days Duration
+                      {r.rental_days || r.duration_days || 1} Days Duration
                     </div>
                   </td>
                   <td>
-                    <strong style={{ color: '#fff' }}>{formatCurrency(r.rental_fee)}</strong>
+                    <strong style={{ color: '#fff' }}>{formatCurrency(r.rent_amount || r.rental_fee)}</strong>
                   </td>
                   <td>
                     <span style={{ color: '#b99a58', fontWeight: 600 }}>
-                      {formatCurrency(r.security_deposit)}
+                      {formatCurrency(r.deposit_amount || r.security_deposit)}
                     </span>
                     {r.deposit_refund_status && (
                       <div style={{ fontSize: '0.75rem', color: '#888' }}>
@@ -221,22 +247,32 @@ export default function RentalBookings() {
                   </td>
                   <td>
                     <span className={getStatusBadge(r.status)}>
-                      {r.status}
+                      {formatStatus(r.status)}
                     </span>
                   </td>
                   <td>
                     <div style={{ display: 'flex', gap: '6px' }}>
-                      {r.status === 'booked' && (
+                      {r.status === 'requested' && (
                         <button
                           className={styles.btnSecondary}
-                          onClick={() => handleDispatch(r)}
-                          title="Mark Dispatched"
+                          onClick={() => handleConfirmBooking(r)}
+                          title="Confirm Reservation"
                         >
-                          <Truck size={14} /> Dispatch
+                          <CheckCircle size={14} /> Confirm
                         </button>
                       )}
 
-                      {(r.status === 'active' || r.status === 'overdue' || r.status === 'booked') && (
+                      {(r.status === 'confirmed' || r.status === 'requested') && (
+                        <button
+                          className={styles.btnSecondary}
+                          onClick={() => handleDispatch(r)}
+                          title="Mark Dispatched / Picked Up"
+                        >
+                          <Truck size={14} /> Handover
+                        </button>
+                      )}
+
+                      {(r.status === 'picked_up' || r.status === 'active' || r.status === 'overdue' || r.status === 'confirmed') && (
                         <button
                           className={styles.btnPrimary}
                           onClick={() => openReturnModal(r)}
@@ -301,13 +337,13 @@ export default function RentalBookings() {
                   <div>
                     <span style={{ color: '#888', display: 'block' }}>Security Deposit Held:</span>
                     <strong style={{ color: '#b99a58', fontSize: '1.1rem' }}>
-                      {formatCurrency(returnModalBooking.security_deposit)}
+                      {formatCurrency(returnModalBooking.deposit_amount || returnModalBooking.security_deposit)}
                     </strong>
                   </div>
                   <div>
                     <span style={{ color: '#888', display: 'block' }}>Rental Charge Paid:</span>
                     <strong style={{ color: '#fff' }}>
-                      {formatCurrency(returnModalBooking.rental_fee)}
+                      {formatCurrency(returnModalBooking.rent_amount || returnModalBooking.rental_fee)}
                     </strong>
                   </div>
                 </div>

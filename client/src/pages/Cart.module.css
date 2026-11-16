@@ -192,7 +192,8 @@
 
 .itemMeta {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 6px 14px;
   font-size: 0.8rem;
   color: var(--color-muted);
 }
@@ -526,13 +527,62 @@
 }
 
 @media (max-width: 640px) {
+  .page {
+    padding: 32px 0 64px;
+  }
+
   .itemRow {
     flex-wrap: wrap;
+    padding: 16px 14px;
+    gap: 14px;
   }
+
   .qtyControls {
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .summaryCard {
+    padding: 20px 16px;
+  }
+
+  .emptyCard {
+    padding: 36px 18px;
+  }
+
+  .emptyBtns {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .exploreBtn,
+  .rentBtn {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 380px) {
+  .couponForm {
+    flex-direction: column;
+  }
+
+  .couponBtn {
+    width: 100%;
+  }
+
+  .itemRow {
+    padding: 14px 10px;
+  }
+
+  .itemImg {
+    width: 70px;
+    height: 94px;
   }
 }

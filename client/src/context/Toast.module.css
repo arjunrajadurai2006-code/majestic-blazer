@@ -63,3 +63,17 @@
   }
 }
 
+@media (max-width: 480px) {
+  .container {
+    left: 12px;
+    right: 12px;
+    bottom: 16px;
+  }
+
+  .toast {
+    max-width: 100%;
+    padding: 12px 14px;
+    font-size: 0.82rem;
+  }
+}
+

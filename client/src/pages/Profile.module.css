@@ -172,12 +172,151 @@
   border-color: var(--color-platinum);
 }
 
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.addAddrToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-silver);
+  padding: 6px 14px;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.addAddrToggle:hover {
+  background: var(--color-surface);
+  border-color: var(--color-silver);
+  color: var(--color-white);
+}
+
+.addAddrForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 14px;
+  padding: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formGroup label {
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  color: var(--color-silver);
+  text-transform: uppercase;
+}
+
+.formGroup input {
+  background: var(--color-rich-black);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-white);
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.formGroup input:focus {
+  border-color: var(--color-silver);
+}
+
+.formRow3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.formRow3 > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formRow3 label {
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  color: var(--color-silver);
+  text-transform: uppercase;
+}
+
+.formRow3 input {
+  background: var(--color-rich-black);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-white);
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.formRow3 input:focus {
+  border-color: var(--color-silver);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: var(--color-silver);
+  cursor: pointer;
+  user-select: none;
+}
+
+.formBtns {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+  padding: 12px 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.cancelBtn:hover {
+  border-color: var(--color-silver);
+  color: var(--color-white);
+}
+
 .addressList {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
+.addressItem,
 .addressCard {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -186,8 +325,10 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 12px;
 }
 
+.addrText,
 .addressInfo {
   display: flex;
   flex-direction: column;
@@ -196,10 +337,19 @@
   color: var(--color-silver);
 }
 
+.addrTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.addrText strong,
 .addressInfo strong {
   color: var(--color-white);
 }
 
+.defaultPill,
 .defaultBadge {
   font-size: 0.68rem;
   color: var(--color-platinum);
@@ -208,9 +358,9 @@
   padding: 2px 8px;
   border-radius: var(--radius-sm);
   width: fit-content;
-  margin-top: 4px;
 }
 
+.delAddrBtn,
 .deleteAddrBtn {
   background: transparent;
   border: none;
@@ -218,15 +368,70 @@
   cursor: pointer;
   padding: 6px;
   transition: color var(--transition-fast);
+  flex-shrink: 0;
 }
 
+.delAddrBtn:hover,
 .deleteAddrBtn:hover {
   color: #e06c75;
+}
+
+.noAddresses {
+  color: var(--color-muted);
+  font-size: 0.88rem;
+  font-style: italic;
+  margin: 0;
 }
 
 @media (max-width: 880px) {
   .tileGrid,
   .grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 32px 0 64px;
+  }
+
+  .card {
+    padding: 24px 18px;
+  }
+
+  .formRow3 {
+    grid-template-columns: 1fr;
+  }
+
+  .formBtns {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .saveBtn,
+  .cancelBtn {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 380px) {
+  .card {
+    padding: 20px 14px;
+  }
+
+  .tile {
+    padding: 18px 14px;
+  }
+
+  .addressItem,
+  .addressCard {
+    padding: 14px 12px;
+  }
+
+  .addAddrForm {
+    padding: 16px 12px;
   }
 }

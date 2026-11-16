@@ -28,8 +28,8 @@ flowchart TD
 
 ## 1. Prerequisites Checklist
 
-- [x] Live Aiven Cloud PostgreSQL instance running (`your-aiven-host.aivencloud.com:11497`)
-- [x] Aiven CA certificate (`aiven-ca.pem`) generated and verified
+- [x] Live Aiven Cloud PostgreSQL instance running (`<your-aiven-host>.aivencloud.com:11497`)
+- [x] Aiven CA certificate (`aiven-ca.pem` or PEM environment variable) generated and verified
 - [ ] Railway account ([railway.app](https://railway.app))
 - [ ] Vercel account ([vercel.com](https://vercel.com))
 - [ ] Razorpay Merchant Account (Test keys available, Live keys pending business approval)
@@ -46,7 +46,7 @@ flowchart TD
 4. Set the **Root Directory** to `/server`.
 
 ### Step 1.2: Configure Build & Start Command
-Railway automatically detects `nixpacks` using [server/railway.json](file:///c:/Users/arjun/Downloads/majestic-blazer/majestic-blazer/server/railway.json) and [server/Procfile](file:///c:/Users/arjun/Downloads/majestic-blazer/majestic-blazer/server/Procfile):
+Railway automatically detects `nixpacks` using [server/railway.json](server/railway.json) and [server/Procfile](server/Procfile):
 - **Build Command**: `npm install`
 - **Start Command**: `node src/server.js`
 - **Healthcheck Path**: `/api/health`
@@ -61,13 +61,13 @@ Under your Railway service settings $\rightarrow$ **Variables**, add:
 | `CLIENT_URL` | `https://majesticblazer.com` | No |
 | `ADMIN_URL` | `https://admin.majesticblazer.com` | No |
 | `CORS_ORIGINS` | `https://majesticblazer.com,https://admin.majesticblazer.com` | No |
-| `DB_HOST` | `your-aiven-host.aivencloud.com` | No |
-| `DB_PORT` | `11497` | No |
-| `DB_USER` | `avnadmin` | No |
+| `DB_HOST` | `<your-aiven-host>.aivencloud.com` | No |
+| `DB_PORT` | `11497` (or your configured port) | No |
+| `DB_USER` | `<your-aiven-username>` (e.g. `avnadmin`) | No |
 | `DB_PASSWORD` | `<your-aiven-password>` | **YES** |
 | `DB_NAME` | `defaultdb` | No |
 | `DB_SSL` | `true` | No |
-| `DB_SSL_CA` | Contents of `server/aiven-ca.pem` (paste full PEM block or base64) | No |
+| `DB_SSL_CA` | Contents of Aiven CA certificate (paste full PEM block or base64) | No |
 | `JWT_SECRET` | Strong random secret ($\ge 32$ chars, e.g. `openssl rand -hex 32`) | **YES** |
 | `JWT_EXPIRES_IN` | `7d` | No |
 | `RAZORPAY_KEY_ID` | `rzp_test_...` (or live key upon approval) | No |
@@ -75,7 +75,7 @@ Under your Railway service settings $\rightarrow$ **Variables**, add:
 | `RAZORPAY_WEBHOOK_SECRET` | `<razorpay-webhook-secret>` | **YES** |
 | `RAZORPAY_LIVE` | `false` (Set `true` ONLY after explicit owner approval) | No |
 
-*(Alternatively, use `DATABASE_URL=postgres://avnadmin:PASSWORD@your-aiven-host.aivencloud.com:11497/defaultdb?sslmode=require` with `DB_SSL_CA`)*
+*(Alternatively, use `DATABASE_URL=postgres://<username>:<password>@<your-aiven-host>.aivencloud.com:11497/defaultdb?sslmode=require` with `DB_SSL_CA`)*
 
 ### Step 1.4: Add Persistent Storage Volume for Uploads (Optional)
 In Railway Service Settings $\rightarrow$ **Volumes**:
@@ -120,7 +120,7 @@ Under Vercel Project Settings $\rightarrow$ **Environment Variables**:
 | `VITE_API_URL` | `https://api.majesticblazer.com/api` (or your Railway backend URL) |
 
 ### Step 4.3: Deploy & Configure Custom Domain
-1. Click **Deploy**. Vercel uses [client/vercel.json](file:///c:/Users/arjun/Downloads/majestic-blazer/majestic-blazer/client/vercel.json) for SPA routing.
+1. Click **Deploy**. Vercel uses [client/vercel.json](client/vercel.json) for SPA routing.
 2. In Project Settings $\rightarrow$ **Domains**:
    - Add `majesticblazer.com` (Apex domain)
    - Add `www.majesticblazer.com` (redirect to apex)

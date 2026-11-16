@@ -26,6 +26,10 @@ export async function api(path, { method = 'GET', body, auth = true } = {}) {
 
   const json = await res.json().catch(() => ({}));
   if (!res.ok) {
+    if (res.status === 401 && auth) {
+      tokenStore.clear();
+      window.dispatchEvent(new Event('mb_auth_expired'));
+    }
     const error = new Error(json.message || 'Something went wrong. Please try again.');
     error.status = res.status;
     error.details = json.details;

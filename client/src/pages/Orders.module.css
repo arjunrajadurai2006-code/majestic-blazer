@@ -135,7 +135,8 @@
   border: 1px solid rgba(224, 108, 117, 0.3);
 }
 
-.invoiceBtn {
+.invoiceBtn,
+.pdfBtn {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   color: var(--color-white);
@@ -150,14 +151,17 @@
   cursor: pointer;
   border-radius: var(--radius-sm);
   transition: all var(--transition-fast);
+  text-decoration: none;
 }
 
-.invoiceBtn:hover {
+.invoiceBtn:hover,
+.pdfBtn:hover {
   background: var(--color-white);
   color: var(--color-obsidian);
   border-color: var(--color-white);
 }
 
+.itemList,
 .itemsGrid {
   display: flex;
   flex-direction: column;
@@ -179,24 +183,33 @@
   flex-shrink: 0;
 }
 
+.itemInfo,
 .itemMeta {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .itemName {
   font-family: var(--font-display);
   font-size: 1.05rem;
   color: var(--color-white);
+  text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
+.itemName:hover {
+  color: var(--color-silver);
+}
+
+.itemMeta span,
 .itemSpecs {
   font-size: 0.78rem;
   color: var(--color-muted);
 }
 
+.itemTotal,
 .itemPrice {
   font-size: 0.95rem;
   font-weight: 600;
@@ -210,12 +223,33 @@
   border-top: 1px solid var(--color-border);
   padding-top: 16px;
   font-size: 0.88rem;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.deliveryNote {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--color-silver);
+}
+
+.deliveryNote strong {
+  color: var(--color-white);
+}
+
+.totalBlock {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
 }
 
 .totalLabel {
   color: var(--color-silver);
 }
 
+.totalPrice,
 .totalValue {
   font-size: 1.25rem;
   font-weight: 600;
@@ -250,4 +284,70 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   border-radius: var(--radius-sm);
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 32px 0 64px;
+  }
+
+  .orderCard {
+    padding: 20px 16px;
+  }
+
+  .topRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .invoiceBtn,
+  .pdfBtn {
+    padding: 6px 12px;
+    font-size: 0.72rem;
+  }
+
+  .orderBottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .totalBlock {
+    width: 100%;
+    justify-content: space-between;
+    border-top: 1px dashed var(--color-border);
+    padding-top: 10px;
+  }
+
+  .itemRow {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .itemTotal,
+  .itemPrice {
+    width: 100%;
+    text-align: right;
+  }
+}
+
+@media (max-width: 380px) {
+  .orderCard {
+    padding: 16px 12px;
+  }
+
+  .itemRow {
+    gap: 12px;
+  }
+
+  .itemImg {
+    width: 48px;
+    height: 64px;
+  }
+
+  .orderBottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Save, Building2, Shield, Percent, CreditCard, CheckCircle } from 'lucide-react';
+import { Save, Building2, Shield, Percent, CreditCard, CheckCircle, Database, RefreshCw, AlertTriangle } from 'lucide-react';
 import { api } from '../services/api';
 import styles from '../styles/adminShared.module.css';
 
@@ -21,8 +21,26 @@ export default function Settings() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [seeding, setSeeding] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  const handleSeedDemo = async () => {
+    if (!window.confirm('Populate/refresh realistic demonstration data? This will replenish sample blazers, orders, rentals, coupons, and reviews.')) {
+      return;
+    }
+    try {
+      setSeeding(true);
+      setError('');
+      setSuccess('');
+      const res = await api.post('/settings/seed-demo-data');
+      setSuccess(res.message || 'Realistic demonstration dataset successfully seeded into database.');
+    } catch (err) {
+      setError(err.message || 'Failed to seed demonstration data');
+    } finally {
+      setSeeding(false);
+    }
+  };
 
   useEffect(() => {
     async function loadSettings() {
@@ -249,6 +267,32 @@ export default function Settings() {
                 Used by customer checkout for frontend modal initiation (Private secret key remains strictly in server .env)
               </span>
             </div>
+          </div>
+        </div>
+
+        {/* Developer Sandbox & Demo Data */}
+        <div className={styles.chartBox} style={{ marginBottom: '1.5rem', border: '1px solid #333', background: '#121212' }}>
+          <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ffffff' }}>
+            <Database size={18} color="#c0c0c0" /> Developer Sandbox & Demonstration Data
+          </h3>
+          <p style={{ fontSize: '0.85rem', color: '#aaa', margin: '0.5rem 0 1rem 0', lineHeight: '1.5' }}>
+            Populate or replenish realistic luxury menswear sample data across all admin tables: 37 catalog blazers, 6 categories, 45+ patron accounts, 36 orders, 20 rental schedules, coupons, and customer reviews.
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#888' }}>
+              <Shield size={14} color="#2ed573" />
+              <span>Safe operation &bull; Automatically disabled in production</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleSeedDemo}
+              disabled={seeding}
+              className={styles.btnSecondary}
+              style={{ padding: '0.6rem 1.25rem', borderColor: '#555', color: '#fff' }}
+            >
+              <RefreshCw size={14} className={seeding ? styles.spinner : ''} style={{ marginRight: '6px' }} />
+              {seeding ? 'Seeding Demonstration Data...' : 'Load Demo Data'}
+            </button>
           </div>
         </div>
 

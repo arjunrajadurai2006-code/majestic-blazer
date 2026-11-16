@@ -168,16 +168,29 @@
 }
 
 @media (max-width: 640px) {
+  .footer {
+    padding: 56px 0 28px;
+  }
+
   .grid {
     grid-template-columns: 1fr;
     gap: 36px;
   }
+
   .brand, .newsletter {
     grid-column: auto;
   }
+
+  .newsInput,
+  .newsBtn {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
   .bottom {
     flex-direction: column;
     text-align: center;
     gap: 12px;
+    margin-top: 44px;
   }
 }

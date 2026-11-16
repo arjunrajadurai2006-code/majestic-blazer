@@ -7,8 +7,8 @@ const poolConfig = env.db.connectionString
   ? {
     connectionString: env.db.connectionString,
     ssl: env.db.ssl,
-    max: 10,
-    idleTimeoutMillis: 30000,
+    max: 5,
+    idleTimeoutMillis: 5000,
     connectionTimeoutMillis: 10000,
   }
   : {
@@ -18,8 +18,8 @@ const poolConfig = env.db.connectionString
     password: env.db.password,
     database: env.db.database,
     ssl: env.db.ssl,
-    max: 10,
-    idleTimeoutMillis: 30000,
+    max: 5,
+    idleTimeoutMillis: 5000,
     connectionTimeoutMillis: 10000,
   };
 

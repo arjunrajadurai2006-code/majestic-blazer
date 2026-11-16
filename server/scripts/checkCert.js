@@ -1,9 +1,13 @@
 import tls from 'tls';
 import fs from 'fs';
+import 'dotenv/config';
+
+const host = process.env.DB_HOST || 'your-aiven-host.aivencloud.com';
+const port = Number(process.env.DB_PORT) || 11497;
 
 const socket = tls.connect({
-  host: 'your-aiven-host.aivencloud.com',
-  port: 11497,
+  host,
+  port,
   rejectUnauthorized: false
 }, () => {
   let cert = socket.getPeerCertificate(true);

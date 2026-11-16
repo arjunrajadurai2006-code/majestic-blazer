@@ -96,7 +96,7 @@ export default function ProductDetails() {
 
   const selectedVariant = product.variants?.find((v) => v.id === selectedVariantId) || product.variants?.[0];
   const wish = isWishlisted(product.id);
-  const images = product.images?.length ? product.images : [{ url: product.image_url, altText: product.name }];
+  const images = product.images?.length ? product.images : [{ url: product.image_url || '/assets/products/imperial-navy-velvet-front.webp', altText: product.name }];
   const currentImage = images[selectedImage] || images[0];
 
   const discountPercent = product.original_price && Number(product.original_price) > Number(product.sale_price)

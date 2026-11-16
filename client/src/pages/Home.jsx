@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Sparkles, Clock, MapPin, Award, CheckCircle2, ArrowRight } from 'lucide-react';
 import ProductCard from '../components/common/ProductCard';
+import QuickViewModal from '../components/common/QuickViewModal';
 import Button from '../components/common/Button';
 import { api } from '../services/api';
 import { BUSINESS } from '../components/layout/Footer';
@@ -59,18 +60,21 @@ const TESTIMONIALS = [
     author: 'Karthik Subramanian',
     occasion: 'Wedding Reception Rental',
     city: 'Coimbatore',
+    avatar: '/assets/testimonials/patron-karthik.webp',
   },
   {
     quote: 'Purchased the Super 140s black shawl collar tuxedo for an annual leadership gala. Impeccable shoulder construction and razor-sharp silhouette. Style that truly speaks.',
     author: 'Dr. Arvind Rajan',
     occasion: 'Black-Tie Purchase',
     city: 'Chennai',
+    avatar: '/assets/testimonials/patron-arvind.webp',
   },
   {
     quote: 'Rented an embroidered bandhgala blazer for a two-day destination sangeet. The booking was effortless, the fit was true to size, and my deposit was credited within 24 hours of return.',
     author: 'Vikram Menon',
     occasion: 'Sangeet Ceremony Rental',
     city: 'Bangalore',
+    avatar: '/assets/testimonials/patron-vikram.webp',
   },
 ];
 
@@ -78,6 +82,7 @@ export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [rentalSpotlights, setRentalSpotlights] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
 
   useEffect(() => {
     async function loadCatalog() {
@@ -126,20 +131,25 @@ export default function Home() {
               <span>Explore Rentals</span>
             </Button>
           </div>
+        </div>
+      </section>
 
-          <div className={styles.heroBadges}>
-            <div className={styles.badgeItem}>
-              <CheckCircle2 size={16} className={styles.badgeIcon} />
-              <span>Complimentary Fitting at Kurumbampalayam</span>
-            </div>
-            <div className={styles.badgeItem}>
-              <CheckCircle2 size={16} className={styles.badgeIcon} />
-              <span>Super 140s Wool & Italian Velvet</span>
-            </div>
-            <div className={styles.badgeItem}>
-              <CheckCircle2 size={16} className={styles.badgeIcon} />
-              <span>100% Refundable Security Deposit</span>
-            </div>
+      {/* 2. Trust Indicators Bar */}
+      <section className={styles.trustBar}>
+        <div className={`container ${styles.trustGrid}`}>
+          <div className={styles.trustItem}>
+            <CheckCircle2 size={18} className={styles.trustIcon} />
+            <span>Complimentary Fitting at Kurumbampalayam</span>
+          </div>
+          <div className={styles.trustDivider} />
+          <div className={styles.trustItem}>
+            <CheckCircle2 size={18} className={styles.trustIcon} />
+            <span>Super 140s Wool & Italian Velvet</span>
+          </div>
+          <div className={styles.trustDivider} />
+          <div className={styles.trustItem}>
+            <CheckCircle2 size={18} className={styles.trustIcon} />
+            <span>100% Refundable Security Deposit</span>
           </div>
         </div>
       </section>
@@ -201,7 +211,11 @@ export default function Home() {
         ) : (
           <div className={styles.productGrid}>
             {featuredProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard
+                key={p.id}
+                product={p}
+                onQuickView={(prod) => setQuickViewProduct(prod)}
+              />
             ))}
           </div>
         )}
@@ -220,7 +234,7 @@ export default function Home() {
           <div className={styles.categoryGrid}>
             <Link to="/shop?category=wedding-partywear" className={styles.categoryCard}>
               <img
-                src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80"
+                src="/assets/collections/wedding-partywear.webp"
                 alt="Wedding and Partywear Blazers"
                 className={styles.categoryImage}
               />
@@ -233,7 +247,7 @@ export default function Home() {
 
             <Link to="/shop?category=tuxedos-black-tie" className={styles.categoryCard}>
               <img
-                src="https://images.unsplash.com/photo-1598808503746-f34c53b9323e?auto=format&fit=crop&w=800&q=80"
+                src="/assets/collections/tuxedos-black-tie.webp"
                 alt="Tuxedos and Black Tie"
                 className={styles.categoryImage}
               />
@@ -246,7 +260,7 @@ export default function Home() {
 
             <Link to="/shop?category=formal-blazers" className={styles.categoryCard}>
               <img
-                src="https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=800&q=80"
+                src="/assets/collections/formal-blazers.webp"
                 alt="Formal Corporate Blazers"
                 className={styles.categoryImage}
               />
@@ -259,7 +273,7 @@ export default function Home() {
 
             <Link to="/shop?category=casual-smart" className={styles.categoryCard}>
               <img
-                src="https://images.unsplash.com/photo-1593032465175-481ac7f401a0?auto=format&fit=crop&w=800&q=80"
+                src="/assets/collections/casual-smart.webp"
                 alt="Casual Smart Blazers"
                 className={styles.categoryImage}
               />
@@ -319,7 +333,11 @@ export default function Home() {
 
         <div className={styles.productGrid}>
           {rentalSpotlights.map((p) => (
-            <ProductCard key={p.id} product={p} />
+            <ProductCard
+              key={p.id}
+              product={p}
+              onQuickView={(prod) => setQuickViewProduct(prod)}
+            />
           ))}
         </div>
       </section>
@@ -364,8 +382,13 @@ export default function Home() {
               <div className={styles.stars}>★★★★★</div>
               <p className={styles.quote}>"{t.quote}"</p>
               <footer className={styles.testAuthor}>
-                <strong>{t.author}</strong>
-                <span>{t.occasion} • {t.city}</span>
+                {t.avatar && (
+                  <img src={t.avatar} alt={t.author} className={styles.testAvatar} />
+                )}
+                <div className={styles.testAuthorInfo}>
+                  <strong>{t.author}</strong>
+                  <span>{t.occasion} • {t.city}</span>
+                </div>
               </footer>
             </blockquote>
           ))}
@@ -374,7 +397,14 @@ export default function Home() {
 
       {/* 9. Flagship Boutique Visit */}
       <section className={styles.boutiqueSection}>
-        <div className={`container ${styles.boutiqueInner}`}>
+        <div className={`container ${styles.boutiqueGrid}`}>
+          <div className={styles.boutiqueImageWrap}>
+            <img
+              src="/assets/brand/flagship-atelier.webp"
+              alt="Majestic Blazer Coimbatore Boutique and Atelier"
+              className={styles.boutiqueImage}
+            />
+          </div>
           <div className={styles.boutiqueInfo}>
             <span className={styles.sectionEyebrow}>PRIVATE SARTORIAL ATELIER</span>
             <h2>Visit Our Coimbatore Boutique</h2>
@@ -393,6 +423,12 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <QuickViewModal
+        productSummary={quickViewProduct}
+        isOpen={Boolean(quickViewProduct)}
+        onClose={() => setQuickViewProduct(null)}
+      />
     </div>
   );
 }

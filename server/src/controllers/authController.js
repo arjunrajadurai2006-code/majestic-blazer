@@ -4,7 +4,7 @@ import * as User from '../models/userModel.js';
 import * as Address from '../models/addressModel.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
-import { signToken } from '../utils/token.js';
+import { signToken, revokeToken } from '../utils/token.js';
 
 const BCRYPT_ROUNDS = 12;
 const DUMMY_HASH = bcrypt.hashSync('timing-equaliser', BCRYPT_ROUNDS);
@@ -40,6 +40,15 @@ const buildLogin = (requiredRole) =>
 
 export const login = buildLogin('customer');
 export const adminLogin = buildLogin('admin');
+
+export const logout = asyncHandler(async (req, res) => {
+  const [scheme, token] = (req.headers.authorization || '').split(' ');
+  if (scheme === 'Bearer' && token) {
+    revokeToken(token);
+  }
+  res.clearCookie('token');
+  res.json({ success: true, message: 'Logged out successfully' });
+});
 
 export const me = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
@@ -115,4 +124,64 @@ export const deleteAddress = asyncHandler(async (req, res) => {
   const success = await Address.remove(req.params.id, req.user.id);
   if (!success) throw new AppError('Address not found', 404);
   res.json({ success: true, message: 'Address removed' });
+});
+
+// Development-only demo customer credentials & seeding mechanism
+export const getDemoCustomer = asyncHandler(async (req, res) => {
+  if (process.env.NODE_ENV === 'production') {
+    throw new AppError('Demo customer seeding is disabled in production', 403);
+  }
+  const demoEmail = 'customer.demo@majesticblazer.com';
+  const demoPassword = 'CustomerDemo2026!';
+  let user = await User.findByEmail(demoEmail);
+  if (!user) {
+    const passwordHash = await bcrypt.hash(demoPassword, BCRYPT_ROUNDS);
+    const id = await User.create({
+      fullName: 'Demo Patron',
+      email: demoEmail,
+      phone: '8903238882',
+      passwordHash,
+      role: 'customer',
+    });
+    user = await User.findById(id);
+  }
+  res.json({
+    success: true,
+    data: {
+      email: demoEmail,
+      password: demoPassword,
+      role: 'customer',
+      note: 'Development demo access only',
+    },
+  });
+});
+
+// Development-only demo admin credentials & seeding mechanism
+export const getDemoAdmin = asyncHandler(async (req, res) => {
+  if (process.env.NODE_ENV === 'production') {
+    throw new AppError('Demo admin seeding is disabled in production', 403);
+  }
+  const demoEmail = 'admin.demo@majesticblazer.com';
+  const demoPassword = 'MajesticAdmin2026!Secure';
+  let user = await User.findByEmail(demoEmail);
+  if (!user) {
+    const passwordHash = await bcrypt.hash(demoPassword, BCRYPT_ROUNDS);
+    const id = await User.create({
+      fullName: 'Atelier Demo Administrator',
+      email: demoEmail,
+      phone: '8903238882',
+      passwordHash,
+      role: 'admin',
+    });
+    user = await User.findById(id);
+  }
+  res.json({
+    success: true,
+    data: {
+      email: demoEmail,
+      password: demoPassword,
+      role: 'admin',
+      note: 'Development demo administrator access only',
+    },
+  });
 });

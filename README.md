@@ -27,25 +27,34 @@ majestic-blazer/
 
 Node.js 20+, PostgreSQL (Aiven Cloud or local).
 
-## Setup
+## Quick Start (Unified Single-Command Startup)
+
+From the project root:
 
 ```bash
-# 1. Backend
-cd server
-cp .env.example .env        # fill DB_USER, DB_PASSWORD, JWT_SECRET (32+ chars)
+# 1. Install root & service dependencies
 npm install
-npm run db:init             # creates the database and applies database/schema.sql
-npm run dev                 # http://localhost:5000/api/health
 
-# 2. Admin account (credentials are never stored in source code)
-#    Put ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD (12+ chars) in server/.env, then:
-npm run create-admin        # afterwards REMOVE the ADMIN_* lines from .env
+# 2. Launch all three applications concurrently
+npm run dev
+```
 
-# 3. Customer website (new terminal)
-cd client && npm install && npm run dev     # http://localhost:5173
+This starts all three services simultaneously with distinct terminal prefixes:
+- `[SERVER]` **Backend REST API**: http://localhost:5000 (Health: `http://localhost:5000/api/health`)
+- `[CLIENT]` **Customer Storefront**: http://localhost:5173
+- `[ADMIN]`  **Atelier Admin Portal**: http://localhost:5174
 
-# 4. Admin dashboard (new terminal)
-cd admin && npm install && npm run dev      # http://localhost:5174
+Pressing `Ctrl+C` cleanly shuts down all services.
+
+### Individual Service Scripts
+
+```bash
+npm run dev:server   # Launch backend API only (port 5000)
+npm run dev:client   # Launch customer storefront only (port 5173)
+npm run dev:admin    # Launch admin portal only (port 5174)
+npm run build        # Build customer and admin production bundles
+npm run test         # Execute full backend automated test suite
+npm run test:regression # Execute end-to-end regression audit
 ```
 
 Both frontends proxy `/api` to the backend in development. In production, set `VITE_API_URL`

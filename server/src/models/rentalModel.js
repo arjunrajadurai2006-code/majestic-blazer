@@ -77,10 +77,18 @@ export const createBooking = async (userId, {
   shippingAddress = null,
   notes = null,
 }) => {
-  const avail = await checkAvailability({ productId, variantId, startDate, endDate });
-  if (!avail.available) {
-    throw new AppError(avail.message || 'Blazer is unavailable for the selected dates', 400);
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    throw new AppError('Invalid rental dates provided', 400);
   }
+  if (end < start) {
+    throw new AppError('Return date must be on or after start date', 400);
+  }
+
+  const diffTime = Math.abs(end - start);
+  const rentalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
   const randomSuffix = Math.floor(1000 + Math.random() * 9000);
   const bookingNumber = `MB-RNT-${Date.now().toString().slice(-6)}-${randomSuffix}`;
@@ -88,6 +96,45 @@ export const createBooking = async (userId, {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
+
+    // 1. Transactional lock on product_variant row to prevent concurrent race conditions
+    const { rows: variantRows } = await client.query(
+      `SELECT pv.*, p.name AS product_name, p.rent_price_per_day, p.security_deposit, p.is_rentable, p.is_active
+       FROM product_variants pv
+       JOIN products p ON p.id = pv.product_id
+       WHERE pv.id = $1 AND p.id = $2 FOR UPDATE`,
+      [variantId, productId]
+    );
+
+    const variant = variantRows[0];
+    if (!variant || !variant.is_active || !variant.is_rentable) {
+      throw new AppError('This blazer is currently not available for rental', 400);
+    }
+
+    const totalRentalStock = Number(variant.rental_stock_quantity || 0);
+    if (totalRentalStock <= 0) {
+      throw new AppError('No rental stock exists for this size', 400);
+    }
+
+    // 2. Count active overlapping bookings under the row lock
+    const { rows: overlapRows } = await client.query(
+      `SELECT COUNT(*) AS booked_count
+       FROM rental_bookings
+       WHERE variant_id = $1
+         AND status NOT IN ('cancelled', 'returned')
+         AND (start_date <= $2 AND end_date >= $3)`,
+      [variantId, endDate, startDate]
+    );
+
+    const bookedCount = Number(overlapRows[0]?.booked_count || 0);
+    if (bookedCount >= totalRentalStock) {
+      throw new AppError('This blazer is no longer available for the selected dates. Please choose alternate dates.', 400);
+    }
+
+    const rentPerDay = Number(variant.rent_price_per_day || 0);
+    const rentAmount = rentPerDay * rentalDays;
+    const depositAmount = Number(variant.security_deposit || 0);
+    const totalAmount = rentAmount + depositAmount;
 
     const { rows } = await client.query(
       `INSERT INTO rental_bookings (
@@ -103,9 +150,9 @@ export const createBooking = async (userId, {
         variantId,
         startDate,
         endDate,
-        avail.rentalDays,
-        avail.rentAmount,
-        avail.depositAmount,
+        rentalDays,
+        rentAmount,
+        depositAmount,
         deliveryType,
         shippingAddress ? (typeof shippingAddress === 'string' ? shippingAddress : JSON.stringify(shippingAddress)) : null,
         notes,
@@ -122,15 +169,15 @@ export const createBooking = async (userId, {
       [
         invoiceNumber,
         booking.id,
-        avail.totalAmount,
+        totalAmount,
         JSON.stringify({
           bookingNumber,
-          rentalDays: avail.rentalDays,
+          rentalDays,
           startDate,
           endDate,
-          rentAmount: avail.rentAmount,
-          depositAmount: avail.depositAmount,
-          totalAmount: avail.totalAmount,
+          rentAmount,
+          depositAmount,
+          totalAmount,
         }),
       ]
     );

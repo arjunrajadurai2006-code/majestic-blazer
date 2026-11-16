@@ -1,6 +1,14 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env from cwd first, then fallback to server/.env relative to this config file
+dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const databaseUrl = process.env.DATABASE_URL;
 const host = process.env.DB_HOST || process.env.PGHOST;

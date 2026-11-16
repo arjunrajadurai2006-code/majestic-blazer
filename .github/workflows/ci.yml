@@ -1,0 +1,80 @@
+name: Majestic Blazer CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-customer:
+    name: Build Customer Web Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install client dependencies
+        run: npm --prefix client ci
+
+      - name: Build customer production bundle
+        run: npm --prefix client run build
+        env:
+          VITE_API_URL: https://api.majesticblazer.com/api
+
+  build-admin:
+    name: Build Admin Operations Portal
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: admin/package-lock.json
+
+      - name: Install admin dependencies
+        run: npm --prefix admin ci
+
+      - name: Build admin production bundle
+        run: npm --prefix admin run build
+        env:
+          VITE_API_URL: https://api.majesticblazer.com/api
+
+  test-backend:
+    name: Test Backend Server Suite
+    runs-on: ubuntu-latest
+    env:
+      HAS_DB_SECRET: ${{ secrets.DATABASE_URL != '' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install server dependencies
+        run: npm --prefix server ci
+
+      - name: Run Backend Tests (if database secret provided)
+        if: env.HAS_DB_SECRET == 'true'
+        run: npm --prefix server run test
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test_jwt_secret_must_be_at_least_32_characters_long_for_ci' }}
+          NODE_ENV: test
+

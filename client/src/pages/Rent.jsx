@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Calendar, Shield, Clock, Sparkles } from 'lucide-react';
 import ProductCard from '../components/common/ProductCard';
+import QuickViewModal from '../components/common/QuickViewModal';
 import { api } from '../services/api';
 import styles from './Rent.module.css';
 
 export default function Rent() {
   const [blazers, setBlazers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
 
   useEffect(() => {
     async function loadRentals() {
@@ -76,7 +78,11 @@ export default function Rent() {
         ) : blazers.length > 0 ? (
           <div className={styles.grid}>
             {blazers.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                onQuickView={(prod) => setQuickViewProduct(prod)}
+              />
             ))}
           </div>
         ) : (
@@ -85,6 +91,12 @@ export default function Rent() {
           </div>
         )}
       </section>
+
+      <QuickViewModal
+        productSummary={quickViewProduct}
+        isOpen={Boolean(quickViewProduct)}
+        onClose={() => setQuickViewProduct(null)}
+      />
     </div>
   );
 }

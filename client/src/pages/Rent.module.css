@@ -3,9 +3,14 @@
 }
 
 .hero {
+  position: relative;
   background: var(--color-obsidian);
+  background-image: radial-gradient(circle at 50% 30%, rgba(32, 32, 32, 0.5) 0%, rgba(8, 8, 8, 0.94) 80%),
+    url('/assets/banners/rental-hero-banner.webp');
+  background-size: cover;
+  background-position: center 30%;
   border-bottom: 1px solid var(--color-border);
-  padding: 88px 0 68px;
+  padding: 96px 0 76px;
   text-align: center;
 }
 
@@ -125,8 +130,41 @@
   }
 }
 
+@media (max-width: 640px) {
+  .hero {
+    padding: 48px 0 36px;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.85rem, 6.5vw, 2.75rem);
+  }
+
+  .lead {
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+  }
+
+  .features {
+    padding: 20px 16px;
+  }
+
+  .main {
+    margin-top: 32px;
+  }
+}
+
 @media (max-width: 580px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 380px) {
+  .features {
+    padding: 16px 12px;
+  }
+
+  .empty {
+    padding: 48px 16px;
   }
 }

@@ -9,6 +9,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AccountAccess from './pages/AccountAccess';
 import Profile from './pages/Profile';
 import Orders from './pages/Orders';
 import RentalBookings from './pages/RentalBookings';
@@ -30,6 +31,9 @@ export default function App() {
         <Route path="wishlist" element={<Wishlist />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="access" element={<AccountAccess />} />
+        <Route path="account-access" element={<AccountAccess />} />
+        <Route path="admin" element={<AccountAccess />} />
         <Route path="contact" element={<Contact />} />
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
         <Route path="terms-and-conditions" element={<TermsAndConditions />} />

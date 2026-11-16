@@ -1,36 +1,40 @@
+/* ==========================================================================
+   MAJESTIC BLAZER — LUXURY HEADER & NAVIGATION STYLES
+   ========================================================================== */
+
+/* 1. Slim Announcement Bar */
 .announcement {
-  background: var(--color-obsidian);
-  border-bottom: 1px solid var(--color-border);
-  color: var(--color-muted);
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
+  background: #080808;
+  border-bottom: 1px solid #1c1c1c;
   padding: 8px 0;
   text-align: center;
+  position: relative;
+  z-index: 1001;
 }
 
 .announcementInner {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
 }
 
-.divider {
-  color: var(--color-border);
-}
-
-.phoneLink {
-  color: var(--color-platinum);
+.announcementText {
+  color: #C0C0C0;
+  font-family: var(--font-body, 'Montserrat', sans-serif);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+  text-transform: uppercase;
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: color 0.2s ease;
+  white-space: nowrap;
 }
 
-.phoneLink:hover {
-  color: var(--color-white);
+.announcementText:hover {
+  color: #FFFFFF;
 }
 
+/* 2. Main Navigation Header */
 .header {
   position: sticky;
   top: 0;
@@ -38,143 +42,544 @@
   background: rgba(8, 8, 8, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--color-border);
-  transition: background var(--transition-smooth), border-color var(--transition-smooth);
+  border-bottom: 1px solid #202020;
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 80px;
+  height: 74px;
   gap: 24px;
 }
 
-.left {
+/* Left Section: Logo + Desktop Navigation */
+.navLeft {
   display: flex;
   align-items: center;
-  gap: 16px;
-}
-
-.logoLink {
-  display: flex;
-  align-items: center;
-  transition: opacity var(--transition-fast);
-}
-
-.logoLink:hover {
-  opacity: 0.9;
+  gap: 36px;
+  flex: 1;
 }
 
 .mobileToggle {
   display: none;
   background: transparent;
   border: none;
-  color: var(--color-platinum);
+  color: #C0C0C0;
   cursor: pointer;
   padding: 6px;
+  border-radius: 4px;
+  transition: color 0.2s ease;
 }
 
-.nav {
+.mobileToggle:hover {
+  color: #FFFFFF;
+}
+
+.desktopNav {
   display: flex;
   align-items: center;
 }
 
-.links {
+.navLinks {
   display: flex;
   align-items: center;
-  gap: 36px;
+  gap: 28px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.link {
-  color: var(--color-silver);
-  font-family: var(--font-body);
-  font-size: 0.82rem;
+.navLink {
+  color: #B5B5B5;
+  font-family: var(--font-body, 'Montserrat', sans-serif);
+  font-size: 0.78rem;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  position: relative;
+  text-decoration: none;
+  white-space: nowrap;
   padding: 8px 0;
-  transition: color var(--transition-fast);
+  position: relative;
+  transition: color 0.2s ease;
+  display: inline-block;
 }
 
-.link:hover,
-.link.active {
-  color: var(--color-white);
+.navLink:hover,
+.navActive {
+  color: #FFFFFF;
 }
 
-.link.active::after {
+.navActive::after {
   content: '';
   position: absolute;
-  bottom: -4px;
+  bottom: -2px;
   left: 0;
   right: 0;
-  height: 1px;
-  background: var(--color-silver);
+  height: 1.5px;
+  background: #FFFFFF;
 }
 
-.actions {
+/* Right Section: Icons & Account Access */
+.navRight {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 .iconBtn {
   background: transparent;
   border: none;
-  color: var(--color-silver);
+  color: #C0C0C0;
   cursor: pointer;
-  padding: 8px;
+  width: 38px;
+  height: 38px;
+  border-radius: 4px;
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  transition: color var(--transition-fast), transform var(--transition-fast);
+  justify-content: center;
+  text-decoration: none;
+  transition: color 0.2s ease, background 0.2s ease;
 }
 
 .iconBtn:hover {
-  color: var(--color-white);
-  transform: translateY(-1px);
-}
-
-.userBtn {
-  text-decoration: none;
-  border: 1px solid var(--color-border);
-  padding: 6px 14px;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.userBtn:hover {
-  border-color: var(--color-silver);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.userLabel {
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: var(--color-platinum);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .badge {
   position: absolute;
-  top: 2px;
-  right: 0px;
-  background: var(--color-platinum);
-  color: var(--color-obsidian);
-  font-size: 0.65rem;
+  top: 4px;
+  right: 4px;
+  background: #FFFFFF;
+  color: #080808;
+  font-size: 0.62rem;
   font-weight: 700;
   border-radius: 50%;
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  line-height: 1;
 }
 
-/* Search Overlay */
+/* Desktop Account Controls */
+.desktopAccount {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+/* Auth Buttons (Logged Out) */
+.authGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.signInBtn {
+  color: #C0C0C0;
+  font-family: var(--font-body, 'Montserrat', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 3px;
+  transition: color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+
+.signInBtn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.registerBtn {
+  background: transparent;
+  border: 1px solid #383838;
+  color: #FFFFFF;
+  font-family: var(--font-body, 'Montserrat', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.registerBtn:hover {
+  background: #FFFFFF;
+  color: #080808;
+  border-color: #FFFFFF;
+}
+
+/* Account Trigger & Dropdown (Logged In) */
+.accountWrapper {
+  position: relative;
+}
+
+.accountTrigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #141414;
+  border: 1px solid #303030;
+  color: #E5E5E5;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-body, 'Montserrat', sans-serif);
+}
+
+.accountTrigger:hover,
+.accountTriggerOpen {
+  border-color: #C0C0C0;
+  background: #1c1c1c;
+  color: #FFFFFF;
+}
+
+.userLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #FFFFFF;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  transition: transform 0.2s ease;
+  color: #858585;
+}
+
+.chevronRotated {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+  color: #FFFFFF;
+}
+
+.accountDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 230px;
+  background: #121212;
+  border: 1px solid #2e2e2e;
+  border-radius: 4px;
+  padding: 8px 0;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 20px rgba(192, 192, 192, 0.04);
+  z-index: 100;
+  animation: dropdownFadeIn 0.18s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownHeader {
+  padding: 10px 16px 12px;
+  border-bottom: 1px solid #202020;
+  margin-bottom: 4px;
+}
+
+.dropdownName {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdownEmail {
+  font-size: 0.72rem;
+  color: #858585;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  color: #C0C0C0;
+  font-size: 0.78rem;
+  text-decoration: none;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: all 0.15s ease;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdownItem:hover {
+  background: #1a1a1a;
+  color: #FFFFFF;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background: #202020;
+  margin: 6px 0;
+}
+
+.dropdownSignOut {
+  color: #e06c75;
+}
+
+.dropdownSignOut:hover {
+  background: rgba(224, 108, 117, 0.12);
+  color: #ff858d;
+}
+
+/* 3. Mobile / Tablet Drawer */
+.mobileBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 2000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.mobileDrawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 320px;
+  max-width: 85vw;
+  background: #101010;
+  border-right: 1px solid #282828;
+  display: flex;
+  flex-direction: column;
+  z-index: 2001;
+  animation: slideDrawer 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDrawer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.mobileDrawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid #222222;
+}
+
+.mobileDrawerClose {
+  background: transparent;
+  border: none;
+  color: #C0C0C0;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.mobileDrawerClose:hover {
+  color: #FFFFFF;
+}
+
+.mobileDrawerBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobileNavLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.mobileLink {
+  color: #C0C0C0;
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+  padding: 4px 0;
+}
+
+.mobileLinkActive {
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.mobileDivider {
+  height: 1px;
+  background: #222222;
+  margin: 28px 0;
+}
+
+/* Mobile Account Section */
+.mobileAccountSection {
+  margin-top: auto;
+}
+
+.mobileUserCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: #161616;
+  border: 1px solid #282828;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.mobileAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #242424;
+  color: #C0C0C0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileUserDetails {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mobileUserName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.mobileUserEmail {
+  font-size: 0.72rem;
+  color: #858585;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobileAccountLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.mobileSubLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #C0C0C0;
+  font-size: 0.85rem;
+  text-decoration: none;
+  padding: 6px 0;
+}
+
+.mobileSubLink:hover {
+  color: #FFFFFF;
+}
+
+.mobileSignOutBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #1a1a1a;
+  border: 1px solid #303030;
+  color: #e06c75;
+  padding: 11px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.mobileSignOutBtn:hover {
+  background: rgba(224, 108, 117, 0.15);
+  border-color: #e06c75;
+}
+
+.mobileAuthActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobileSignInBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid #383838;
+  color: #FFFFFF;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.mobileRegisterBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  color: #080808;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+/* 4. Search Overlay Modal */
 .searchOverlay {
   position: fixed;
   inset: 0;
@@ -185,60 +590,60 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 140px;
-  animation: fadeIn 0.25s ease;
+  padding-top: 130px;
+  animation: fadeIn 0.2s ease;
 }
 
 .searchModal {
   width: 100%;
   max-width: 680px;
-  background: var(--color-rich-black);
-  border: 1px solid var(--color-border);
+  background: #121212;
+  border: 1px solid #303030;
   padding: 32px;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-luxury);
+  border-radius: 4px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
 }
 
 .searchForm {
   display: flex;
   align-items: center;
   gap: 16px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid #2c2c2c;
   padding-bottom: 16px;
 }
 
 .searchIcon {
-  color: var(--color-silver);
+  color: #C0C0C0;
 }
 
 .searchInput {
   flex: 1;
   background: transparent;
   border: none;
-  color: var(--color-white);
-  font-family: var(--font-display);
+  color: #FFFFFF;
+  font-family: var(--font-heading, 'Cinzel', serif);
   font-size: 1.35rem;
   letter-spacing: 0.02em;
   outline: none;
 }
 
 .searchInput::placeholder {
-  color: var(--color-muted);
-  font-family: var(--font-body);
+  color: #666666;
+  font-family: var(--font-body, 'Montserrat', sans-serif);
   font-size: 0.95rem;
 }
 
 .closeSearch {
   background: transparent;
   border: none;
-  color: var(--color-muted);
+  color: #858585;
   cursor: pointer;
   padding: 6px;
-  transition: color var(--transition-fast);
+  transition: color 0.15s ease;
 }
 
 .closeSearch:hover {
-  color: var(--color-white);
+  color: #FFFFFF;
 }
 
 .searchSuggestions {
@@ -247,71 +652,178 @@
   gap: 10px;
   margin-top: 20px;
   font-size: 0.78rem;
-  color: var(--color-muted);
+  color: #858585;
   flex-wrap: wrap;
 }
 
 .searchSuggestions button {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-silver);
+  background: #1a1a1a;
+  border: 1px solid #2e2e2e;
+  color: #C0C0C0;
   padding: 5px 12px;
-  border-radius: var(--radius-sm);
+  border-radius: 3px;
   cursor: pointer;
   font-size: 0.75rem;
   letter-spacing: 0.06em;
-  transition: all var(--transition-fast);
+  transition: all 0.15s ease;
 }
 
 .searchSuggestions button:hover {
-  background: var(--color-charcoal);
-  color: var(--color-white);
-  border-color: var(--color-silver);
+  background: #252525;
+  color: #FFFFFF;
+  border-color: #C0C0C0;
+}
+
+/* 5. Sign Out Confirmation Modal */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modalCard {
+  background: #141414;
+  border: 1px solid #303030;
+  border-radius: 6px;
+  padding: 32px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+  animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.modalIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(224, 108, 117, 0.12);
+  color: #e06c75;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modalTitle {
+  font-family: var(--font-heading, 'Cinzel', serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.modalBody {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #A0A0A0;
+  margin-bottom: 24px;
+}
+
+.modalBody strong {
+  color: #FFFFFF;
+}
+
+.modalActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.modalCancelBtn {
+  background: transparent;
+  border: 1px solid #333333;
+  color: #C0C0C0;
+  padding: 10px 20px;
+  border-radius: 3px;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modalCancelBtn:hover:not(:disabled) {
+  border-color: #858585;
+  color: #FFFFFF;
+}
+
+.modalConfirmBtn {
+  background: #e06c75;
+  border: 1px solid #e06c75;
+  color: #FFFFFF;
+  padding: 10px 22px;
+  border-radius: 3px;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modalConfirmBtn:hover:not(:disabled) {
+  background: #cc5660;
+  border-color: #cc5660;
+}
+
+.modalConfirmBtn:disabled,
+.modalCancelBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@media (max-width: 880px) {
-  .mobileToggle {
-    display: block;
-  }
-
-  .nav {
-    position: fixed;
-    top: 114px;
-    left: 0;
-    right: 0;
-    background: var(--color-rich-black);
-    border-bottom: 1px solid var(--color-border);
-    padding: 28px 24px;
+/* Responsive Breakpoints */
+@media (max-width: 1060px) {
+  .desktopNav {
     display: none;
-    flex-direction: column;
-    align-items: flex-start;
-    box-shadow: var(--shadow-luxury);
   }
 
-  .nav.open {
+  .desktopAccount {
+    display: none;
+  }
+
+  .mobileToggle {
     display: flex;
   }
 
-  .links {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-    width: 100%;
+  .navLeft {
+    gap: 16px;
   }
 
-  .link {
-    font-size: 0.9rem;
-    width: 100%;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  }
-
-  .userLabel {
-    display: none;
+  .bar {
+    height: 68px;
   }
 }

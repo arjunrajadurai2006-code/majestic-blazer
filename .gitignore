@@ -1,12 +1,36 @@
 # Root gitignore for Majestic Blazer Monorepo
 node_modules/
-.env
-.env.local
-.env.*.local
 dist/
 dist-ssr/
+build/
 *.log
+npm-debug.log*
+yarn-debug.log*
 .DS_Store
 Thumbs.db
+
+# Environment variables
+.env
+.env.*
+!.env.example
+.env.local
+.env.*.local
+
+# Vercel & Railway local metadata
+.vercel/
+.railway/
+
+# Certificates, keys and credentials
+*.pem
+*.key
+*.crt
+*.cert
+
+# Test coverage & temporary artifacts
+coverage/
+.turbo/
+screenshot-*.png
+
+# Uploads
 server/uploads/*
 !server/uploads/.gitkeep

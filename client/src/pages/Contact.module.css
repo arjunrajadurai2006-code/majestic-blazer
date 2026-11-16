@@ -139,102 +139,356 @@
 }
 
 /* Form Col */
+.formCol {
+  width: 100%;
+}
+
 .formCard {
-  background: var(--color-rich-black);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 38px;
+  background: var(--color-rich-black, #101010);
+  border: 1px solid var(--color-border, #303030);
+  border-radius: var(--radius-sm, 2px);
+  padding: 38px 40px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
 }
 
 .formCard h2 {
-  font-size: 1.35rem;
-  color: var(--color-white);
+  font-family: var(--font-display, serif);
+  font-size: 1.45rem;
+  color: #FFFFFF;
   margin: 0;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--color-border, #303030);
   font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
+  width: 100%;
 }
 
-.formRow {
+/* Desktop Aligned Two-Column Label and Input Layout */
+.field {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.fieldTop {
+  align-items: flex-start;
+}
+
+.fieldTop .label {
+  padding-top: 14px;
+}
+
+.label {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #C0C0C0;
+  margin: 0;
+  user-select: none;
+}
+
+/* Form Controls — Exact Design Requirements:
+   Background: #202020
+   Text: #F5F5F5
+   Border: #353535
+   Silver focus state
+*/
+.input,
+.select,
+.textarea {
+  width: 100%;
+  background-color: #202020 !important;
+  color: #F5F5F5 !important;
+  border: 1px solid #353535 !important;
+  border-radius: 2px;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color var(--transition-fast, 0.2s ease), box-shadow var(--transition-fast, 0.2s ease);
+  color-scheme: dark;
+}
+
+/* Consistent Input Heights & Padding */
+.input {
+  height: 48px;
+  padding: 0 16px;
+}
+
+/* Dark Custom Select Dropdown */
+.selectWrap {
+  position: relative;
+  width: 100%;
+}
+
+.select {
+  height: 48px;
+  padding: 0 44px 0 16px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23C0C0C0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 16px) center;
+  background-size: 16px 16px;
+}
+
+.select option {
+  background-color: #202020 !important;
+  color: #F5F5F5 !important;
+  padding: 12px 16px;
+}
+
+/* Textarea */
+.textarea {
+  min-height: 130px;
+  padding: 14px 16px;
+  resize: vertical;
+}
+
+/* Placeholder Styling: #858585 */
+.input::placeholder,
+.textarea::placeholder {
+  color: #858585 !important;
+  opacity: 1;
+}
+
+.input::-webkit-input-placeholder,
+.textarea::-webkit-input-placeholder {
+  color: #858585 !important;
+}
+
+.input::-moz-placeholder,
+.textarea::-moz-placeholder {
+  color: #858585 !important;
+  opacity: 1;
+}
+
+/* Silver Focus State: #C0C0C0 */
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: #C0C0C0 !important;
+  box-shadow: 0 0 0 1px #C0C0C0, 0 0 14px rgba(192, 192, 192, 0.18) !important;
+}
+
+/* Fix Browser White Autofill Override */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.textarea:-webkit-autofill,
+.textarea:-webkit-autofill:hover,
+.textarea:-webkit-autofill:focus,
+.select:-webkit-autofill,
+.select:-webkit-autofill:hover,
+.select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #F5F5F5 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #202020 inset !important;
+  box-shadow: 0 0 0px 1000px #202020 inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: #F5F5F5;
+}
+
+/* Aligned Submit Button Row */
+.buttonRow {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 20px;
+  margin-top: 6px;
+}
+
+/* Elegant Rectangular Button Matching Black-and-Silver Luxury Theme */
+.submitBtn {
+  grid-column: 2;
+  justify-self: start;
+  height: 48px;
+  background: #C0C0C0;
+  color: #080808;
+  border: 1px solid #C0C0C0;
+  border-radius: 2px;
+  padding: 0 36px;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all var(--transition-smooth, 0.25s ease);
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: #FFFFFF;
+  border-color: #FFFFFF;
+  color: #080808;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(192, 192, 192, 0.25);
+}
+
+.submitBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitBtn:disabled {
+  background: #252525;
+  border-color: #353535;
+  color: #707070;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Success Card */
+.successBox {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.formRow label {
-  font-size: 0.76rem;
-  letter-spacing: 0.08em;
-  color: var(--color-silver);
-  text-transform: uppercase;
-}
-
-.formRow input,
-.formRow textarea,
-.formRow select {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-white);
-  padding: 12px 14px;
-  font-size: 0.88rem;
-  outline: none;
-  transition: border-color var(--transition-fast);
-}
-
-.formRow input:focus,
-.formRow textarea:focus,
-.formRow select:focus {
-  border-color: var(--color-silver);
-}
-
-.formGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  text-align: center;
   gap: 16px;
+  padding: 36px 20px;
 }
 
-.submitBtn {
-  align-self: flex-start;
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border: 1px solid var(--color-white);
-  border-radius: var(--radius-sm);
-  padding: 14px 36px;
-  font-size: 0.82rem;
+.successIcon {
+  color: #C0C0C0;
+}
+
+.successBox h3 {
+  color: #FFFFFF;
+  font-size: 1.35rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.successBox p {
+  color: #C0C0C0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  max-width: 440px;
+  margin: 0;
+}
+
+.newEnquiryBtn {
+  height: 44px;
+  margin-top: 10px;
+  background: transparent;
+  color: #F5F5F5;
+  border: 1px solid #C0C0C0;
+  border-radius: 2px;
+  padding: 0 28px;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all var(--transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-smooth, 0.25s ease);
 }
 
-.submitBtn:hover {
-  background: var(--color-platinum);
-  border-color: var(--color-platinum);
-  transform: translateY(-1px);
+.newEnquiryBtn:hover {
+  background: #C0C0C0;
+  color: #080808;
 }
 
+/* Responsive: 900px Grid Breakdown */
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 580px) {
-  .formGrid {
-    grid-template-columns: 1fr;
+/* Mobile: Stack Labels Above Inputs, 100% Width, Prevent Horizontal Overflow */
+@media (max-width: 768px) {
+  .field {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
   }
+
+  .fieldTop {
+    align-items: stretch;
+  }
+
+  .fieldTop .label {
+    padding-top: 0;
+  }
+
+  .buttonRow {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .submitBtn {
+    grid-column: auto;
+    width: 100%;
+    justify-self: stretch;
+  }
+
+  .formCard {
+    padding: 28px 20px;
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  .input,
+  .selectWrap,
+  .select,
+  .textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 32px 0 64px;
+  }
+
+  .header {
+    margin-bottom: 36px;
+  }
+
+  .header h1 {
+    font-size: clamp(1.85rem, 6.5vw, 2.4rem);
+  }
+
   .infoCard,
   .formCard {
-    padding: 26px 20px;
+    padding: 22px 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .infoCard,
+  .formCard {
+    padding: 18px 12px;
+  }
+
+  .mapPlaceholder {
+    height: 180px;
+    padding: 14px;
   }
 }

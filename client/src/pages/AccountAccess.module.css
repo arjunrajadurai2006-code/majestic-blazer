@@ -1,0 +1,365 @@
+/* Account Access Page Wrapper */
+.wrap {
+  min-height: calc(100vh - 120px);
+  padding: 60px var(--space-3, 20px) 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-obsidian, #080808);
+  background-image: radial-gradient(circle at 50% 25%, rgba(32, 32, 32, 0.45) 0%, rgba(8, 8, 8, 0.98) 75%);
+}
+
+/* Centered Premium Dark Card */
+.card {
+  width: 100%;
+  max-width: 540px;
+  background: var(--color-rich-black, #101010);
+  border: 1px solid var(--color-border, #282828);
+  border-radius: var(--radius-sm, 2px);
+  padding: 48px 42px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 1px rgba(192, 192, 192, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  box-sizing: border-box;
+}
+
+/* Brand Header */
+.header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logoWrap {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.eyebrow {
+  display: block;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-silver, #C0C0C0);
+  margin-bottom: 8px;
+}
+
+.title {
+  font-family: var(--font-display, serif);
+  font-size: clamp(2rem, 3.6vw, 2.4rem);
+  font-weight: 400;
+  color: #FFFFFF;
+  margin: 0 0 10px;
+  letter-spacing: 0.02em;
+}
+
+.subtitle {
+  font-family: var(--font-body, sans-serif);
+  color: #858585;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* Base Portal Section */
+.portalSection {
+  border-radius: 2px;
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all var(--transition-smooth, 0.25s ease);
+}
+
+.sectionMeta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.iconWrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sectionHeaderInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.portalBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.badgeIcon {
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.description {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: #A0A0A0;
+  margin: 0;
+}
+
+/* 1. Customer / Patron Specific Styling */
+.customerSection {
+  background: #151515;
+  border: 1px solid #303030;
+}
+
+.customerSection:hover {
+  border-color: #C0C0C0;
+  background: #181818;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+}
+
+.customerSection .iconWrap {
+  background: #222222;
+  border: 1px solid #383838;
+}
+
+.portalIcon {
+  color: #FFFFFF;
+}
+
+.customerSection .portalBadge {
+  color: #C0C0C0;
+}
+
+.customerSection .sectionTitle {
+  color: #FFFFFF;
+}
+
+/* Customer Sign In Button: Crisp White Rectangular */
+.customerBtn {
+  margin-top: 4px;
+  height: 48px;
+  background: #FFFFFF;
+  color: #080808;
+  border: 1px solid #FFFFFF;
+  border-radius: 2px;
+  padding: 0 24px;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all var(--transition-smooth, 0.25s ease);
+  box-sizing: border-box;
+}
+
+.customerBtn:hover {
+  background: #E5E5E5;
+  border-color: #E5E5E5;
+  color: #000000;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.25);
+}
+
+/* Subtle Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: -6px 0;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: #242424;
+}
+
+.dividerText {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #606060;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* 2. Administrator Specific Styling */
+.adminSection {
+  background: #121212;
+  border: 1px solid #282828;
+}
+
+.adminSection:hover {
+  border-color: #707070;
+  background: #161616;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+}
+
+.adminIconWrap {
+  background: #1c1c1c;
+  border: 1px solid #333333;
+}
+
+.adminPortalIcon {
+  color: #C0C0C0;
+}
+
+.adminBadge {
+  color: #858585;
+}
+
+.adminSection .sectionTitle {
+  color: #C0C0C0;
+}
+
+/* Admin Sign In Button: Elegant Charcoal with Silver Border */
+.adminBtn {
+  margin-top: 4px;
+  height: 48px;
+  background: #181818;
+  color: #F5F5F5;
+  border: 1px solid #505050;
+  border-radius: 2px;
+  padding: 0 24px;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all var(--transition-smooth, 0.25s ease);
+  box-sizing: border-box;
+}
+
+.adminBtn:hover {
+  background: #C0C0C0;
+  border-color: #C0C0C0;
+  color: #080808;
+  box-shadow: 0 4px 16px rgba(192, 192, 192, 0.2);
+}
+
+/* Footer & Back Link */
+.footer {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  border-top: 1px solid #242424;
+  padding-top: 20px;
+}
+
+.securityNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #707070;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lockIcon {
+  color: #858585;
+  flex-shrink: 0;
+}
+
+.backLink {
+  color: var(--color-silver, #C0C0C0);
+  font-size: 0.82rem;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color var(--transition-fast, 0.2s ease);
+}
+
+.backLink:hover {
+  color: #FFFFFF;
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+  .wrap {
+    padding: 30px 14px 60px;
+  }
+
+  .card {
+    padding: 34px 22px;
+    gap: 22px;
+  }
+
+  .title {
+    font-size: 1.85rem;
+  }
+
+  .portalSection {
+    padding: 20px 16px;
+  }
+
+  .customerBtn,
+  .adminBtn {
+    width: 100%;
+  }
+
+  .dividerText {
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .wrap {
+    padding: 20px 10px 48px;
+  }
+
+  .card {
+    padding: 24px 14px;
+    gap: 18px;
+  }
+
+  .title {
+    font-size: 1.65rem;
+  }
+
+  .portalSection {
+    padding: 16px 12px;
+  }
+}
+

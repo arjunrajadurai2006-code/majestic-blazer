@@ -83,7 +83,7 @@ export default function Products() {
       isRentable: true,
       isFeatured: false,
       isActive: true,
-      imageUrls: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80',
+      imageUrls: '/assets/products/imperial-navy-velvet-front.webp',
       variants: DEFAULT_SIZES.map(s => ({ size: s, sku: `MB-${s}`, stockQuantity: 3, rentalStockQuantity: 2 }))
     });
     setIsModalOpen(true);
@@ -344,7 +344,7 @@ export default function Products() {
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                       <img 
-                        src={p.primary_image || 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=100'} 
+                        src={p.primary_image || '/assets/products/imperial-navy-velvet-front.webp'} 
                         alt={p.name}
                         style={{ width: '42px', height: '52px', objectFit: 'cover', borderRadius: '2px', border: '1px solid #333' }}
                       />

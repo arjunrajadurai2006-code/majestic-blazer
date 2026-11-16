@@ -5,6 +5,14 @@
   background-color: var(--color-obsidian);
 }
 
+.mainWrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100vh;
+  background: var(--color-obsidian);
+}
+
 .sidebar {
   background: var(--color-rich-black);
   border-right: 1px solid var(--color-border);

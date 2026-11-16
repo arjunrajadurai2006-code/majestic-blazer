@@ -24,7 +24,7 @@ export default function ProductCard({ product, onQuickView }) {
     if (onQuickView) onQuickView(product);
   };
 
-  const imageSrc = product.image_url || product.images?.[0]?.url || 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80';
+  const imageSrc = product.image_url || product.images?.[0]?.url || '/assets/products/imperial-navy-velvet-front.webp';
 
   return (
     <article className={styles.card}>
