@@ -67,7 +67,7 @@ Under your Railway service settings $\rightarrow$ **Variables**, add:
 | `DB_PASSWORD` | `<your-aiven-password>` | **YES** |
 | `DB_NAME` | `defaultdb` | No |
 | `DB_SSL` | `true` | No |
-| `DB_SSL_CA` | Contents of Aiven CA certificate (paste full PEM block or base64) | No |
+| `DB_SSL_CA` | Single-line Base64 of Aiven CA certificate (recommended; see command below) | No |
 | `JWT_SECRET` | Strong random secret ($\ge 32$ chars, e.g. `openssl rand -hex 32`) | **YES** |
 | `JWT_EXPIRES_IN` | `7d` | No |
 | `RAZORPAY_KEY_ID` | `rzp_test_...` (or live key upon approval) | No |
@@ -76,6 +76,16 @@ Under your Railway service settings $\rightarrow$ **Variables**, add:
 | `RAZORPAY_LIVE` | `false` (Set `true` ONLY after explicit owner approval) | No |
 
 *(Alternatively, use `DATABASE_URL=postgres://<username>:<password>@<your-aiven-host>.aivencloud.com:11497/defaultdb?sslmode=require` with `DB_SSL_CA`)*
+
+> [!IMPORTANT]
+> **Avoid Multi-Line Variables in Railway Dashboard**:
+> To prevent Docker build errors (`failed to solve: dockerfile parse error on line 12: ENV names can not be blank`), **never paste multi-line raw PEM blocks or trailing blank lines** into Railway's Variables tab. Instead, generate a single-line Base64 string for `DB_SSL_CA`:
+> ```bash
+> # In PowerShell / Terminal:
+> node -e "console.log(require('fs').readFileSync('server/aiven-ca.pem').toString('base64'))"
+> ```
+> Copy the output single-line string and paste it into Railway's `DB_SSL_CA` variable. The server (`src/config/env.js`) automatically detects and decodes Base64 certificates at runtime.
+> Also verify that the Railway **Variables** tab contains no unnamed/empty rows or lines with only `=`.
 
 ### Step 1.4: Add Persistent Storage Volume for Uploads (Optional)
 In Railway Service Settings $\rightarrow$ **Volumes**:
