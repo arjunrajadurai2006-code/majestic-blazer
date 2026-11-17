@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Download, Calendar, Shield, Clock, AlertCircle } from 'lucide-react';
+import { Calendar, Shield, Clock, AlertCircle } from 'lucide-react';
 import { api } from '../services/api';
+import DownloadInvoiceButton from '../components/common/DownloadInvoiceButton';
 import styles from './RentalBookings.module.css';
 
 export default function RentalBookings() {
@@ -51,17 +52,13 @@ export default function RentalBookings() {
                   <span className={`${styles.statusPill} ${styles[rental.status]}`}>
                     {rental.status.replace('_', ' ').toUpperCase()}
                   </span>
-                  {rental.invoice_number && (
-                    <a
-                      href={api.getApiUrl(`/invoices/${rental.invoice_number}/pdf`)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.pdfBtn}
-                    >
-                      <Download size={14} />
-                      <span>Rental Invoice (PDF)</span>
-                    </a>
-                  )}
+                  <DownloadInvoiceButton
+                    invoiceIdentifier={rental.invoice_number || rental.booking_number || rental.id}
+                    orderNumber={rental.booking_number}
+                    label="Rental Invoice (PDF)"
+                    variant="outline"
+                    size="sm"
+                  />
                 </div>
               </div>
 

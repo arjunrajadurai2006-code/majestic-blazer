@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Shield, CheckCircle2, Download, Truck, MapPin, CreditCard, ArrowRight } from 'lucide-react';
+import { Shield, CheckCircle2, Truck, MapPin, CreditCard, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import { api } from '../services/api';
+import DownloadInvoiceButton from '../components/common/DownloadInvoiceButton';
 import styles from './Checkout.module.css';
 
 export default function Checkout() {
@@ -453,16 +454,13 @@ export default function Checkout() {
                     <strong>{o.order_number}</strong>
                     <span>Total: ₹{Number(o.total).toLocaleString('en-IN')} • Status: Confirmed</span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      window.open(api.getApiUrl(`/invoices/${o.id}/pdf`), '_blank');
-                    }}
-                    className={styles.downloadInvoiceBtn}
-                  >
-                    <Download size={16} />
-                    <span>Download Tax Invoice (PDF)</span>
-                  </button>
+                  <DownloadInvoiceButton
+                    invoiceIdentifier={o.invoice_number || o.order_number || o.id}
+                    orderNumber={o.order_number}
+                    label="Download Tax Invoice (PDF)"
+                    variant="primary"
+                    size="md"
+                  />
                 </div>
               ))}
 
@@ -476,16 +474,13 @@ export default function Checkout() {
                     </span>
                     <span>Deposit: ₹{Number(r.deposit_amount).toLocaleString('en-IN')} (Refundable)</span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      window.open(api.getApiUrl(`/invoices/${r.id}/pdf`), '_blank');
-                    }}
-                    className={styles.downloadInvoiceBtn}
-                  >
-                    <Download size={16} />
-                    <span>Download Rental Invoice (PDF)</span>
-                  </button>
+                  <DownloadInvoiceButton
+                    invoiceIdentifier={r.invoice_number || r.booking_number || r.id}
+                    orderNumber={r.booking_number}
+                    label="Download Rental Invoice (PDF)"
+                    variant="primary"
+                    size="md"
+                  />
                 </div>
               ))}
             </div>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Download, Package, Calendar, ArrowRight } from 'lucide-react';
+import { Package, Calendar, ArrowRight } from 'lucide-react';
 import { api } from '../services/api';
+import DownloadInvoiceButton from '../components/common/DownloadInvoiceButton';
 import styles from './Orders.module.css';
 
 export default function Orders() {
@@ -54,17 +55,13 @@ export default function Orders() {
                   <span className={`${styles.statusPill} ${styles[order.status]}`}>
                     {order.status.toUpperCase()}
                   </span>
-                  {order.invoice_number && (
-                    <a
-                      href={api.getApiUrl(`/invoices/${order.invoice_number}/pdf`)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.pdfBtn}
-                    >
-                      <Download size={14} />
-                      <span>Invoice (PDF)</span>
-                    </a>
-                  )}
+                  <DownloadInvoiceButton
+                    invoiceIdentifier={order.invoice_number || order.order_number || order.id}
+                    orderNumber={order.order_number}
+                    label="Invoice (PDF)"
+                    variant="outline"
+                    size="sm"
+                  />
                 </div>
               </div>
 

@@ -9,8 +9,16 @@ export const getByNumberOrId = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const isNumeric = /^\d+$/.test(id);
   const sql = isNumeric
-    ? 'SELECT * FROM invoices WHERE id = $1 LIMIT 1'
-    : 'SELECT * FROM invoices WHERE invoice_number = $1 LIMIT 1';
+    ? `SELECT * FROM invoices 
+       WHERE id = $1 OR order_id = $1 OR rental_booking_id = $1 
+       ORDER BY (CASE WHEN id = $1 THEN 0 ELSE 1 END), id DESC 
+       LIMIT 1`
+    : `SELECT i.* FROM invoices i
+       LEFT JOIN orders o ON o.id = i.order_id
+       LEFT JOIN rental_bookings rb ON rb.id = i.rental_booking_id
+       WHERE i.invoice_number = $1 OR o.order_number = $1 OR rb.booking_number = $1
+       ORDER BY (CASE WHEN i.invoice_number = $1 THEN 0 ELSE 1 END), i.id DESC 
+       LIMIT 1`;
   const { rows } = await pool.query(sql, [id]);
   const invoice = rows[0];
   if (!invoice) throw new AppError('Invoice not found', 404);
@@ -21,8 +29,16 @@ export const downloadPdf = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const isNumeric = /^\d+$/.test(id);
   const sql = isNumeric
-    ? 'SELECT * FROM invoices WHERE id = $1 LIMIT 1'
-    : 'SELECT * FROM invoices WHERE invoice_number = $1 LIMIT 1';
+    ? `SELECT * FROM invoices 
+       WHERE id = $1 OR order_id = $1 OR rental_booking_id = $1 
+       ORDER BY (CASE WHEN id = $1 THEN 0 ELSE 1 END), id DESC 
+       LIMIT 1`
+    : `SELECT i.* FROM invoices i
+       LEFT JOIN orders o ON o.id = i.order_id
+       LEFT JOIN rental_bookings rb ON rb.id = i.rental_booking_id
+       WHERE i.invoice_number = $1 OR o.order_number = $1 OR rb.booking_number = $1
+       ORDER BY (CASE WHEN i.invoice_number = $1 THEN 0 ELSE 1 END), i.id DESC 
+       LIMIT 1`;
   const { rows } = await pool.query(sql, [id]);
   const invoice = rows[0];
   if (!invoice) throw new AppError('Invoice not found', 404);
@@ -103,8 +119,10 @@ export const downloadPdf = asyncHandler(async (req, res) => {
   }
 
   const pdfBuffer = await generateInvoicePdf(invoicePayload);
+  const refNumber = invoicePayload?.orderOrBookingNumber || invoice.invoice_number;
+  const filename = `Majestic-Blazer-Invoice-${refNumber}.pdf`;
   res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', `inline; filename="${invoice.invoice_number}.pdf"`);
+  res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
   res.send(pdfBuffer);
 });
 

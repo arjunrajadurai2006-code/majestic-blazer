@@ -433,43 +433,72 @@
   max-width: 580px;
 }
 
+.confirmCard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.confirmDetails,
 .orderRecords {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin: 16px 0;
+  margin: 20px 0;
 }
 
+.confirmItem,
 .recordCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
+  border-radius: var(--radius-sm, 4px);
   padding: 20px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: left;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.recordInfo strong {
-  display: block;
-  font-size: 0.95rem;
-  color: var(--color-text-primary);
+.refLabel {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary, #666666);
   margin-bottom: 4px;
 }
 
+.rentRefLabel {
+  color: #111111;
+}
+
+.confirmItem strong,
+.recordInfo strong {
+  display: block;
+  font-size: 1rem;
+  color: var(--color-text-primary, #111111);
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+
+.confirmItem span,
 .recordInfo span {
   display: block;
-  font-size: 0.8rem;
-  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+  color: var(--color-text-secondary, #666666);
 }
 
 .invoiceBtn {
-  background: var(--color-obsidian);
-  color: var(--color-white);
-  border: 1px solid var(--color-obsidian);
-  border-radius: var(--radius-sm);
+  background: var(--color-obsidian, #080808);
+  color: var(--color-white, #FFFFFF);
+  border: 1px solid var(--color-obsidian, #080808);
+  border-radius: var(--radius-sm, 3px);
   padding: 10px 18px;
   font-size: 0.78rem;
   font-weight: 600;
@@ -479,33 +508,70 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-fast, 0.2s ease);
 }
 
 .invoiceBtn:hover {
-  background: var(--color-rich-black);
-  border-color: var(--color-rich-black);
+  background: var(--color-rich-black, #252525);
+  border-color: var(--color-rich-black, #252525);
 }
 
+.confirmActions,
 .confirmBtns {
   display: flex;
   gap: 16px;
-  margin-top: 16px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.homeBtn {
-  background: var(--color-obsidian);
-  color: var(--color-white);
-  padding: 14px 28px;
-  font-size: 0.82rem;
+.ordersLink,
+.rentalsLink,
+.ordersBtn {
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
+  color: var(--color-text-primary, #111111);
+  padding: 12px 24px;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm, 3px);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.ordersLink:hover,
+.rentalsLink:hover,
+.ordersBtn:hover {
+  background: var(--color-surface-hover, #F7F7F7);
+  border-color: #111111;
+  color: #000000;
+}
+
+.homeLink,
+.homeBtn {
+  background: var(--color-obsidian, #080808);
+  color: var(--color-white, #FFFFFF);
+  padding: 12px 24px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm, 3px);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.homeLink:hover,
 .homeBtn:hover {
-  background: var(--color-rich-black);
+  background: var(--color-rich-black, #252525);
 }
 
 .ordersBtn {
@@ -676,24 +742,34 @@
     font-size: 1.75rem;
   }
 
+  .confirmItem,
   .recordCard {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 16px 14px;
+    align-items: stretch;
+    gap: 16px;
+    padding: 18px 16px;
   }
 
+  .confirmItem > div {
+    width: 100%;
+  }
+
+  .confirmItem button,
   .recordCard .invoiceBtn {
     width: 100%;
     justify-content: center;
   }
 
+  .confirmActions,
   .confirmBtns {
     flex-direction: column;
     width: 100%;
     gap: 10px;
   }
 
+  .ordersLink,
+  .rentalsLink,
+  .homeLink,
   .homeBtn,
   .ordersBtn {
     width: 100%;
