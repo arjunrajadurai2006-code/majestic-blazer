@@ -385,9 +385,9 @@
 
 .addCartBtn {
   flex: 1;
-  background: var(--color-obsidian);
-  color: var(--color-white);
-  border: 1px solid var(--color-obsidian);
+  background: var(--color-surface, #FFFFFF);
+  color: var(--color-text-primary, #111111);
+  border: 1px solid var(--color-text-primary, #111111);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -403,14 +403,56 @@
 }
 
 .addCartBtn:hover:not(:disabled) {
-  background: var(--color-rich-black);
-  border-color: var(--color-rich-black);
+  background: var(--color-surface-hover, #F0F0F0);
+  border-color: #000000;
+  color: #000000;
   transform: translateY(-1px);
 }
 
 .addCartBtn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.buyNowBtn {
+  flex: 1;
+  background: var(--color-obsidian, #080808);
+  color: #FFFFFF;
+  border: 1px solid var(--color-obsidian, #080808);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  padding: 15px;
+}
+
+.buyNowBtn:hover:not(:disabled) {
+  background: #252525;
+  border-color: #252525;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+}
+
+.buyNowBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btnSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
 }
 
 .wishBtn {
@@ -847,6 +889,10 @@
   }
 
   .addCartBtn {
+    width: 100%;
+  }
+
+  .buyNowBtn {
     width: 100%;
   }
 

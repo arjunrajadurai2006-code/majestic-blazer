@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Heart, Calendar, Shield, Sparkles, CheckCircle2, AlertCircle, Star, ArrowRight, Truck } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Heart, Calendar, Shield, Sparkles, CheckCircle2, AlertCircle, Star, ArrowRight, Truck, ShoppingBag } from 'lucide-react';
 import ProductCard from '../components/common/ProductCard';
 import { api } from '../services/api';
 import { useCart } from '../context/CartContext';
@@ -10,7 +10,8 @@ import styles from './ProductDetails.module.css';
 
 export default function ProductDetails() {
   const { slug } = useParams();
-  const { addToCart, addRentalToCart } = useCart();
+  const navigate = useNavigate();
+  const { addToCart, updateQuantity, items, addRentalToCart } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
   const { success, error: toastError } = useToast();
 
@@ -20,6 +21,7 @@ export default function ProductDetails() {
   const [activeTab, setActiveTab] = useState('buy'); // 'buy' | 'rent'
   const [selectedVariantId, setSelectedVariantId] = useState(null);
   const [buyQuantity, setBuyQuantity] = useState(1);
+  const [isBuyingNow, setIsBuyingNow] = useState(false);
 
   // Rental state
   const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
@@ -104,13 +106,73 @@ export default function ProductDetails() {
     : 0;
 
   const handleAddBuyToCart = () => {
-    if (!selectedVariant) return;
+    if (!product?.is_purchasable) {
+      toastError('This bespoke item is currently not available for purchase.');
+      return;
+    }
+    if (!selectedVariant) {
+      toastError('Please select a chest size to add to your bag.');
+      return;
+    }
+    if (selectedVariant.stock_quantity <= 0) {
+      toastError(`Size ${selectedVariant.size} is currently sold out.`);
+      return;
+    }
     addToCart(product, selectedVariant, buyQuantity);
     success(`Added "${product.name} (Size: ${selectedVariant.size})" to your bag.`);
   };
 
+  const handleBuyNow = () => {
+    if (isBuyingNow) return;
+
+    if (!product?.is_purchasable) {
+      toastError('This bespoke item is currently not available for purchase.');
+      return;
+    }
+
+    if (!selectedVariant) {
+      toastError('Please select a chest size before proceeding to checkout.');
+      return;
+    }
+
+    if (selectedVariant.stock_quantity <= 0) {
+      toastError(`Size ${selectedVariant.size} is currently sold out.`);
+      return;
+    }
+
+    const availableStock = selectedVariant.stock_quantity || 10;
+    const qtyToBuy = Math.max(1, Math.min(buyQuantity, availableStock));
+
+    try {
+      setIsBuyingNow(true);
+
+      const cartKey = `buy_${product.id}_${selectedVariant.id}`;
+      const existingItem = items?.find((i) => i.key === cartKey);
+
+      if (existingItem) {
+        updateQuantity(cartKey, qtyToBuy);
+      } else {
+        addToCart(product, selectedVariant, qtyToBuy);
+      }
+
+      success(`Proceeding to checkout with ${product.name} (Size: ${selectedVariant.size})`);
+      navigate('/checkout');
+    } catch (err) {
+      console.error('Failed to initiate Buy Now checkout:', err);
+      toastError('Unable to proceed to checkout. Please try again.');
+      setIsBuyingNow(false);
+    }
+  };
+
   const handleAddRentalToCart = () => {
-    if (!selectedVariant || !availability?.available) return;
+    if (!selectedVariant) {
+      toastError('Please select a chest size to reserve a rental.');
+      return;
+    }
+    if (!availability?.available) {
+      toastError(availability?.message || 'Selected dates are unavailable for this size.');
+      return;
+    }
     addRentalToCart(product, selectedVariant, {
       startDate,
       endDate,
@@ -119,6 +181,38 @@ export default function ProductDetails() {
       depositAmount: availability.depositAmount,
     });
     success(`Rental reserved for "${product.name} (Size: ${selectedVariant.size})" for ${availability.rentalDays} days.`);
+  };
+
+  const handleRentNow = () => {
+    if (isBuyingNow) return;
+
+    if (!selectedVariant) {
+      toastError('Please select a chest size before proceeding.');
+      return;
+    }
+
+    if (!availability?.available) {
+      toastError(availability?.message || 'Selected dates are unavailable for this size.');
+      return;
+    }
+
+    try {
+      setIsBuyingNow(true);
+      addRentalToCart(product, selectedVariant, {
+        startDate,
+        endDate,
+        rentalDays: availability.rentalDays,
+        rentAmount: availability.rentAmount,
+        depositAmount: availability.depositAmount,
+      });
+
+      success(`Proceeding to checkout with rental for ${product.name}`);
+      navigate('/checkout');
+    } catch (err) {
+      console.error('Failed to initiate Rent Now checkout:', err);
+      toastError('Unable to proceed to checkout. Please try again.');
+      setIsBuyingNow(false);
+    }
   };
 
   const handleReviewSubmit = async (e) => {
@@ -270,7 +364,8 @@ export default function ProductDetails() {
                   <button
                     type="button"
                     onClick={() => setBuyQuantity((q) => Math.max(1, q - 1))}
-                    disabled={buyQuantity <= 1}
+                    disabled={buyQuantity <= 1 || isBuyingNow}
+                    aria-label="Decrease quantity"
                   >
                     –
                   </button>
@@ -278,7 +373,8 @@ export default function ProductDetails() {
                   <button
                     type="button"
                     onClick={() => setBuyQuantity((q) => Math.min(selectedVariant?.stock_quantity || 10, q + 1))}
-                    disabled={buyQuantity >= (selectedVariant?.stock_quantity || 10)}
+                    disabled={buyQuantity >= (selectedVariant?.stock_quantity || 10) || isBuyingNow}
+                    aria-label="Increase quantity"
                   >
                     +
                   </button>
@@ -288,10 +384,29 @@ export default function ProductDetails() {
                   type="button"
                   className={styles.addCartBtn}
                   onClick={handleAddBuyToCart}
-                  disabled={!selectedVariant || selectedVariant.stock_quantity <= 0}
+                  disabled={!selectedVariant || selectedVariant.stock_quantity <= 0 || isBuyingNow}
                 >
+                  <ShoppingBag size={17} />
                   <span>Add to Bag</span>
-                  <ArrowRight size={18} />
+                </button>
+
+                <button
+                  type="button"
+                  className={styles.buyNowBtn}
+                  onClick={handleBuyNow}
+                  disabled={!selectedVariant || selectedVariant.stock_quantity <= 0 || isBuyingNow}
+                >
+                  {isBuyingNow ? (
+                    <>
+                      <span className={styles.btnSpinner} />
+                      <span>Securing Order...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Buy Now</span>
+                      <ArrowRight size={17} />
+                    </>
+                  )}
                 </button>
 
                 <button
@@ -300,7 +415,7 @@ export default function ProductDetails() {
                   onClick={() => toggleWishlist(product)}
                   aria-label="Wishlist"
                 >
-                  <Heart size={20} fill={wish ? '#FFFFFF' : 'none'} color={wish ? '#FFFFFF' : '#C0C0C0'} />
+                  <Heart size={20} fill={wish ? '#FFFFFF' : 'none'} color={wish ? '#FFFFFF' : '#111111'} />
                 </button>
               </div>
             </div>
@@ -382,10 +497,29 @@ export default function ProductDetails() {
                   type="button"
                   className={styles.addCartBtn}
                   onClick={handleAddRentalToCart}
-                  disabled={!availability?.available || checkingAvail}
+                  disabled={!availability?.available || checkingAvail || isBuyingNow}
                 >
-                  <span>Reserve Rental for Bag</span>
-                  <Calendar size={18} />
+                  <Calendar size={17} />
+                  <span>Reserve for Bag</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={styles.buyNowBtn}
+                  onClick={handleRentNow}
+                  disabled={!availability?.available || checkingAvail || isBuyingNow}
+                >
+                  {isBuyingNow ? (
+                    <>
+                      <span className={styles.btnSpinner} />
+                      <span>Securing Rental...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Rent Now</span>
+                      <ArrowRight size={17} />
+                    </>
+                  )}
                 </button>
 
                 <button
@@ -394,7 +528,7 @@ export default function ProductDetails() {
                   onClick={() => toggleWishlist(product)}
                   aria-label="Wishlist"
                 >
-                  <Heart size={20} fill={wish ? '#FFFFFF' : 'none'} color={wish ? '#FFFFFF' : '#C0C0C0'} />
+                  <Heart size={20} fill={wish ? '#FFFFFF' : 'none'} color={wish ? '#FFFFFF' : '#111111'} />
                 </button>
               </div>
             </div>
