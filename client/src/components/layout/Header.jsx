@@ -133,7 +133,7 @@ export default function Header() {
                 {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
 
-              <Logo height={44} onClick={closeMobileMenu} />
+              <Logo variant="header" onClick={closeMobileMenu} />
 
               <nav className={styles.desktopNav} aria-label="Main Navigation">
                 <ul className={styles.navLinks}>
@@ -269,7 +269,7 @@ export default function Header() {
         <div className={styles.mobileBackdrop} onClick={closeMobileMenu}>
           <div className={styles.mobileDrawer} onClick={(e) => e.stopPropagation()}>
             <div className={styles.mobileDrawerHeader}>
-              <Logo height={38} onClick={closeMobileMenu} />
+              <Logo variant="header" onClick={closeMobileMenu} />
               <button
                 type="button"
                 className={styles.mobileDrawerClose}

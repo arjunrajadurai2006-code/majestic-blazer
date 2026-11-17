@@ -187,7 +187,7 @@ export default function AuthForm({ mode = 'login' }) {
       <div className={styles.formCard}>
         {/* Brand Header */}
         <div className={styles.brandHeader}>
-          <Logo height={42} />
+          <Logo height={42} variant="bare" />
           <span className={styles.tagline}>STYLE THAT SPEAKS</span>
         </div>
 

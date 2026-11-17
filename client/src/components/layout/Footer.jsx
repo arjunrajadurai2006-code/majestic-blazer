@@ -29,7 +29,7 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={`container ${styles.grid}`}>
         <div className={styles.brand}>
-          <Logo height={56} />
+          <Logo height={56} variant="bare" />
           <p className={styles.tagline}>{BUSINESS.tagline}</p>
           <address className={styles.address}>
             <p>{BUSINESS.address}</p>

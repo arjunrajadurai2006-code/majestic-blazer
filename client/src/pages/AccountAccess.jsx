@@ -17,7 +17,7 @@ export default function AccountAccess() {
         {/* Brand Header */}
         <div className={styles.header}>
           <div className={styles.logoWrap}>
-            <Logo height={52} />
+            <Logo height={52} variant="bare" />
           </div>
           <span className={styles.eyebrow}>MAJESTIC BLAZER</span>
           <h1 className={styles.title}>Account Access</h1>

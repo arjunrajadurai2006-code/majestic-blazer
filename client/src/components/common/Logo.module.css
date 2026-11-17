@@ -1,0 +1,84 @@
+/* ==========================================================================
+   MAJESTIC BLAZER — LOGO PRESENTATION & RESPONSIVE REFINEMENT
+   ========================================================================== */
+
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast, 0.2s ease),
+              box-shadow var(--transition-fast, 0.2s ease),
+              border-color var(--transition-fast, 0.2s ease);
+}
+
+.logoLink:focus-visible {
+  outline: 2px solid var(--color-obsidian, #080808);
+  outline-offset: 3px;
+}
+
+/* Header luxury badge surface (refined presentation for white navigation bar) */
+.headerBadge {
+  background: var(--color-obsidian, #080808);
+  border: 1px solid #1f1f1f;
+  border-radius: var(--radius-sm, 3px);
+  padding: 4px 12px;
+  height: 48px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.headerBadge:hover {
+  border-color: #333333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+  transform: translateY(-0.5px);
+}
+
+.headerBadge:active {
+  transform: translateY(0);
+}
+
+/* Bare presentation (for dark surfaces such as footer and dark auth containers) */
+.bare {
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+.bare:hover {
+  opacity: 0.92;
+}
+
+/* Image containment and anti-artifact styling */
+.logoImg {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  -webkit-font-smoothing: antialiased;
+  image-rendering: -webkit-optimize-contrast;
+  /* Seamless edge blending to dissolve any micro compression artifacts */
+  -webkit-mask-image: linear-gradient(to right, transparent, black 3px, black calc(100% - 3px), transparent);
+  mask-image: linear-gradient(to right, transparent, black 3px, black calc(100% - 3px), transparent);
+}
+
+/* Responsive Scaling */
+@media (max-width: 1060px) {
+  .headerBadge {
+    height: 42px;
+    padding: 3px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerBadge {
+    height: 36px;
+    padding: 2px 8px;
+  }
+}
