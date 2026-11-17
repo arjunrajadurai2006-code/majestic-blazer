@@ -1,291 +1,170 @@
-/* Auth / Patron Sign In Page Wrapper */
+/* ==========================================================================
+   MAJESTIC BLAZER — LUXURY BLACK & SILVER AUTHENTICATION STYLES
+   ========================================================================== */
+
 .wrap {
   min-height: calc(100vh - 120px);
-  padding: 60px var(--space-3, 20px) 100px;
+  padding: 48px var(--space-3, 20px) 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-obsidian, #080808);
-  background-image: radial-gradient(circle at 50% 25%, rgba(32, 32, 32, 0.45) 0%, rgba(8, 8, 8, 0.98) 75%);
+  background-color: #080808;
+  background-image: radial-gradient(circle at 50% 20%, rgba(38, 38, 38, 0.4) 0%, rgba(8, 8, 8, 0.98) 75%);
+  box-sizing: border-box;
 }
 
-/* Centered Dark Login Card (Ref: Screenshot 2) */
+/* Luxury Centered Card */
 .formCard {
   width: 100%;
   max-width: 440px;
   background: #111111;
   border: 1px solid #242424;
-  border-radius: 2px;
-  padding: 44px 38px 40px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 1px rgba(192, 192, 192, 0.15);
+  border-radius: 4px;
+  padding: 38px 34px 34px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 1px rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  transition: border-color 0.25s ease;
 }
 
-/* Elegant Heading */
-.formCard h1 {
-  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
-  font-size: 2.15rem;
-  color: #FFFFFF;
-  margin: 0 0 12px;
+/* Brand Header */
+.brandHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
   text-align: center;
+}
+
+.tagline {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  color: #888888;
+  margin-top: 8px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   SEGMENTED TOGGLE (CUSTOMER / ADMIN)
+   ========================================================================== */
+
+.segmentedControl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: #181818;
+  border: 1px solid #282828;
+  border-radius: 4px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.segmentBtn {
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  padding: 9px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #777777;
+  user-select: none;
+}
+
+.segmentBtn:hover:not(.segmentActive) {
+  color: #b0b0b0;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.segmentActive {
+  background: #252525;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.segmentTitle {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.segmentDesc {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.64rem;
+  color: #707070;
+  letter-spacing: 0.03em;
+  transition: color 0.2s ease;
+}
+
+.segmentActive .segmentDesc {
+  color: #b8b8b8;
+}
+
+/* Heading & Subtitle */
+.headingBlock {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.title {
+  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+  font-size: 2rem;
+  color: #ffffff;
+  margin: 0 0 8px;
   font-weight: 400;
   letter-spacing: 0.015em;
   line-height: 1.2;
 }
 
-/* Silver / Muted Subtitle */
-.subtext {
-  font-family: var(--font-body, sans-serif);
-  color: #858585;
-  font-size: 0.88rem;
-  line-height: 1.55;
-  text-align: center;
-  max-width: 325px;
-  margin: 0 auto 30px;
-}
-
-/* Form Container */
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  width: 100%;
-}
-
-/* Silver Uppercase Form Labels */
-.form label {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  font-family: var(--font-body, sans-serif);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #A6A6A6;
-  user-select: none;
-}
-
-/* Dark Input Fields (#202020 background, #353535 border, #F5F5F5 text) */
-.form input {
-  height: 48px;
-  background-color: #202020 !important;
-  color: #F5F5F5 !important;
-  border: 1px solid #353535 !important;
-  border-radius: 2px;
-  padding: 0 16px;
-  font-family: var(--font-body, sans-serif);
-  font-size: 0.92rem;
-  outline: none;
-  box-sizing: border-box;
-  width: 100%;
-  color-scheme: dark;
-  transition: border-color var(--transition-fast, 0.2s ease), box-shadow var(--transition-fast, 0.2s ease);
-}
-
-/* Placeholder Styling: #858585 */
-.form input::placeholder {
-  color: #858585 !important;
-  opacity: 1;
-}
-
-.form input::-webkit-input-placeholder {
-  color: #858585 !important;
-}
-
-.form input::-moz-placeholder {
-  color: #858585 !important;
-  opacity: 1;
-}
-
-/* Silver Focus State (#C0C0C0) */
-.form input:focus {
-  border-color: #C0C0C0 !important;
-  box-shadow: 0 0 0 1px #C0C0C0, 0 0 14px rgba(192, 192, 192, 0.18) !important;
-}
-
-/* Eliminate Browser White Autofill Flash */
-.form input:-webkit-autofill,
-.form input:-webkit-autofill:hover,
-.form input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #F5F5F5 !important;
-  -webkit-box-shadow: 0 0 0px 1000px #202020 inset !important;
-  box-shadow: 0 0 0px 1000px #202020 inset !important;
-  transition: background-color 5000s ease-in-out 0s;
-  caret-color: #F5F5F5;
-}
-
-/* Forgot Password Link Row */
-.forgotRow {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: -10px;
-  margin-bottom: 2px;
-}
-
-.forgotBtn {
-  background: transparent;
-  border: none;
-  color: #858585;
-  font-family: var(--font-body, sans-serif);
+.subtitle {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  color: #7d7d7d;
   font-size: 0.82rem;
-  cursor: pointer;
-  padding: 0;
-  transition: color var(--transition-fast, 0.2s ease);
+  line-height: 1.5;
+  margin: 0 auto;
+  max-width: 330px;
 }
 
-.forgotBtn:hover {
-  color: #FFFFFF;
-}
-
-/* Error Banner */
-.error {
-  color: #ff6b6b;
-  font-size: 0.85rem;
-  background: rgba(255, 107, 107, 0.08);
-  border: 1px solid rgba(255, 107, 107, 0.25);
-  padding: 12px 14px;
-  border-radius: 2px;
-  margin: 0;
-  font-family: var(--font-body, sans-serif);
-}
-
-/* Premium White Sign-In Button (Ref: Screenshot 2) */
-.submitBtn {
-  margin-top: 4px;
-  height: 48px;
-  width: 100%;
-  background: #FFFFFF !important;
-  color: #080808 !important;
-  border: 1px solid #FFFFFF !important;
-  border-radius: 2px;
-  font-family: var(--font-body, sans-serif);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-smooth, 0.25s ease);
-  box-sizing: border-box;
-}
-
-.submitBtn:hover:not(:disabled) {
-  background: #E5E5E5 !important;
-  border-color: #E5E5E5 !important;
-  color: #000000 !important;
-  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
-}
-
-.submitBtn:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.submitBtn:disabled {
-  background: #282828 !important;
-  border-color: #383838 !important;
-  color: #707070 !important;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-/* Alt Registration & Navigation Links */
-.alt {
-  color: #858585;
-  font-family: var(--font-body, sans-serif);
-  font-size: 0.85rem;
-  text-align: center;
-  margin-top: 24px;
-}
-
-.alt a {
-  color: #FFFFFF;
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color var(--transition-fast, 0.2s ease);
-}
-
-.alt a:hover {
-  color: var(--color-silver, #C0C0C0);
-}
-
-/* =========================================
-   Expandable DEMO CUSTOMER ACCESS Section
-   ========================================= */
-.demoSection {
-  margin-top: 24px;
-  border-top: 1px solid #242424;
-  padding-top: 20px;
-}
-
-.demoToggle {
-  width: 100%;
-  background: #151515;
-  border: 1px solid #2e2e2e;
-  border-radius: 2px;
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  color: #C0C0C0;
-  font-family: var(--font-body, sans-serif);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  transition: all var(--transition-fast, 0.2s ease);
-}
-
-.demoToggle:hover {
-  background: #1a1a1a;
-  border-color: #404040;
-  color: #FFFFFF;
-}
-
-.demoToggleLeft {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.demoSparkle {
-  color: #C0C0C0;
-}
-
-.demoToggleRight {
+/* Compact Alerts */
+.successBanner {
   display: flex;
   align-items: center;
   gap: 10px;
+  background: rgba(46, 213, 115, 0.08);
+  border: 1px solid rgba(46, 213, 115, 0.25);
+  border-radius: 4px;
+  padding: 10px 14px;
+  color: #2ed573;
+  font-size: 0.82rem;
+  margin-bottom: 18px;
+  animation: fadeIn 0.2s ease;
 }
 
-.demoBadge {
-  background: #252525;
-  border: 1px solid #383838;
-  color: #A0A0A0;
-  font-size: 0.62rem;
-  padding: 2px 6px;
-  border-radius: 2px;
-  letter-spacing: 0.1em;
-}
-
-.demoContent {
-  margin-top: 10px;
-  background: #141414;
-  border: 1px solid #262626;
-  border-radius: 2px;
-  padding: 18px 16px;
+.errorBanner {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-  animation: fadeIn 0.2s ease-out;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 71, 87, 0.08);
+  border: 1px solid rgba(255, 71, 87, 0.28);
+  border-radius: 4px;
+  padding: 10px 14px;
+  color: #ff6b81;
+  font-size: 0.82rem;
+  margin-bottom: 18px;
+  animation: fadeIn 0.2s ease;
+}
+
+.bannerIcon {
+  flex-shrink: 0;
 }
 
 @keyframes fadeIn {
@@ -299,312 +178,311 @@
   }
 }
 
-.demoDesc {
-  color: #858585;
-  font-size: 0.8rem;
-  line-height: 1.55;
-  margin: 0;
-}
-
-.demoCreds {
-  background: #1b1b1b;
-  border: 1px solid #303030;
-  border-radius: 2px;
-  padding: 12px 14px;
+/* Form Layout */
+.form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 18px;
+  width: 100%;
 }
 
-.credRow {
+.form label {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.8rem;
+  flex-direction: column;
+  gap: 7px;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.69rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9c9c9c;
+  user-select: none;
 }
 
-.credLabel {
-  color: #858585;
-  font-weight: 500;
+.form input {
+  height: 46px;
+  background-color: #1a1a1a !important;
+  color: #f2f2f2 !important;
+  border: 1px solid #2e2e2e !important;
+  border-radius: 3px;
+  padding: 0 14px;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.9rem;
+  outline: none;
+  box-sizing: border-box;
+  width: 100%;
+  color-scheme: dark;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.credValueWrap {
+.form input:focus {
+  border-color: #6a6a6a !important;
+  box-shadow: 0 0 0 1px #6a6a6a;
+}
+
+.form input::placeholder {
+  color: #656565 !important;
+  opacity: 1;
+}
+
+/* Forgot Password */
+.forgotRow {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  justify-content: flex-end;
+  margin-top: -6px;
+  margin-bottom: 2px;
 }
 
-.credValue {
-  color: #E5E5E5;
-  font-family: monospace;
-  font-size: 0.82rem;
-  background: #111111;
-  padding: 2px 6px;
-  border-radius: 2px;
-  border: 1px solid #2c2c2c;
-}
-
-.copyBtn {
-  background: transparent;
+.forgotBtn {
+  background: none;
   border: none;
-  color: #858585;
+  padding: 0;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.76rem;
+  color: #7d7d7d;
   cursor: pointer;
-  padding: 2px;
+  transition: color 0.2s ease;
+}
+
+.forgotBtn:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* Primary Submit Button */
+.submitBtn {
+  height: 48px;
+  background: linear-gradient(180deg, #2d2d2d 0%, #1e1e1e 100%);
+  color: #ffffff;
+  border: 1px solid #484848;
+  border-radius: 3px;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  transition: color var(--transition-fast, 0.2s ease);
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  margin-top: 4px;
 }
 
-.copyBtn:hover {
-  color: #FFFFFF;
+.submitBtn:hover:not(:disabled) {
+  background: linear-gradient(180deg, #3c3c3c 0%, #282828 100%);
+  border-color: #777777;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
 }
 
-.checkIcon {
-  color: #4ade80;
+.submitBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
-.demoActions {
-  display: grid;
-  grid-template-columns: 1fr 1.3fr;
+/* Demo Actions Section */
+.demoActionWrap {
+  display: flex;
+  flex-direction: column;
   gap: 10px;
+  margin-top: 4px;
 }
 
-.autoFillBtn {
+.demoActionBtn {
   height: 38px;
-  background: #202020;
-  color: #C0C0C0;
-  border: 1px solid #383838;
-  border-radius: 2px;
-  font-family: var(--font-body, sans-serif);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all var(--transition-fast, 0.2s ease);
-}
-
-.autoFillBtn:hover {
-  background: #282828;
-  border-color: #505050;
-  color: #FFFFFF;
-}
-
-.quickSignInBtn {
-  height: 38px;
-  background: #C0C0C0;
-  color: #080808;
-  border: 1px solid #C0C0C0;
-  border-radius: 2px;
-  font-family: var(--font-body, sans-serif);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  color: #b5b5b5;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  transition: all var(--transition-fast, 0.2s ease);
+  gap: 8px;
+  transition: all 0.2s ease;
 }
 
-.quickSignInBtn:hover:not(:disabled) {
-  background: #FFFFFF;
-  border-color: #FFFFFF;
-  color: #000000;
+.demoActionBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
 }
 
-.quickSignInBtn:disabled {
-  background: #333333;
-  border-color: #333333;
-  color: #707070;
+.demoActionBtn:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-/* =========================================
-   Forgot Password Modal Styling
-   ========================================= */
+/* Alt text / create account link */
+.altText {
+  text-align: center;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.8rem;
+  color: #777777;
+  margin: 14px 0 0;
+}
+
+.altLink {
+  color: #d6d6d6;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 4px;
+  transition: color 0.2s ease;
+}
+
+.altLink:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* Modal Overlay & Card */
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.82);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
   z-index: 1000;
+  padding: 16px;
 }
 
 .modalContent {
   background: #141414;
-  border: 1px solid #353535;
-  border-radius: 2px;
-  padding: 36px 32px;
+  border: 1px solid #303030;
+  border-radius: 4px;
   width: 100%;
-  max-width: 440px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  max-width: 400px;
+  padding: 30px 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
 }
 
-.modalContent h2 {
-  font-family: var(--font-display, serif);
+.modalTitle {
+  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
   font-size: 1.6rem;
-  color: #FFFFFF;
-  margin: 0 0 8px;
+  color: #ffffff;
+  margin: 0 0 6px;
   font-weight: 400;
 }
 
-.modalContent p {
-  color: #858585;
-  font-size: 0.88rem;
-  line-height: 1.6;
+.modalDesc {
+  font-size: 0.82rem;
+  color: #888888;
   margin: 0 0 20px;
+  line-height: 1.45;
 }
 
 .forgotForm {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .forgotForm input {
-  height: 48px;
-  background-color: #202020 !important;
-  color: #F5F5F5 !important;
-  border: 1px solid #353535 !important;
-  border-radius: 2px;
-  padding: 0 16px;
-  font-size: 0.92rem;
+  height: 44px;
+  background-color: #1c1c1c !important;
+  color: #f2f2f2 !important;
+  border: 1px solid #333333 !important;
+  border-radius: 3px;
+  padding: 0 14px;
+  font-size: 0.88rem;
   outline: none;
-  width: 100%;
-  box-sizing: border-box;
 }
 
 .forgotForm input:focus {
-  border-color: #C0C0C0 !important;
+  border-color: #777777 !important;
 }
 
 .modalBtns {
   display: flex;
-  gap: 12px;
-  margin-top: 6px;
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .resetBtn {
   flex: 1;
-  height: 44px;
-  background: #FFFFFF;
-  color: #080808;
-  border: 1px solid #FFFFFF;
-  border-radius: 2px;
+  height: 40px;
+  background: #282828;
+  border: 1px solid #444444;
+  color: #ffffff;
+  border-radius: 3px;
+  font-size: 0.74rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  font-size: 0.8rem;
   cursor: pointer;
-  transition: all var(--transition-fast, 0.2s ease);
+  transition: all 0.2s ease;
 }
 
 .resetBtn:hover:not(:disabled) {
-  background: #E5E5E5;
-}
-
-.resetBtn:disabled {
   background: #333333;
-  border-color: #333333;
-  color: #707070;
-  cursor: not-allowed;
+  border-color: #777777;
 }
 
 .cancelBtn {
-  height: 44px;
+  height: 40px;
+  padding: 0 16px;
   background: transparent;
-  color: #A0A0A0;
-  border: 1px solid #353535;
-  border-radius: 2px;
-  padding: 0 20px;
-  font-size: 0.8rem;
+  border: 1px solid #333333;
+  color: #888888;
+  border-radius: 3px;
+  font-size: 0.74rem;
   cursor: pointer;
-  transition: all var(--transition-fast, 0.2s ease);
+  transition: all 0.2s ease;
 }
 
 .cancelBtn:hover {
-  color: #FFFFFF;
+  color: #ffffff;
   border-color: #555555;
 }
 
 .forgotSuccess {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  background: rgba(74, 222, 128, 0.08);
-  border: 1px solid rgba(74, 222, 128, 0.3);
-  padding: 16px;
-  border-radius: 2px;
+  text-align: center;
 }
 
 .forgotSuccess p {
-  color: #4ade80;
-  margin: 0;
-  font-size: 0.88rem;
+  color: #2ed573;
+  font-size: 0.86rem;
+  margin-bottom: 18px;
 }
 
 .closeBtn {
+  width: 100%;
   height: 38px;
   background: #252525;
-  color: #FFFFFF;
-  border: 1px solid #404040;
-  border-radius: 2px;
+  border: 1px solid #3c3c3c;
+  color: #ffffff;
+  border-radius: 3px;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 
-/* =========================================
-   Mobile Responsiveness
-   ========================================= */
-@media (max-width: 540px) {
+/* Responsive adjustments */
+@media (max-width: 480px) {
   .wrap {
-    padding: 30px 14px 60px;
+    padding: 30px 16px 60px;
   }
 
   .formCard {
-    padding: 32px 20px;
+    padding: 28px 20px 24px;
   }
 
-  .formCard h1 {
-    font-size: 1.85rem;
+  .title {
+    font-size: 1.75rem;
   }
 
-  .demoActions {
-    grid-template-columns: 1fr;
+  .segmentTitle {
+    font-size: 0.7rem;
   }
 
-  .credRow {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-}
-
-@media (max-width: 380px) {
-  .wrap {
-    padding: 20px 10px 48px;
-  }
-
-  .formCard {
-    padding: 24px 14px;
-  }
-
-  .formCard h1 {
-    font-size: 1.65rem;
-  }
-
-  .demoToggle {
-    padding: 10px 12px;
-    font-size: 0.72rem;
-  }
-
-  .credCard {
-    padding: 14px 12px;
+  .segmentDesc {
+    font-size: 0.6rem;
   }
 }

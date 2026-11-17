@@ -8,6 +8,17 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(Boolean(tokenStore.get()));
 
   useEffect(() => {
+    // Check if token was provided via query param from unified login redirect
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const urlToken = params.get('token');
+      if (urlToken) {
+        tokenStore.set(urlToken);
+        const cleanUrl = window.location.pathname + (window.location.hash || '');
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+    }
+
     if (!tokenStore.get()) {
       setLoading(false);
       return;
@@ -55,6 +66,22 @@ export function AuthProvider({ children }) {
       tokenStore.set(res.data.token);
       setAdmin(res.data.user);
       return res.data.user;
+    },
+    demoAdminLogin: async () => {
+      const res = await api('/auth/demo-admin-login', { method: 'POST', auth: false });
+      tokenStore.set(res.data.token);
+      setAdmin(res.data.user);
+      return res.data.user;
+    },
+    customerLogin: async (body) => {
+      const res = await api('/auth/login', { method: 'POST', body, auth: false });
+      localStorage.setItem('mb_token', res.data.token);
+      return res.data;
+    },
+    demoCustomerLogin: async () => {
+      const res = await api('/auth/demo-customer-login', { method: 'POST', auth: false });
+      localStorage.setItem('mb_token', res.data.token);
+      return res.data;
     },
     logout: async () => {
       try {

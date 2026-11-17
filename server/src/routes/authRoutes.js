@@ -18,8 +18,8 @@ router.put('/password', authenticate, ctrl.changePassword);
 router.post('/forgot-password', authLimiter, ctrl.forgotPassword);
 router.post('/reset-password', authLimiter, ctrl.resetPassword);
 router.get('/config', ctrl.getAuthConfig);
-router.get('/demo-customer', ctrl.getDemoCustomer);
-router.get('/demo-admin', ctrl.getDemoAdmin);
+router.post('/demo-customer-login', authLimiter, ctrl.demoCustomerLogin);
+router.post('/demo-admin-login', authLimiter, ctrl.demoAdminLogin);
 
 // Saved addresses
 router.get('/addresses', authenticate, ctrl.listAddresses);

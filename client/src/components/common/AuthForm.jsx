@@ -1,32 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Sparkles, ChevronDown, ChevronUp, Copy, Check, ArrowRight } from 'lucide-react';
+import { ArrowRight, ShieldCheck, UserCheck, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { api } from '../../services/api';
+import Logo from './Logo';
 import styles from './AuthForm.module.css';
 
-const DEMO_EMAIL = 'customer.demo@majesticblazer.com';
-const DEMO_PASSWORD = 'CustomerDemo2026!';
-
-const COPY = {
-  login: {
-    title: 'Patron Sign In',
-    action: 'SIGN IN TO ACCOUNT',
-    alt: ['New to Majestic Blazer?', 'Create an account', '/register'],
-  },
-  register: {
-    title: 'Create Patron Account',
-    action: 'JOIN MAJESTIC BLAZER',
-    alt: ['Already registered?', 'Sign in', '/login'],
-  },
-};
-
-export default function AuthForm({ mode }) {
-  const { login, register } = useAuth();
+export default function AuthForm({ mode = 'login' }) {
+  const { login, register, demoCustomerLogin, adminLogin, demoAdminLogin } = useAuth();
   const { success, error: toastError } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Mode selection: 'customer' or 'admin' (default: 'customer')
+  const [activeRole, setActiveRole] = useState('customer');
 
   // Controlled form states
   const [email, setEmail] = useState('');
@@ -34,11 +22,10 @@ export default function AuthForm({ mode }) {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
 
-  // UI & Demo states
+  // UI status states
   const [error, setError] = useState('');
+  const [actionSuccess, setActionSuccess] = useState('');
   const [busy, setBusy] = useState(false);
-  const [demoExpanded, setDemoExpanded] = useState(false);
-  const [copiedEmail, setCopiedEmail] = useState(false);
   const [demoMode, setDemoMode] = useState(true);
 
   // Forgot password modal
@@ -47,9 +34,7 @@ export default function AuthForm({ mode }) {
   const [forgotMsg, setForgotMsg] = useState('');
   const [forgotBusy, setForgotBusy] = useState(false);
 
-  const copy = COPY[mode];
-
-  // Fetch demo mode configuration from backend
+  // Check demo mode from backend configuration
   useEffect(() => {
     api('/auth/config', { auth: false })
       .then((res) => {
@@ -58,29 +43,40 @@ export default function AuthForm({ mode }) {
         }
       })
       .catch(() => {
-        // Silently default to true
+        // Graceful fallback to true
       });
   }, []);
 
+  // Clear errors when switching roles or modes
+  useEffect(() => {
+    setError('');
+    setActionSuccess('');
+    setEmail('');
+    setPassword('');
+  }, [activeRole, mode]);
+
+  // Handle Customer & Admin Submission
   const onSubmit = async (event) => {
     event.preventDefault();
     setError('');
+    setActionSuccess('');
 
     const trimmedEmail = email.trim();
     if (!trimmedEmail) {
-      setError('Please enter your email address.');
+      setError(activeRole === 'admin' ? 'Please enter your administrator email.' : 'Please enter your email address.');
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(trimmedEmail)) {
-      setError('Please enter a valid email address (e.g. patron@example.com).');
+      setError('Please enter a valid email address.');
       return;
     }
     if (!password) {
-      setError('Please enter a password.');
+      setError(activeRole === 'admin' ? 'Please enter your administrator password.' : 'Please enter your password.');
       return;
     }
-    if (!demoMode && mode === 'register') {
+
+    if (mode === 'register' && !demoMode) {
       if (password.length < 8) {
         setError('Password must be at least 8 characters long.');
         return;
@@ -93,60 +89,86 @@ export default function AuthForm({ mode }) {
 
     setBusy(true);
 
-    const payload =
-      mode === 'login'
-        ? { email: trimmedEmail, password }
-        : { fullName: fullName.trim(), phone: phone.trim(), email: trimmedEmail, password };
-
     try {
-      await (mode === 'login' ? login(payload) : register(payload));
-      // Redirect to customer homepage or originally requested page
-      navigate(location.state?.from || '/', { replace: true });
+      if (mode === 'register') {
+        // Customer Registration
+        await register({ fullName: fullName.trim(), phone: phone.trim(), email: trimmedEmail, password });
+        success('Account created successfully. Welcome to Majestic Blazer.');
+        navigate(location.state?.from || '/', { replace: true });
+      } else if (activeRole === 'admin') {
+        // Administrator Login
+        const data = await adminLogin({ email: trimmedEmail, password });
+        setActionSuccess('Administrator access confirmed. Redirecting to Atelier Console...');
+        const adminUrl = import.meta.env.VITE_ADMIN_URL ||
+          (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+            ? 'http://localhost:5174'
+            : 'https://majestic-blazer-admin.vercel.app');
+
+        setTimeout(() => {
+          window.location.href = `${adminUrl.replace(/\/$/, '')}/?token=${encodeURIComponent(data.token)}`;
+        }, 350);
+      } else {
+        // Customer Login
+        await login({ email: trimmedEmail, password });
+        navigate(location.state?.from || '/', { replace: true });
+      }
     } catch (err) {
-      setError(err.details?.[0]?.message || err.message);
-    } finally {
+      setError(err.details?.[0]?.message || err.message || 'Authentication failed. Please verify your credentials.');
       setBusy(false);
     }
   };
 
-  const handleAutoFillDemo = () => {
-    setEmail(DEMO_EMAIL);
-    setPassword(DEMO_PASSWORD);
+  // 1-Click Customer Demo Login
+  const handleContinueAsDemoCustomer = async () => {
     setError('');
-    success('Demo credentials loaded into form.');
-  };
-
-  const handleCopyDemoEmail = () => {
-    navigator.clipboard?.writeText(DEMO_EMAIL);
-    setCopiedEmail(true);
-    setTimeout(() => setCopiedEmail(false), 2000);
-  };
-
-  const handleQuickDemoSignIn = async () => {
-    setEmail(DEMO_EMAIL);
-    setPassword(DEMO_PASSWORD);
-    setError('');
+    setActionSuccess('');
     setBusy(true);
 
     try {
-      // Real authentication via existing login system — never bypassed
-      await login({ email: DEMO_EMAIL, password: DEMO_PASSWORD });
-      success('Authenticated as Demo Patron.');
+      await demoCustomerLogin();
+      success('Welcome to Majestic Blazer. Demo Customer session started.');
       navigate(location.state?.from || '/', { replace: true });
     } catch (err) {
-      setError(err.details?.[0]?.message || err.message);
-    } finally {
+      setError(err.message || 'Unable to start demo customer session.');
       setBusy(false);
     }
   };
 
+  // 1-Click Admin Demo Login
+  const handleEnterAdminDemo = async () => {
+    setError('');
+    setActionSuccess('');
+    setBusy(true);
+
+    try {
+      const data = await demoAdminLogin();
+      setActionSuccess('Demo administrator authenticated. Redirecting to Atelier Console...');
+      const adminUrl = import.meta.env.VITE_ADMIN_URL ||
+        (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+          ? 'http://localhost:5174'
+          : 'https://majestic-blazer-admin.vercel.app');
+
+      setTimeout(() => {
+        window.location.href = `${adminUrl.replace(/\/$/, '')}/?token=${encodeURIComponent(data.token)}`;
+      }, 350);
+    } catch (err) {
+      setError(err.message || 'Unable to access demo administrator portal.');
+      setBusy(false);
+    }
+  };
+
+  // Forgot password submission
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
-    if (!forgotEmail) return;
+    if (!forgotEmail.trim()) return;
     setForgotBusy(true);
     try {
-      const res = await api.post('/auth/forgot-password', { email: forgotEmail });
-      setForgotMsg(res.message || 'Password reset instructions generated.');
+      const res = await api('/auth/forgot-password', {
+        method: 'POST',
+        body: { email: forgotEmail.trim() },
+        auth: false,
+      });
+      setForgotMsg(res.message || 'If an account exists, password reset instructions have been generated.');
       success('Password reset initiated.');
     } catch (err) {
       toastError(err.message || 'Unable to process reset request.');
@@ -156,59 +178,75 @@ export default function AuthForm({ mode }) {
   };
 
   return (
-    <div className={`container ${styles.wrap}`}>
+    <div className={styles.wrap}>
       <div className={styles.formCard}>
-        <h1>{copy.title}</h1>
-        <p className={styles.subtext}>
-          {mode === 'login'
-            ? 'Access your purchase history, active rentals, saved addresses and tax invoices.'
-            : 'Register to manage your bespoke blazer orders and reserve rentals seamlessly.'}
-        </p>
+        {/* Brand Header */}
+        <div className={styles.brandHeader}>
+          <Logo height={42} />
+          <span className={styles.tagline}>STYLE THAT SPEAKS</span>
+        </div>
 
-        {demoMode && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '10px',
-            background: 'rgba(255, 255, 255, 0.04)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            borderRadius: '6px',
-            padding: '0.85rem 1rem',
-            marginBottom: '1.25rem',
-            color: '#e0e0e0',
-            fontSize: '0.82rem',
-            lineHeight: '1.4',
-          }}>
-            <Sparkles size={16} style={{ color: '#c5a059', flexShrink: 0, marginTop: '2px' }} />
-            <div>
-              <strong style={{ color: '#ffffff', display: 'block', marginBottom: '2px' }}>
-                DEMO ACCESS ACTIVE
-              </strong>
-              <span>
-                Enter any valid email and non-empty password to sign in or auto-create a demo account. No email verification required.
-              </span>
-            </div>
+        {/* Unified Role Segmented Control (Only on Login mode) */}
+        {mode === 'login' && (
+          <div className={styles.segmentedControl} role="tablist" aria-label="Login Role Selection">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeRole === 'customer'}
+              className={`${styles.segmentBtn} ${activeRole === 'customer' ? styles.segmentActive : ''}`}
+              onClick={() => setActiveRole('customer')}
+            >
+              <span className={styles.segmentTitle}>CUSTOMER</span>
+              <span className={styles.segmentDesc}>Shopping &amp; Rentals</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeRole === 'admin'}
+              className={`${styles.segmentBtn} ${activeRole === 'admin' ? styles.segmentActive : ''}`}
+              onClick={() => setActiveRole('admin')}
+            >
+              <span className={styles.segmentTitle}>ADMIN</span>
+              <span className={styles.segmentDesc}>Management Portal</span>
+            </button>
           </div>
         )}
 
-        {location.state?.message && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: 'rgba(46, 213, 115, 0.1)',
-            border: '1px solid rgba(46, 213, 115, 0.3)',
-            borderRadius: '4px',
-            padding: '0.75rem 1rem',
-            color: '#2ed573',
-            fontSize: '0.85rem',
-            marginBottom: '1rem',
-          }}>
-            <Check size={16} />
-            <span>{location.state.message}</span>
+        {/* Dynamic Heading based on Mode & Role */}
+        <div className={styles.headingBlock}>
+          <h1 className={styles.title}>
+            {mode === 'register'
+              ? 'Create Account'
+              : activeRole === 'admin'
+                ? 'Administrator Access'
+                : 'Welcome Back'}
+          </h1>
+          <p className={styles.subtitle}>
+            {mode === 'register'
+              ? 'Join Majestic Blazer to manage bespoke orders and reserve rentals.'
+              : activeRole === 'admin'
+                ? 'Atelier Operations Console • Secure Management Gateway'
+                : 'Sign in to access your orders, active rentals and saved preferences.'}
+          </p>
+        </div>
+
+        {/* Action Success Alert (Compact & Temporary) */}
+        {actionSuccess && (
+          <div className={styles.successBanner} role="status">
+            <CheckCircle2 size={16} className={styles.bannerIcon} />
+            <span>{actionSuccess}</span>
           </div>
         )}
 
+        {/* Error Alert (Compact) */}
+        {error && (
+          <div className={styles.errorBanner} role="alert">
+            <AlertCircle size={16} className={styles.bannerIcon} />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Authentication Form */}
         <form className={styles.form} onSubmit={onSubmit} noValidate>
           {mode === 'register' && (
             <>
@@ -239,11 +277,11 @@ export default function AuthForm({ mode }) {
           )}
 
           <label>
-            EMAIL ADDRESS
+            {activeRole === 'admin' && mode === 'login' ? 'ADMIN EMAIL' : 'EMAIL ADDRESS'}
             <input
               name="email"
               type="email"
-              placeholder="e.g. patron@example.com"
+              placeholder={activeRole === 'admin' && mode === 'login' ? 'e.g. admin@majesticblazer.com' : 'e.g. patron@example.com'}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
@@ -252,11 +290,15 @@ export default function AuthForm({ mode }) {
           </label>
 
           <label>
-            PASSWORD
+            {activeRole === 'admin' && mode === 'login' ? 'ADMIN PASSWORD' : 'PASSWORD'}
             <input
               name="password"
               type="password"
-              placeholder={demoMode ? 'Any non-empty password' : (mode === 'register' ? 'Min 8 chars, 1 letter, 1 number' : 'Your account password')}
+              placeholder={
+                mode === 'register' && !demoMode
+                  ? 'Min 8 chars, 1 letter, 1 number'
+                  : 'Your account password'
+              }
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
@@ -264,104 +306,91 @@ export default function AuthForm({ mode }) {
             />
           </label>
 
-          {mode === 'login' && (
+          {/* Forgot Password link (Customer mode only) */}
+          {mode === 'login' && activeRole === 'customer' && (
             <div className={styles.forgotRow}>
               <button
                 type="button"
                 className={styles.forgotBtn}
-                onClick={() => setShowForgot(true)}
+                onClick={() => {
+                  setForgotEmail(email);
+                  setForgotMsg('');
+                  setShowForgot(true);
+                }}
               >
                 Forgot your password?
               </button>
             </div>
           )}
 
-          {error && <p className={styles.error} role="alert">{error}</p>}
-
+          {/* Primary Action Button */}
           <button type="submit" disabled={busy} className={styles.submitBtn}>
-            {busy ? 'Authenticating...' : copy.action}
+            {busy ? (
+              <span>Authenticating...</span>
+            ) : mode === 'register' ? (
+              <span>JOIN MAJESTIC BLAZER</span>
+            ) : activeRole === 'admin' ? (
+              <span>SECURE ADMIN SIGN IN</span>
+            ) : (
+              <span>SIGN IN</span>
+            )}
           </button>
 
-          <p className={styles.alt}>
-            {copy.alt[0]} <Link to={copy.alt[2]}>{copy.alt[1]}</Link>
-          </p>
+          {/* Demo Action Buttons (When DEMO_MODE is active) */}
+          {demoMode && mode === 'login' && (
+            <div className={styles.demoActionWrap}>
+              {activeRole === 'customer' ? (
+                <button
+                  type="button"
+                  disabled={busy}
+                  className={styles.demoActionBtn}
+                  onClick={handleContinueAsDemoCustomer}
+                  title="Sign in instantly with a generated demo customer account"
+                >
+                  <UserCheck size={14} />
+                  <span>Continue as Demo Customer</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled={busy}
+                  className={styles.demoActionBtn}
+                  onClick={handleEnterAdminDemo}
+                  title="Sign in to the Atelier Management Portal using secure backend admin verification"
+                >
+                  <ShieldCheck size={14} />
+                  <span>Enter Admin Demo</span>
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Footer Navigation Link */}
+          {mode === 'login' ? (
+            activeRole === 'customer' && (
+              <p className={styles.altText}>
+                New to Majestic Blazer?{' '}
+                <Link to="/register" className={styles.altLink}>
+                  Create Account
+                </Link>
+              </p>
+            )
+          ) : (
+            <p className={styles.altText}>
+              Already registered?{' '}
+              <Link to="/login" className={styles.altLink}>
+                Sign In
+              </Link>
+            </p>
+          )}
         </form>
-
-        {/* Expandable DEMO CUSTOMER ACCESS Section */}
-        {mode === 'login' && demoMode && (
-          <div className={styles.demoSection}>
-            <button
-              type="button"
-              className={styles.demoToggle}
-              onClick={() => setDemoExpanded((prev) => !prev)}
-              aria-expanded={demoExpanded}
-            >
-              <div className={styles.demoToggleLeft}>
-                <Sparkles size={16} className={styles.demoSparkle} />
-                <span>DEMO CUSTOMER ACCESS</span>
-              </div>
-              <div className={styles.demoToggleRight}>
-                <span className={styles.demoBadge}>SANDBOX</span>
-                {demoExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </div>
-            </button>
-
-            {demoExpanded && (
-              <div className={styles.demoContent}>
-                <p className={styles.demoDesc}>
-                  Experience the customer portal with pre-configured order history, active rentals, and saved address preferences.
-                </p>
-
-                <div className={styles.demoCreds}>
-                  <div className={styles.credRow}>
-                    <span className={styles.credLabel}>Email:</span>
-                    <span className={styles.credValueWrap}>
-                      <code className={styles.credValue}>{DEMO_EMAIL}</code>
-                      <button
-                        type="button"
-                        onClick={handleCopyDemoEmail}
-                        className={styles.copyBtn}
-                        title="Copy demo email"
-                      >
-                        {copiedEmail ? <Check size={14} className={styles.checkIcon} /> : <Copy size={14} />}
-                      </button>
-                    </span>
-                  </div>
-                  <div className={styles.credRow}>
-                    <span className={styles.credLabel}>Password:</span>
-                    <code className={styles.credValue}>{DEMO_PASSWORD}</code>
-                  </div>
-                </div>
-
-                <div className={styles.demoActions}>
-                  <button
-                    type="button"
-                    className={styles.autoFillBtn}
-                    onClick={handleAutoFillDemo}
-                  >
-                    Auto-fill Credentials
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.quickSignInBtn}
-                    onClick={handleQuickDemoSignIn}
-                    disabled={busy}
-                  >
-                    <span>{busy ? 'Authenticating...' : 'Sign in as Demo Patron'}</span>
-                    <ArrowRight size={14} />
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
 
         {/* Forgot Password Modal */}
         {showForgot && (
           <div className={styles.modalOverlay} onClick={() => setShowForgot(false)}>
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-              <h2>Reset Password</h2>
-              <p>Enter the email address associated with your account.</p>
+              <h2 className={styles.modalTitle}>Reset Password</h2>
+              <p className={styles.modalDesc}>Enter the email address associated with your customer account.</p>
 
               {forgotMsg ? (
                 <div className={styles.forgotSuccess}>
@@ -381,7 +410,7 @@ export default function AuthForm({ mode }) {
                   />
                   <div className={styles.modalBtns}>
                     <button type="submit" disabled={forgotBusy} className={styles.resetBtn}>
-                      {forgotBusy ? 'Generating...' : 'Send Reset Link'}
+                      {forgotBusy ? 'Sending...' : 'Send Reset Link'}
                     </button>
                     <button type="button" onClick={() => setShowForgot(false)} className={styles.cancelBtn}>
                       Cancel

@@ -247,46 +247,47 @@ export const deleteAddress = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'Address removed' });
 });
 
-// Demo customer info endpoint (controlled by DEMO_MODE)
-export const getDemoCustomer = asyncHandler(async (req, res) => {
+// Demo customer auto-login endpoint
+export const demoCustomerLogin = asyncHandler(async (req, res) => {
   if (!env.demoMode) {
     throw new AppError('Demo customer access is disabled', 403);
   }
-  const demoEmail = 'customer.demo@majesticblazer.com';
-  let user = await User.findByEmail(demoEmail);
-  if (!user) {
-    const passwordHash = await bcrypt.hash('CustomerDemo2026!', BCRYPT_ROUNDS);
-    const id = await User.create({
-      fullName: 'Demo Patron',
-      email: demoEmail,
-      phone: '8903238882',
-      passwordHash,
-      role: 'customer',
-    });
-    user = await User.findById(id);
-  }
-  res.json({
+  const uniqueId = crypto.randomBytes(4).toString('hex');
+  const demoEmail = `patron.demo.${uniqueId}@majesticblazer.com`;
+  const passwordHash = await bcrypt.hash(`DemoPass_${uniqueId}!`, BCRYPT_ROUNDS);
+  const id = await User.create({
+    fullName: `Demo Patron ${uniqueId.toUpperCase()}`,
+    email: demoEmail,
+    phone: '8903238882',
+    passwordHash,
+    role: 'customer',
+  });
+  const user = await User.findById(id);
+  res.status(200).json({
     success: true,
     data: {
-      email: demoEmail,
-      role: 'customer',
-      note: 'Demo mode active: Any valid email and password are accepted.',
+      token: signToken(user),
+      user: publicUser(user),
     },
   });
 });
 
-// Demo admin info endpoint (controlled by DEMO_MODE)
-export const getDemoAdmin = asyncHandler(async (req, res) => {
+// Demo admin auto-login endpoint
+export const demoAdminLogin = asyncHandler(async (req, res) => {
   if (!env.demoMode) {
-    throw new AppError('Demo admin access is disabled', 403);
+    throw new AppError('Demo administrator access is disabled', 403);
   }
   await ensureDemoAdmin();
-  res.json({
+  const adminEmail = 'admin@majesticblazer.com';
+  const user = await User.findByEmail(adminEmail);
+  if (!user || user.role !== 'admin' || !user.is_active) {
+    throw new AppError('Configured administrator account not found or inactive', 404);
+  }
+  res.status(200).json({
     success: true,
     data: {
-      email: 'admin@majesticblazer.com',
-      role: 'admin',
-      note: 'Enter the designated administrator credentials',
+      token: signToken(user),
+      user: publicUser(user),
     },
   });
 });
