@@ -86,7 +86,7 @@ const corsOrigins = Array.from(
 export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   isProd: process.env.NODE_ENV === 'production',
-  demoMode: process.env.DEMO_MODE !== 'false' && (process.env.DEMO_MODE === 'true' || process.env.NODE_ENV !== 'production'),
+  demoMode: process.env.DEMO_MODE !== 'false',
   port: Number(process.env.PORT) || 5000,
   clientUrl: process.env.CLIENT_URL || '',
   adminUrl: process.env.ADMIN_URL || '',

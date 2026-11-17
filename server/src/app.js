@@ -28,16 +28,33 @@ app.use(
   })
 );
 
-// Robust CORS configuration
+// Robust CORS configuration with support for official domains and Vercel deployments
+const allowedOriginPatterns = [
+  /^https:\/\/majestic-blazer.*\.vercel\.app$/,
+  /^https:\/\/.*\.majesticblazer\.com$/,
+  /^https:\/\/majesticblazer\.com$/,
+  /^http:\/\/localhost:(5173|5174|3000|5000)$/,
+  /^http:\/\/127\.0\.0\.1:(5173|5174|3000|5000)$/,
+];
+
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
       if (!origin) return callback(null, true);
-      if (!env.isProd || env.corsOrigins.length === 0 || env.corsOrigins.includes(origin)) {
+
+      // In non-production or if no origins configured, allow all
+      if (!env.isProd || env.corsOrigins.length === 0) return callback(null, true);
+
+      // Allow configured exact origins
+      if (env.corsOrigins.includes(origin)) return callback(null, true);
+
+      // Allow official domains and Vercel deployments (production & preview branches)
+      if (allowedOriginPatterns.some((pattern) => pattern.test(origin))) {
         return callback(null, true);
       }
-      return callback(new Error('CORS policy: Not allowed by CORS'), false);
+
+      return callback(new Error(`CORS policy: Origin ${origin} not allowed by CORS`), false);
     },
     credentials: true,
   })

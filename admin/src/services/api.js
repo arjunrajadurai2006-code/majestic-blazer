@@ -1,5 +1,32 @@
-const rawBase = import.meta.env.VITE_API_URL || '/api';
-export const API_BASE = rawBase.replace(/\/+$/, '');
+function resolveApiBase() {
+  const raw = (import.meta.env.VITE_API_URL || '').trim();
+
+  if (!raw) {
+    // If running in browser and on production host, default to deployed Railway API
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return 'https://majestic-blazer-production.up.railway.app/api';
+    }
+    return '/api';
+  }
+
+  let base = raw;
+  // If user omitted http/https and relative slash (e.g. "majestic-blazer-production.up.railway.app")
+  if (!base.startsWith('http://') && !base.startsWith('https://') && !base.startsWith('/')) {
+    base = `https://${base}`;
+  }
+
+  // Remove trailing slashes
+  base = base.replace(/\/+$/, '');
+
+  // If it's an absolute URL and doesn't end with /api, ensure /api is appended
+  if ((base.startsWith('http://') || base.startsWith('https://')) && !base.endsWith('/api')) {
+    base = `${base}/api`;
+  }
+
+  return base;
+}
+
+export const API_BASE = resolveApiBase();
 export const getApiUrl = (path) => `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
 
 const TOKEN_KEY = 'mb_admin_token';
@@ -20,19 +47,36 @@ export async function api(path, { method = 'GET', body, auth = true } = {}) {
 
   const url = path.startsWith('http') ? path : getApiUrl(path);
 
-  const res = await fetch(url, {
-    method,
-    headers,
-    body: isFormData ? body : (body ? JSON.stringify(body) : undefined),
-  });
+  let res;
+  try {
+    res = await fetch(url, {
+      method,
+      headers,
+      body: isFormData ? body : (body ? JSON.stringify(body) : undefined),
+    });
+  } catch (networkErr) {
+    throw new Error(`Unable to connect to the Majestic Blazer service: ${networkErr.message}. Please check your connection.`);
+  }
 
-  const json = await res.json().catch(() => ({}));
+  const contentType = res.headers.get('content-type') || '';
+  let json = {};
+  if (contentType.includes('application/json')) {
+    json = await res.json().catch(() => ({}));
+  } else {
+    // Non-JSON response (e.g. HTML 502/503 from edge or SPA rewrite)
+    if (!res.ok) {
+      throw new Error(`Service temporarily unavailable (HTTP ${res.status}). Please try again shortly.`);
+    }
+    throw new Error('API route returned invalid response format. Please verify server connectivity.');
+  }
+
   if (!res.ok) {
     if (res.status === 401 && auth) {
       tokenStore.clear();
       window.dispatchEvent(new Event('mb_auth_expired'));
     }
-    const error = new Error(json.message || 'Something went wrong. Please try again.');
+    const message = json.message || (json.details && json.details[0]?.message) || `Request failed with status ${res.status}`;
+    const error = new Error(message);
     error.status = res.status;
     error.details = json.details;
     throw error;
