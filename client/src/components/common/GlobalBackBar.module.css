@@ -1,0 +1,14 @@
+.bar {
+  background: #FFFFFF;
+  border-bottom: 1px solid #E5E5E5;
+  padding: 10px 0;
+  position: relative;
+  z-index: 10;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+@media (max-width: 640px) {
+  .bar {
+    padding: 8px 0;
+  }
+}

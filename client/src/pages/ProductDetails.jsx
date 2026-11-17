@@ -6,6 +6,7 @@ import { api } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useToast } from '../context/ToastContext';
+import { useBackNavigation } from '../context/BackNavigationContext';
 import styles from './ProductDetails.module.css';
 
 export default function ProductDetails() {
@@ -30,6 +31,11 @@ export default function ProductDetails() {
   const [endDate, setEndDate] = useState(threeDaysLater);
   const [checkingAvail, setCheckingAvail] = useState(false);
   const [availability, setAvailability] = useState(null);
+
+  // Safe fallback to Shop or Rent collection
+  useBackNavigation({
+    fallback: product?.is_rentable && !product?.is_purchasable ? '/rent' : '/shop',
+  });
 
   // Review submission state
   const [rating, setRating] = useState(5);

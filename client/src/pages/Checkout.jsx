@@ -4,6 +4,7 @@ import { Shield, CheckCircle2, Truck, MapPin, CreditCard, ArrowRight } from 'luc
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import { useBackNavigation } from '../context/BackNavigationContext';
 import { api } from '../services/api';
 import DownloadInvoiceButton from '../components/common/DownloadInvoiceButton';
 import styles from './Checkout.module.css';
@@ -32,6 +33,13 @@ export default function Checkout() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [confirmedOrders, setConfirmedOrders] = useState([]);
   const [confirmedRentals, setConfirmedRentals] = useState([]);
+
+  // Dynamic Back navigation handling
+  useBackNavigation({
+    fallback: step === 3 ? '/orders' : '/cart',
+    customHandler: step === 2 ? () => setStep(1) : null,
+    label: step === 2 ? 'Back to Address' : 'Back',
+  });
 
   // Load user saved addresses
   useEffect(() => {
