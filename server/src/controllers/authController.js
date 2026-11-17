@@ -30,8 +30,8 @@ export const getAuthConfig = (req, res) => {
 };
 
 export const ensureDemoAdmin = async () => {
-  const adminEmail = 'admin@majesticblazer.com';
-  const adminPass = 'MajesticAdmin2026!Secure';
+  const adminEmail = (process.env.DEMO_ADMIN_EMAIL || 'admin@majesticblazer.com').trim().toLowerCase();
+  const adminPass = process.env.DEMO_ADMIN_PASSWORD || process.env.ADMIN_INITIAL_PASSWORD || 'MajesticAdmin2026!Secure';
   let admin = await User.findByEmail(adminEmail);
   if (!admin) {
     const passwordHash = await bcrypt.hash(adminPass, BCRYPT_ROUNDS);
@@ -278,7 +278,7 @@ export const demoAdminLogin = asyncHandler(async (req, res) => {
     throw new AppError('Demo administrator access is disabled', 403);
   }
   await ensureDemoAdmin();
-  const adminEmail = 'admin@majesticblazer.com';
+  const adminEmail = (process.env.DEMO_ADMIN_EMAIL || 'admin@majesticblazer.com').trim().toLowerCase();
   const user = await User.findByEmail(adminEmail);
   if (!user || user.role !== 'admin' || !user.is_active) {
     throw new AppError('Configured administrator account not found or inactive', 404);

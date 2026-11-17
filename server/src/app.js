@@ -43,14 +43,16 @@ app.use(
       // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
       if (!origin) return callback(null, true);
 
-      // In non-production or if no origins configured, allow all
-      if (!env.isProd || env.corsOrigins.length === 0) return callback(null, true);
+      // In production, reject any origin that is not explicitly allowed
+      if (env.isProd) {
+        if (env.corsOrigins.includes(origin) || allowedOriginPatterns.some((pattern) => pattern.test(origin))) {
+          return callback(null, true);
+        }
+        return callback(new Error(`CORS policy: Origin ${origin} not allowed by CORS`), false);
+      }
 
-      // Allow configured exact origins
-      if (env.corsOrigins.includes(origin)) return callback(null, true);
-
-      // Allow official domains and Vercel deployments (production & preview branches)
-      if (allowedOriginPatterns.some((pattern) => pattern.test(origin))) {
+      // In non-production or development, allow localhost/patterns or configured origins
+      if (allowedOriginPatterns.some((pattern) => pattern.test(origin)) || env.corsOrigins.includes(origin) || env.corsOrigins.length === 0) {
         return callback(null, true);
       }
 

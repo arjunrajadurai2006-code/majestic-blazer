@@ -68,7 +68,7 @@ export function AuthProvider({ children }) {
       return res.data.user;
     },
     demoAdminLogin: async () => {
-      const res = await api('/auth/demo-admin-login', { method: 'POST', auth: false });
+      const res = await api('/auth/demo-admin', { method: 'POST', auth: false });
       tokenStore.set(res.data.token);
       setAdmin(res.data.user);
       return res.data.user;
@@ -79,7 +79,7 @@ export function AuthProvider({ children }) {
       return res.data;
     },
     demoCustomerLogin: async () => {
-      const res = await api('/auth/demo-customer-login', { method: 'POST', auth: false });
+      const res = await api('/auth/demo-customer', { method: 'POST', auth: false });
       localStorage.setItem('mb_token', res.data.token);
       return res.data;
     },

@@ -120,11 +120,59 @@ async function runLiveTests() {
     const pass8 = res8.status === 200 && res8.data.data?.totalOrders !== undefined;
     recordTest('Admin can access protected admin APIs', pass8, `Status: ${res8.status}, totalOrders: ${res8.data.data?.totalOrders}`);
 
+    // 9. One-click demo admin login (POST /api/auth/demo-admin)
+    const res9 = await request('/auth/demo-admin', { method: 'POST' });
+    const pass9 =
+      res9.status === 200 &&
+      res9.data.data?.token &&
+      res9.data.data?.user?.role === 'admin' &&
+      res9.data.data?.user?.password === undefined &&
+      res9.data.data?.user?.password_hash === undefined;
+    const demoAdminToken = res9.data.data?.token || '';
+    recordTest(
+      'One-click demo admin login (POST /api/auth/demo-admin)',
+      pass9,
+      `Status: ${res9.status}, role: ${res9.data.data?.user?.role}, passwordExposed: ${Boolean(res9.data.data?.user?.password_hash)}`
+    );
+
+    // 10. One-click demo customer login (POST /api/auth/demo-customer)
+    const res10 = await request('/auth/demo-customer', { method: 'POST' });
+    const pass10 =
+      res10.status === 200 &&
+      res10.data.data?.token &&
+      res10.data.data?.user?.role === 'customer' &&
+      res10.data.data?.user?.password_hash === undefined;
+    recordTest(
+      'One-click demo customer login (POST /api/auth/demo-customer)',
+      pass10,
+      `Status: ${res10.status}, role: ${res10.data.data?.user?.role}`
+    );
+
+    // 11. Admin session persistence via /auth/me with demo admin token
+    const res11 = await request('/auth/me', {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${demoAdminToken}` },
+    });
+    const pass11 = res11.status === 200 && res11.data.data?.user?.role === 'admin';
+    recordTest('Demo admin session persistence (GET /auth/me)', pass11, `Status: ${res11.status}, role: ${res11.data.data?.user?.role}`);
+
+    // 12. CORS allows Admin Vercel Portal origin
+    const res12 = await request('/health', {
+      headers: { Origin: 'https://majestic-blazer-admin.vercel.app' },
+    });
+    const corsHeader = res12.headers.get('access-control-allow-origin');
+    const pass12 = res12.status === 200 && (corsHeader === 'https://majestic-blazer-admin.vercel.app' || corsHeader === '*');
+    recordTest(
+      'CORS allows Admin Vercel Portal origin',
+      pass12,
+      `Status: ${res12.status}, access-control-allow-origin: ${corsHeader}`
+    );
+
   } catch (err) {
     console.error('Test execution exception:', err);
   }
 
-  const allPassed = results.length === 8 && results.every((r) => r.passed);
+  const allPassed = results.length === 12 && results.every((r) => r.passed);
   console.log('\n====================================================');
   console.log(`TOTAL LIVE TESTS: ${results.length} | PASSED: ${results.filter((r) => r.passed).length} | FAILED: ${results.filter((r) => !r.passed).length}`);
   console.log(`LIVE SUITE RESULT: ${allPassed ? 'ALL LIVE TESTS PASSED!' : 'SOME LIVE TESTS FAILED'}`);

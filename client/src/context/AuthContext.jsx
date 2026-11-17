@@ -71,7 +71,7 @@ export function AuthProvider({ children }) {
       login: (body) => authenticate('/auth/login', body),
       register: (body) => authenticate('/auth/register', body),
       demoCustomerLogin: async () => {
-        const res = await api('/auth/demo-customer-login', { method: 'POST', auth: false });
+        const res = await api('/auth/demo-customer', { method: 'POST', auth: false });
         tokenStore.set(res.data.token);
         setUser(res.data.user);
         return res.data.user;
@@ -81,7 +81,7 @@ export function AuthProvider({ children }) {
         return res.data;
       },
       demoAdminLogin: async () => {
-        const res = await api('/auth/demo-admin-login', { method: 'POST', auth: false });
+        const res = await api('/auth/demo-admin', { method: 'POST', auth: false });
         return res.data;
       },
       logout: async () => {

@@ -237,16 +237,65 @@ async function runTests() {
       `Non-existent login: ${res13A.status} (exp 401), Weak reg: ${res13B.status} (exp 400/422), Wrong pass: ${res13C.status} (exp 401)`
     );
 
+    // ----------------------------------------------------
+    // TEST 14: POST /api/auth/demo-admin returns valid admin session
+    // ----------------------------------------------------
+    const res14 = await request('/auth/demo-admin', { method: 'POST' });
+    const pass14 =
+      res14.status === 200 &&
+      res14.data.data?.token &&
+      res14.data.data?.user?.role === 'admin' &&
+      res14.data.data?.user?.password === undefined &&
+      res14.data.data?.user?.password_hash === undefined &&
+      res14.data.data?.user?.passwordHash === undefined;
+    recordTest(
+      14,
+      'POST /api/auth/demo-admin returns valid admin session (no password/hash exposed)',
+      pass14,
+      `Status: ${res14.status}, role: ${res14.data.data?.user?.role}, passwordExposed: ${Boolean(res14.data.data?.user?.password_hash)}`
+    );
+
+    // ----------------------------------------------------
+    // TEST 15: POST /api/auth/demo-customer returns valid customer session
+    // ----------------------------------------------------
+    const res15 = await request('/auth/demo-customer', { method: 'POST' });
+    const pass15 =
+      res15.status === 200 &&
+      res15.data.data?.token &&
+      res15.data.data?.user?.role === 'customer' &&
+      res15.data.data?.user?.password_hash === undefined;
+    recordTest(
+      15,
+      'POST /api/auth/demo-customer returns valid customer session',
+      pass15,
+      `Status: ${res15.status}, role: ${res15.data.data?.user?.role}, email: ${res15.data.data?.user?.email}`
+    );
+
+    // ----------------------------------------------------
+    // TEST 16: POST /api/auth/demo-admin rejects when DEMO_MODE=false (403)
+    // ----------------------------------------------------
+    env.demoMode = false;
+    const res16Admin = await request('/auth/demo-admin', { method: 'POST' });
+    const res16Cust = await request('/auth/demo-customer', { method: 'POST' });
+    env.demoMode = true; // Restore
+    const pass16 = res16Admin.status === 403 && res16Cust.status === 403;
+    recordTest(
+      16,
+      'POST /api/auth/demo-admin rejects when DEMO_MODE=false with 403 Forbidden',
+      pass16,
+      `demo-admin status: ${res16Admin.status} (exp 403), demo-customer status: ${res16Cust.status} (exp 403)`
+    );
+
   } catch (err) {
     console.error('Test execution error:', err);
   } finally {
     await stopServer();
   }
 
-  const allPassed = results.length === 13 && results.every((r) => r.passed);
+  const allPassed = results.length === 16 && results.every((r) => r.passed);
   console.log('\n====================================================');
   console.log(`TOTAL TESTS: ${results.length} | PASSED: ${results.filter((r) => r.passed).length} | FAILED: ${results.filter((r) => !r.passed).length}`);
-  console.log(`SUITE RESULT: ${allPassed ? 'ALL 13 TESTS PASSED!' : 'SOME TESTS FAILED'}`);
+  console.log(`SUITE RESULT: ${allPassed ? 'ALL 16 TESTS PASSED!' : 'SOME TESTS FAILED'}`);
   console.log('====================================================');
 
   if (!allPassed) {

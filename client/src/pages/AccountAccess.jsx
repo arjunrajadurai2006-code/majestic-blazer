@@ -9,7 +9,7 @@ export default function AccountAccess() {
     ? `${import.meta.env.VITE_ADMIN_URL.replace(/\/$/, '')}/login`
     : (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
         ? 'http://localhost:5174/login'
-        : 'https://admin.majesticblazer.com/login');
+        : 'https://majestic-blazer-admin.vercel.app/login');
 
   return (
     <div className={styles.wrap}>

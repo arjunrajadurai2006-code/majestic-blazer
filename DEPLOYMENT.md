@@ -74,6 +74,9 @@ Under your Railway service settings $\rightarrow$ **Variables**, add:
 | `RAZORPAY_KEY_SECRET` | `<razorpay-key-secret>` | **YES** |
 | `RAZORPAY_WEBHOOK_SECRET` | `<razorpay-webhook-secret>` | **YES** |
 | `RAZORPAY_LIVE` | `false` (Set `true` ONLY after explicit owner approval) | No |
+| `DEMO_MODE` | `true` (Set `false` in strict production to enforce manual password checks) | No |
+| `DEMO_ADMIN_EMAIL` | `admin@majesticblazer.com` | No |
+| `DEMO_ADMIN_PASSWORD` | `<initial-admin-password>` (Only seeded if admin account does not exist) | **YES** |
 
 *(Alternatively, use `DATABASE_URL=postgres://<username>:<password>@<your-aiven-host>.aivencloud.com:11497/defaultdb?sslmode=require` with `DB_SSL_CA`)*
 
@@ -125,9 +128,10 @@ Once Railway finishes deployment:
 ### Step 4.2: Configure Environment Variables
 Under Vercel Project Settings $\rightarrow$ **Environment Variables**:
 
-| Variable | Value |
-| :--- | :--- |
-| `VITE_API_URL` | `https://api.majesticblazer.com/api` (or your Railway backend URL) |
+| Variable | Value | Description |
+| :--- | :--- | :--- |
+| `VITE_API_URL` | `https://majestic-blazer-production.up.railway.app/api` | Railway backend API URL |
+| `VITE_ADMIN_URL` | `https://majestic-blazer-admin.vercel.app` | Deployed Admin Operations Portal |
 
 ### Step 4.3: Deploy & Configure Custom Domain
 1. Click **Deploy**. Vercel uses [client/vercel.json](client/vercel.json) for SPA routing.
@@ -153,9 +157,10 @@ Under Vercel Project Settings $\rightarrow$ **Environment Variables**:
 ### Step 5.2: Configure Environment Variables
 Under Admin Project Settings $\rightarrow$ **Environment Variables**:
 
-| Variable | Value |
-| :--- | :--- |
-| `VITE_API_URL` | `https://api.majesticblazer.com/api` (or your Railway backend URL) |
+| Variable | Value | Description |
+| :--- | :--- | :--- |
+| `VITE_API_URL` | `https://majestic-blazer-production.up.railway.app/api` | Railway backend API URL |
+| `VITE_STOREFRONT_URL` | `https://majestic-blazer.vercel.app` | Deployed Customer Storefront |
 
 ### Step 5.3: Custom Domain for Admin
 1. In Project Settings $\rightarrow$ **Domains**:

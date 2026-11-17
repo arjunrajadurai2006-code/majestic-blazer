@@ -18,7 +18,9 @@ router.put('/password', authenticate, ctrl.changePassword);
 router.post('/forgot-password', authLimiter, ctrl.forgotPassword);
 router.post('/reset-password', authLimiter, ctrl.resetPassword);
 router.get('/config', ctrl.getAuthConfig);
+router.post('/demo-customer', authLimiter, ctrl.demoCustomerLogin);
 router.post('/demo-customer-login', authLimiter, ctrl.demoCustomerLogin);
+router.post('/demo-admin', authLimiter, ctrl.demoAdminLogin);
 router.post('/demo-admin-login', authLimiter, ctrl.demoAdminLogin);
 
 // Saved addresses

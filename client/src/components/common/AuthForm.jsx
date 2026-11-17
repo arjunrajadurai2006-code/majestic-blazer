@@ -13,6 +13,11 @@ export default function AuthForm({ mode = 'login' }) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const adminUrl = import.meta.env.VITE_ADMIN_URL ||
+    (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:5174'
+      : 'https://majestic-blazer-admin.vercel.app');
+
   // Mode selection: 'customer' or 'admin' (default: 'customer')
   const [activeRole, setActiveRole] = useState('customer');
 
@@ -367,12 +372,19 @@ export default function AuthForm({ mode = 'login' }) {
 
           {/* Footer Navigation Link */}
           {mode === 'login' ? (
-            activeRole === 'customer' && (
+            activeRole === 'customer' ? (
               <p className={styles.altText}>
                 New to Majestic Blazer?{' '}
                 <Link to="/register" className={styles.altLink}>
                   Create Account
                 </Link>
+              </p>
+            ) : (
+              <p className={styles.altText}>
+                Need dedicated management portal?{' '}
+                <a href={`${adminUrl}/login`} className={styles.altLink} target="_blank" rel="noopener noreferrer">
+                  Open Atelier Console ↗
+                </a>
               </p>
             )
           ) : (
