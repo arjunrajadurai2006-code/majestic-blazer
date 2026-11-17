@@ -178,6 +178,19 @@
   line-height: 1;
 }
 
+.wishlistBadge {
+  background: #E53945 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 1px 4px rgba(229, 57, 69, 0.4);
+}
+
+.dropdownWishCount {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: #E53945;
+  font-weight: 700;
+}
+
 /* Desktop Account Controls */
 .desktopAccount {
   display: flex;

@@ -457,24 +457,47 @@
 
 .wishBtn {
   width: 54px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
+  border-radius: var(--radius-sm, 4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-primary);
+  color: var(--color-text-primary, #111111);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-fast, 0.18s ease);
 }
 
 .wishBtn:hover {
-  border-color: var(--color-text-primary);
+  border-color: #111111;
+  transform: scale(1.02);
+}
+
+.wishBtn svg {
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.18s ease, fill 0.18s ease;
 }
 
 .wishActive {
-  border-color: var(--color-obsidian);
-  background: var(--color-surface-hover);
+  border-color: #E53945 !important;
+  background: #FFF5F5 !important;
+  color: #E53945 !important;
+  box-shadow: 0 2px 12px rgba(229, 57, 69, 0.15);
+}
+
+.wishActive:hover {
+  border-color: #C62828 !important;
+  background: #FFEBEB !important;
+  color: #C62828 !important;
+}
+
+.wishActive svg {
+  animation: heartPop 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes heartPop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.28); }
+  100% { transform: scale(1); }
 }
 
 /* Rent Panel */

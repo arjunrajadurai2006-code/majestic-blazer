@@ -413,9 +413,11 @@ export default function ProductDetails() {
                   type="button"
                   className={`${styles.wishBtn} ${wish ? styles.wishActive : ''}`}
                   onClick={() => toggleWishlist(product)}
-                  aria-label="Wishlist"
+                  aria-label={wish ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
+                  aria-pressed={wish}
+                  title={wish ? 'Saved in Wishlist' : 'Save to Wishlist'}
                 >
-                  <Heart size={20} fill={wish ? '#FFFFFF' : 'none'} color={wish ? '#FFFFFF' : '#111111'} />
+                  <Heart size={20} fill={wish ? '#E53945' : 'none'} color={wish ? '#E53945' : '#111111'} />
                 </button>
               </div>
             </div>
@@ -526,9 +528,11 @@ export default function ProductDetails() {
                   type="button"
                   className={`${styles.wishBtn} ${wish ? styles.wishActive : ''}`}
                   onClick={() => toggleWishlist(product)}
-                  aria-label="Wishlist"
+                  aria-label={wish ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
+                  aria-pressed={wish}
+                  title={wish ? 'Saved in Wishlist' : 'Save to Wishlist'}
                 >
-                  <Heart size={20} fill={wish ? '#FFFFFF' : 'none'} color={wish ? '#FFFFFF' : '#111111'} />
+                  <Heart size={20} fill={wish ? '#E53945' : 'none'} color={wish ? '#E53945' : '#111111'} />
                 </button>
               </div>
             </div>

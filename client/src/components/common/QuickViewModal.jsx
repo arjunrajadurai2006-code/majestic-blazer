@@ -275,9 +275,11 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
                     type="button"
                     className={`${styles.wishlistBtn} ${wish ? styles.wishActive : ''}`}
                     onClick={() => toggleWishlist(currentProduct)}
-                    aria-label="Toggle wishlist"
+                    aria-label={wish ? `Remove ${currentProduct.name} from wishlist` : `Save ${currentProduct.name} to wishlist`}
+                    aria-pressed={wish}
+                    title={wish ? 'Saved in Wishlist' : 'Save to Wishlist'}
                   >
-                    <Heart size={20} fill={wish ? '#FFFFFF' : 'none'} color={wish ? '#FFFFFF' : '#C0C0C0'} />
+                    <Heart size={20} fill={wish ? '#E53945' : 'none'} color={wish ? '#E53945' : '#444444'} />
                   </button>
                 </div>
               ) : (
@@ -295,9 +297,11 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
                     type="button"
                     className={`${styles.wishlistBtn} ${wish ? styles.wishActive : ''}`}
                     onClick={() => toggleWishlist(currentProduct)}
-                    aria-label="Toggle wishlist"
+                    aria-label={wish ? `Remove ${currentProduct.name} from wishlist` : `Save ${currentProduct.name} to wishlist`}
+                    aria-pressed={wish}
+                    title={wish ? 'Saved in Wishlist' : 'Save to Wishlist'}
                   >
-                    <Heart size={20} fill={wish ? '#FFFFFF' : 'none'} color={wish ? '#FFFFFF' : '#C0C0C0'} />
+                    <Heart size={20} fill={wish ? '#E53945' : 'none'} color={wish ? '#E53945' : '#444444'} />
                   </button>
                 </div>
               )}

@@ -160,9 +160,18 @@ export default function Header() {
                 <Search size={19} />
               </button>
 
-              <NavLink to="/wishlist" className={styles.iconBtn} aria-label="Wishlist" title="Wishlist">
-                <Heart size={19} />
-                {wishlistCount > 0 && <span className={styles.badge}>{wishlistCount}</span>}
+              <NavLink
+                to="/wishlist"
+                className={styles.iconBtn}
+                aria-label={wishlistCount > 0 ? `Wishlist (${wishlistCount} items)` : 'Wishlist'}
+                title="Wishlist"
+              >
+                <Heart
+                  size={19}
+                  fill={wishlistCount > 0 ? '#E53945' : 'none'}
+                  color={wishlistCount > 0 ? '#E53945' : 'currentColor'}
+                />
+                {wishlistCount > 0 && <span className={`${styles.badge} ${styles.wishlistBadge}`}>{wishlistCount}</span>}
               </NavLink>
 
               <NavLink to="/cart" className={styles.iconBtn} aria-label="Shopping Bag" title="Cart">
@@ -230,8 +239,13 @@ export default function Header() {
                           onClick={() => setAccountDropdownOpen(false)}
                           role="menuitem"
                         >
-                          <Heart size={15} />
+                          <Heart
+                            size={15}
+                            fill={wishlistCount > 0 ? '#E53945' : 'none'}
+                            color={wishlistCount > 0 ? '#E53945' : 'currentColor'}
+                          />
                           <span>Wishlist</span>
+                          {wishlistCount > 0 && <span className={styles.dropdownWishCount}>({wishlistCount})</span>}
                         </NavLink>
 
                         <div className={styles.dropdownDivider} />
@@ -324,7 +338,12 @@ export default function Header() {
                         <Calendar size={16} /> Rental Bookings
                       </NavLink>
                       <NavLink to="/wishlist" className={styles.mobileSubLink} onClick={closeMobileMenu}>
-                        <Heart size={16} /> Wishlist {wishlistCount > 0 ? `(${wishlistCount})` : ''}
+                        <Heart
+                          size={16}
+                          fill={wishlistCount > 0 ? '#E53945' : 'none'}
+                          color={wishlistCount > 0 ? '#E53945' : 'currentColor'}
+                        />
+                        <span>Wishlist {wishlistCount > 0 ? `(${wishlistCount})` : ''}</span>
                       </NavLink>
                     </div>
 

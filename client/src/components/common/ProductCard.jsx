@@ -52,9 +52,11 @@ export default function ProductCard({ product, onQuickView }) {
           type="button"
           className={`${styles.wishlistBtn} ${wish ? styles.wishlistActive : ''}`}
           onClick={handleWishlistClick}
-          aria-label={wish ? 'Remove from wishlist' : 'Save to wishlist'}
+          aria-label={wish ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
+          aria-pressed={wish}
+          title={wish ? 'Saved in Wishlist' : 'Save to Wishlist'}
         >
-          <Heart size={18} fill={wish ? '#FFFFFF' : 'none'} color={wish ? '#FFFFFF' : '#C0C0C0'} />
+          <Heart size={18} fill={wish ? '#E53945' : 'none'} color={wish ? '#E53945' : '#444444'} />
         </button>
 
         {onQuickView && (
