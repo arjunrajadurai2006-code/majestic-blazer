@@ -107,159 +107,162 @@ export default function Header() {
 
   return (
     <>
-      {/* 1. Slim Announcement Bar */}
-      <div className={styles.announcement}>
-        <div className={`container ${styles.announcementInner}`}>
-          <a href="tel:8903238882" className={styles.announcementText}>
-            BESPOKE & RENTAL ENQUIRIES: 8903238882
-          </a>
-        </div>
-      </div>
-
-      {/* 2. Main Navigation Header */}
-      <header className={styles.header}>
-        <div className={`container ${styles.bar}`}>
-          {/* Left: Logo & Navigation Links */}
-          <div className={styles.navLeft}>
-            <button
-              type="button"
-              className={styles.mobileToggle}
-              aria-expanded={mobileMenuOpen}
-              aria-label="Toggle navigation menu"
-              onClick={() => setMobileMenuOpen((v) => !v)}
-            >
-              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
-
-            <Logo height={44} onClick={closeMobileMenu} />
-
-            <nav className={styles.desktopNav} aria-label="Main Navigation">
-              <ul className={styles.navLinks}>
-                {NAV.map((item) => (
-                  <li key={item.to}>
-                    <NavLink to={item.to} end={item.end} className={linkClass}>
-                      {item.label}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+      {/* Sticky Top Header: Announcement Bar + Navigation Bar */}
+      <div className={styles.stickyHeader}>
+        {/* 1. Slim Announcement Bar */}
+        <div className={styles.announcement}>
+          <div className={`container ${styles.announcementInner}`}>
+            <a href="tel:8903238882" className={styles.announcementText}>
+              BESPOKE & RENTAL ENQUIRIES: 8903238882
+            </a>
           </div>
+        </div>
 
-          {/* Right: Search, Wishlist, Bag, and Account Access */}
-          <div className={styles.navRight}>
-            <button
-              type="button"
-              className={styles.iconBtn}
-              onClick={() => setSearchOpen(true)}
-              aria-label="Search collection"
-              title="Search collection"
-            >
-              <Search size={19} />
-            </button>
+        {/* 2. Main Navigation Header */}
+        <header className={styles.header}>
+          <div className={`container ${styles.bar}`}>
+            {/* Left: Logo & Navigation Links */}
+            <div className={styles.navLeft}>
+              <button
+                type="button"
+                className={styles.mobileToggle}
+                aria-expanded={mobileMenuOpen}
+                aria-label="Toggle navigation menu"
+                onClick={() => setMobileMenuOpen((v) => !v)}
+              >
+                {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+              </button>
 
-            <NavLink to="/wishlist" className={styles.iconBtn} aria-label="Wishlist" title="Wishlist">
-              <Heart size={19} />
-              {wishlistCount > 0 && <span className={styles.badge}>{wishlistCount}</span>}
-            </NavLink>
+              <Logo height={44} onClick={closeMobileMenu} />
 
-            <NavLink to="/cart" className={styles.iconBtn} aria-label="Shopping Bag" title="Cart">
-              <ShoppingBag size={19} />
-              {itemCount > 0 && <span className={styles.badge}>{itemCount}</span>}
-            </NavLink>
+              <nav className={styles.desktopNav} aria-label="Main Navigation">
+                <ul className={styles.navLinks}>
+                  {NAV.map((item) => (
+                    <li key={item.to}>
+                      <NavLink to={item.to} end={item.end} className={linkClass}>
+                        {item.label}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
 
-            {/* Account access control (Desktop) */}
-            <div className={styles.desktopAccount}>
-              {user ? (
-                <div className={styles.accountWrapper} ref={dropdownRef}>
-                  <button
-                    type="button"
-                    className={`${styles.accountTrigger} ${accountDropdownOpen ? styles.accountTriggerOpen : ''}`}
-                    onClick={() => setAccountDropdownOpen((prev) => !prev)}
-                    aria-expanded={accountDropdownOpen}
-                    aria-haspopup="true"
-                    aria-label="Patron account menu"
-                  >
-                    <User size={16} />
-                    <span className={styles.userLabel}>{firstName}</span>
-                    <ChevronDown size={13} className={accountDropdownOpen ? styles.chevronRotated : styles.chevron} />
-                  </button>
+            {/* Right: Search, Wishlist, Bag, and Account Access */}
+            <div className={styles.navRight}>
+              <button
+                type="button"
+                className={styles.iconBtn}
+                onClick={() => setSearchOpen(true)}
+                aria-label="Search collection"
+                title="Search collection"
+              >
+                <Search size={19} />
+              </button>
 
-                  {accountDropdownOpen && (
-                    <div className={styles.accountDropdown} role="menu">
-                      <div className={styles.dropdownHeader}>
-                        <div className={styles.dropdownName}>{user.fullName}</div>
-                        <div className={styles.dropdownEmail}>{user.email}</div>
+              <NavLink to="/wishlist" className={styles.iconBtn} aria-label="Wishlist" title="Wishlist">
+                <Heart size={19} />
+                {wishlistCount > 0 && <span className={styles.badge}>{wishlistCount}</span>}
+              </NavLink>
+
+              <NavLink to="/cart" className={styles.iconBtn} aria-label="Shopping Bag" title="Cart">
+                <ShoppingBag size={19} />
+                {itemCount > 0 && <span className={styles.badge}>{itemCount}</span>}
+              </NavLink>
+
+              {/* Account access control (Desktop) */}
+              <div className={styles.desktopAccount}>
+                {user ? (
+                  <div className={styles.accountWrapper} ref={dropdownRef}>
+                    <button
+                      type="button"
+                      className={`${styles.accountTrigger} ${accountDropdownOpen ? styles.accountTriggerOpen : ''}`}
+                      onClick={() => setAccountDropdownOpen((prev) => !prev)}
+                      aria-expanded={accountDropdownOpen}
+                      aria-haspopup="true"
+                      aria-label="Patron account menu"
+                    >
+                      <User size={16} />
+                      <span className={styles.userLabel}>{firstName}</span>
+                      <ChevronDown size={13} className={accountDropdownOpen ? styles.chevronRotated : styles.chevron} />
+                    </button>
+
+                    {accountDropdownOpen && (
+                      <div className={styles.accountDropdown} role="menu">
+                        <div className={styles.dropdownHeader}>
+                          <div className={styles.dropdownName}>{user.fullName}</div>
+                          <div className={styles.dropdownEmail}>{user.email}</div>
+                        </div>
+
+                        <NavLink
+                          to="/profile"
+                          className={styles.dropdownItem}
+                          onClick={() => setAccountDropdownOpen(false)}
+                          role="menuitem"
+                        >
+                          <User size={15} />
+                          <span>Profile</span>
+                        </NavLink>
+
+                        <NavLink
+                          to="/orders"
+                          className={styles.dropdownItem}
+                          onClick={() => setAccountDropdownOpen(false)}
+                          role="menuitem"
+                        >
+                          <Package size={15} />
+                          <span>My Orders</span>
+                        </NavLink>
+
+                        <NavLink
+                          to="/rental-bookings"
+                          className={styles.dropdownItem}
+                          onClick={() => setAccountDropdownOpen(false)}
+                          role="menuitem"
+                        >
+                          <Calendar size={15} />
+                          <span>Rental Bookings</span>
+                        </NavLink>
+
+                        <NavLink
+                          to="/wishlist"
+                          className={styles.dropdownItem}
+                          onClick={() => setAccountDropdownOpen(false)}
+                          role="menuitem"
+                        >
+                          <Heart size={15} />
+                          <span>Wishlist</span>
+                        </NavLink>
+
+                        <div className={styles.dropdownDivider} />
+
+                        <button
+                          type="button"
+                          className={`${styles.dropdownItem} ${styles.dropdownSignOut}`}
+                          onClick={handleOpenSignOutModal}
+                          role="menuitem"
+                        >
+                          <LogOut size={15} />
+                          <span>Sign Out</span>
+                        </button>
                       </div>
-
-                      <NavLink
-                        to="/profile"
-                        className={styles.dropdownItem}
-                        onClick={() => setAccountDropdownOpen(false)}
-                        role="menuitem"
-                      >
-                        <User size={15} />
-                        <span>Profile</span>
-                      </NavLink>
-
-                      <NavLink
-                        to="/orders"
-                        className={styles.dropdownItem}
-                        onClick={() => setAccountDropdownOpen(false)}
-                        role="menuitem"
-                      >
-                        <Package size={15} />
-                        <span>My Orders</span>
-                      </NavLink>
-
-                      <NavLink
-                        to="/rental-bookings"
-                        className={styles.dropdownItem}
-                        onClick={() => setAccountDropdownOpen(false)}
-                        role="menuitem"
-                      >
-                        <Calendar size={15} />
-                        <span>Rental Bookings</span>
-                      </NavLink>
-
-                      <NavLink
-                        to="/wishlist"
-                        className={styles.dropdownItem}
-                        onClick={() => setAccountDropdownOpen(false)}
-                        role="menuitem"
-                      >
-                        <Heart size={15} />
-                        <span>Wishlist</span>
-                      </NavLink>
-
-                      <div className={styles.dropdownDivider} />
-
-                      <button
-                        type="button"
-                        className={`${styles.dropdownItem} ${styles.dropdownSignOut}`}
-                        onClick={handleOpenSignOutModal}
-                        role="menuitem"
-                      >
-                        <LogOut size={15} />
-                        <span>Sign Out</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className={styles.authGroup}>
-                  <NavLink to="/login" className={styles.signInBtn}>
-                    Sign In
-                  </NavLink>
-                  <NavLink to="/register" className={styles.registerBtn}>
-                    Create Account
-                  </NavLink>
-                </div>
-              )}
+                    )}
+                  </div>
+                ) : (
+                  <div className={styles.authGroup}>
+                    <NavLink to="/login" className={styles.signInBtn}>
+                      Sign In
+                    </NavLink>
+                    <NavLink to="/register" className={styles.registerBtn}>
+                      Create Account
+                    </NavLink>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
+      </div>
 
       {/* Mobile / Tablet Drawer & Backdrop (Rendered outside header to avoid backdrop-filter trapping) */}
       {mobileMenuOpen && (
