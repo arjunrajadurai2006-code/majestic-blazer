@@ -3,7 +3,7 @@
   flex-direction: column;
 }
 
-/* 1. Hero Section */
+/* 1. Hero Section (Selective Black Promotional Feature) */
 .hero {
   position: relative;
   min-height: 84vh;
@@ -14,7 +14,7 @@
     url('/assets/hero/luxury-menswear-hero.webp');
   background-size: cover;
   background-position: center 25%;
-  border-bottom: 1px solid #1c1c1c;
+  border-bottom: 1px solid #202020;
   overflow: hidden;
 }
 
@@ -36,7 +36,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #C0C0C0;
+  color: #BDBDBD;
   font-family: var(--font-body, 'Montserrat', sans-serif);
   font-size: 0.74rem;
   font-weight: 600;
@@ -48,7 +48,7 @@
 .silverDot {
   width: 5px;
   height: 5px;
-  background: #C0C0C0;
+  background: #FFFFFF;
   border-radius: 50%;
   display: inline-block;
 }
@@ -72,7 +72,7 @@
 .heroSubtitle {
   font-size: clamp(0.98rem, 1.35vw, 1.15rem);
   line-height: 1.72;
-  color: #B0B0B0;
+  color: #BDBDBD;
   margin-bottom: 38px;
   max-width: 580px;
   font-weight: 300;
@@ -112,7 +112,7 @@
   display: inline-flex;
   align-items: center;
   padding: 15px 32px;
-  border: 1px solid #404040;
+  border: 1px solid #FFFFFF;
   color: #FFFFFF;
   background: transparent;
   font-size: 0.82rem;
@@ -126,14 +126,14 @@
 
 .secondaryBtn:hover {
   border-color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.12);
   transform: translateY(-2px);
 }
 
-/* 2. Trust Indicators Bar */
+/* 2. Trust Indicators Bar (Alternate Section: #F7F7F7) */
 .trustBar {
-  background: #0D0D0D;
-  border-bottom: 1px solid #202020;
+  background: #F7F7F7;
+  border-bottom: 1px solid #E5E5E5;
   padding: 18px 0;
   position: relative;
   z-index: 5;
@@ -150,7 +150,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #C0C0C0;
+  color: #111111;
   font-family: var(--font-body, 'Montserrat', sans-serif);
   font-size: 0.82rem;
   letter-spacing: 0.06em;
@@ -161,14 +161,14 @@
 }
 
 .trustIcon {
-  color: #E5E5E5;
+  color: #111111;
   flex-shrink: 0;
 }
 
 .trustDivider {
   width: 1px;
   height: 22px;
-  background: #242424;
+  background: #E5E5E5;
   flex-shrink: 0;
 }
 
@@ -191,10 +191,10 @@
   }
 }
 
-/* 2. Distinction Section */
+/* 2. Distinction Section (White Background with Crisp Cards) */
 .distinction {
-  background: var(--color-rich-black);
-  border-bottom: 1px solid var(--color-border);
+  background: #FFFFFF;
+  border-bottom: 1px solid #E5E5E5;
   padding: 68px 0;
 }
 
@@ -205,8 +205,8 @@
 }
 
 .distinctionCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: #F7F7F7;
+  border: 1px solid #E5E5E5;
   border-radius: var(--radius-sm);
   padding: 44px 38px;
   position: relative;
@@ -214,14 +214,19 @@
 }
 
 .distinctionCard:hover {
-  border-color: var(--color-silver);
+  border-color: #111111;
   transform: translateY(-3px);
-  box-shadow: var(--shadow-luxury);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
 }
 
 .rentCard {
-  background: var(--color-surface);
-  border-color: var(--color-border);
+  background: #080808;
+  border-color: #202020;
+}
+
+.rentCard:hover {
+  border-color: #404040;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 }
 
 .distinctionMeta {
@@ -235,24 +240,32 @@
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.22em;
-  color: var(--color-muted);
+  color: #666666;
   text-transform: uppercase;
 }
 
 .silverMetaTag {
-  color: var(--color-silver);
+  color: #BDBDBD;
 }
 
 .distinctionMeta h2 {
   font-size: 2rem;
-  color: var(--color-white);
+  color: #111111;
   font-weight: 500;
 }
 
+.rentCard .distinctionMeta h2 {
+  color: #FFFFFF;
+}
+
 .distinctionMeta p {
-  color: var(--color-silver);
+  color: #666666;
   line-height: 1.7;
   font-size: 0.95rem;
+}
+
+.rentCard .distinctionMeta p {
+  color: #BDBDBD;
 }
 
 .distinctionBtn {
@@ -263,9 +276,20 @@
   gap: 8px;
 }
 
-/* 3. Section Common */
+.rentCard .distinctionBtn {
+  border-color: #FFFFFF !important;
+  color: #FFFFFF !important;
+}
+
+.rentCard .distinctionBtn:hover {
+  background: #FFFFFF !important;
+  color: #080808 !important;
+}
+
+/* 3. Section Common (White Background) */
 .section {
   padding: 96px 0;
+  background-color: #FFFFFF;
 }
 
 .sectionHeader {
@@ -283,21 +307,21 @@
   font-size: 0.74rem;
   font-weight: 600;
   letter-spacing: 0.22em;
-  color: var(--color-silver);
+  color: #666666;
   text-transform: uppercase;
   margin-bottom: 8px;
 }
 
 .sectionHeader h2 {
   font-size: clamp(2rem, 3.5vw, 2.85rem);
-  color: var(--color-white);
+  color: #111111;
 }
 
 .sectionLink {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--color-silver);
+  color: #111111;
   font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -306,7 +330,7 @@
 }
 
 .sectionLink:hover {
-  color: var(--color-white);
+  color: #666666;
   gap: 12px;
 }
 
@@ -323,10 +347,10 @@
 }
 
 .skeletonCard {
-  background: var(--color-surface);
+  background: #F7F7F7;
   aspect-ratio: 3 / 4;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
+  border: 1px solid #E5E5E5;
   animation: pulse 1.5s infinite;
 }
 
@@ -336,11 +360,11 @@
   100% { opacity: 0.6; }
 }
 
-/* 4. Curated Category Paths */
+/* 4. Curated Category Paths (Alternate Section: #F7F7F7) */
 .categoriesSection {
-  background: var(--color-obsidian);
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
+  background: #F7F7F7;
+  border-top: 1px solid #E5E5E5;
+  border-bottom: 1px solid #E5E5E5;
   padding: 96px 0;
 }
 
@@ -355,15 +379,15 @@
   aspect-ratio: 4 / 5;
   overflow: hidden;
   display: block;
-  border: 1px solid var(--color-border);
+  border: 1px solid #E5E5E5;
   border-radius: var(--radius-sm);
   transition: all var(--transition-smooth);
 }
 
 .categoryCard:hover {
-  border-color: var(--color-silver);
+  border-color: #111111;
   transform: translateY(-4px);
-  box-shadow: var(--shadow-luxury);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
 .categoryImage {
@@ -380,7 +404,7 @@
 .categoryOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(8, 8, 8, 0.05) 0%, rgba(8, 8, 8, 0.88) 75%, var(--color-obsidian) 100%);
+  background: linear-gradient(180deg, rgba(8, 8, 8, 0.05) 0%, rgba(8, 8, 8, 0.84) 75%, #080808 100%);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -391,33 +415,33 @@
 .catLabel {
   font-family: var(--font-body);
   font-size: 0.7rem;
-  color: var(--color-silver);
+  color: #BDBDBD;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 .categoryOverlay h3 {
   font-size: 1.35rem;
-  color: var(--color-white);
+  color: #FFFFFF;
   font-weight: 500;
 }
 
 .catExplore {
   font-size: 0.78rem;
   letter-spacing: 0.08em;
-  color: var(--color-silver);
+  color: #E5E5E5;
   transition: all var(--transition-fast);
 }
 
 .categoryCard:hover .catExplore {
-  color: var(--color-white);
+  color: #FFFFFF;
   transform: translateX(4px);
 }
 
-/* 5. How Renting Works */
+/* 5. How Renting Works (Clean White Surface with Light Grey Cards) */
 .howItWorks {
-  background: var(--color-rich-black);
-  border-bottom: 1px solid var(--color-border);
+  background: #FFFFFF;
+  border-bottom: 1px solid #E5E5E5;
   padding: 100px 0;
 }
 
@@ -428,7 +452,7 @@
 }
 
 .howSubtitle {
-  color: var(--color-silver);
+  color: #666666;
   font-size: 1rem;
   line-height: 1.65;
   margin-top: 14px;
@@ -441,8 +465,8 @@
 }
 
 .stepCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: #F7F7F7;
+  border: 1px solid #E5E5E5;
   border-radius: var(--radius-sm);
   padding: 36px 26px;
   position: relative;
@@ -452,27 +476,27 @@
 }
 
 .stepCard:hover {
-  border-color: var(--color-silver);
+  border-color: #111111;
   transform: translateY(-4px);
 }
 
 .stepNo {
   font-size: 2.2rem;
   font-family: var(--font-display);
-  color: var(--color-platinum);
+  color: #111111;
   margin-bottom: 16px;
   font-weight: 400;
 }
 
 .stepCard h3 {
   font-size: 1.25rem;
-  color: var(--color-white);
+  color: #111111;
   margin-bottom: 12px;
   font-weight: 500;
 }
 
 .stepCard p {
-  color: var(--color-silver);
+  color: #666666;
   line-height: 1.65;
   font-size: 0.88rem;
 }
@@ -483,16 +507,24 @@
   justify-content: center;
 }
 
-/* 6. Craftsmanship */
+/* 6. Craftsmanship (Selective Black Luxury Feature Section) */
 .craftsmanship {
-  background: var(--color-obsidian);
+  background: #080808;
   padding: 96px 0;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid #202020;
 }
 
 .craftHeader {
   text-align: center;
   margin-bottom: 56px;
+}
+
+.craftHeader h2 {
+  color: #FFFFFF;
+}
+
+.craftHeader .sectionEyebrow {
+  color: #BDBDBD;
 }
 
 .advantagesGrid {
@@ -502,8 +534,8 @@
 }
 
 .advCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: #151515;
+  border: 1px solid #303030;
   border-radius: var(--radius-sm);
   padding: 36px 26px;
   display: flex;
@@ -513,7 +545,7 @@
 }
 
 .advCard:hover {
-  border-color: var(--color-silver);
+  border-color: #666666;
   transform: translateY(-3px);
 }
 
@@ -521,30 +553,30 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--color-charcoal);
-  border: 1px solid var(--color-border);
+  background: #202020;
+  border: 1px solid #383838;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .advIcon {
-  color: var(--color-platinum);
+  color: #FFFFFF;
 }
 
 .advCard h3 {
   font-size: 1.15rem;
-  color: var(--color-white);
+  color: #FFFFFF;
   font-weight: 500;
 }
 
 .advCard p {
-  color: var(--color-silver);
+  color: #BDBDBD;
   font-size: 0.88rem;
   line-height: 1.65;
 }
 
-/* 7. Testimonials */
+/* 7. Testimonials (White Section with Light Grey Cards) */
 .testimonialsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -552,8 +584,8 @@
 }
 
 .testCard {
-  background: var(--color-rich-black);
-  border: 1px solid var(--color-border);
+  background: #F7F7F7;
+  border: 1px solid #E5E5E5;
   border-radius: var(--radius-sm);
   padding: 38px 30px;
   display: flex;
@@ -564,18 +596,19 @@
 }
 
 .testCard:hover {
-  border-color: var(--color-silver);
+  border-color: #111111;
   transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
 }
 
 .stars {
-  color: var(--color-silver);
+  color: #111111;
   letter-spacing: 3px;
   font-size: 0.95rem;
 }
 
 .quote {
-  color: var(--color-platinum);
+  color: #111111;
   font-size: 0.95rem;
   line-height: 1.75;
   font-style: italic;
@@ -589,7 +622,7 @@
   flex-direction: row;
   align-items: center;
   gap: 14px;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid #E5E5E5;
   padding-top: 16px;
 }
 
@@ -598,7 +631,7 @@
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid var(--color-silver);
+  border: 1px solid #E5E5E5;
   flex-shrink: 0;
 }
 
@@ -609,22 +642,22 @@
 }
 
 .testAuthor strong {
-  color: var(--color-white);
+  color: #111111;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .testAuthor span {
-  color: var(--color-muted);
+  color: #666666;
   font-size: 0.8rem;
   letter-spacing: 0.04em;
 }
 
-/* 8. Boutique Section */
+/* 8. Boutique Section (Clean Light Grey Surface) */
 .boutiqueSection {
-  background: var(--color-surface);
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
+  background: #F7F7F7;
+  border-top: 1px solid #E5E5E5;
+  border-bottom: 1px solid #E5E5E5;
   padding: 88px 0;
 }
 
@@ -638,8 +671,8 @@
 .boutiqueImageWrap {
   border-radius: var(--radius-sm);
   overflow: hidden;
-  border: 1px solid var(--color-border);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  border: 1px solid #E5E5E5;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
 }
 
 .boutiqueImage {
@@ -666,11 +699,11 @@
 
 .boutiqueInfo h2 {
   font-size: 2.5rem;
-  color: var(--color-white);
+  color: #111111;
 }
 
 .boutiqueInfo p {
-  color: var(--color-silver);
+  color: #666666;
   font-size: 1rem;
   line-height: 1.75;
 }
@@ -680,23 +713,23 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  color: var(--color-silver);
+  color: #666666;
   margin-top: 10px;
   padding-left: 20px;
-  border-left: 2px solid var(--color-silver);
+  border-left: 2px solid #111111;
 }
 
 .boutiqueAddress strong {
-  color: var(--color-white);
+  color: #111111;
 }
 
 .boutiqueAddress a {
-  color: var(--color-platinum);
+  color: #111111;
   transition: color var(--transition-fast);
 }
 
 .boutiqueAddress a:hover {
-  color: var(--color-white);
+  color: #666666;
 }
 
 .boutiqueBtns {

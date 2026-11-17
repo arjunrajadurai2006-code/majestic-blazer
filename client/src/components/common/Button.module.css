@@ -17,6 +17,7 @@
   transition: all var(--transition-smooth);
   position: relative;
   user-select: none;
+  box-sizing: border-box;
 }
 
 .button:disabled {
@@ -25,53 +26,56 @@
   pointer-events: none;
 }
 
-/* Primary Luxury: Pure white crisp button */
+/* Primary Luxury: Black background with white text */
 .primary {
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border-color: var(--color-white);
+  background: #080808;
+  color: #FFFFFF;
+  border-color: #080808;
 }
 
 .primary:hover:not(:disabled) {
-  background: var(--color-platinum);
-  border-color: var(--color-platinum);
+  background: #252525;
+  border-color: #252525;
+  color: #FFFFFF;
   transform: translateY(-1px);
 }
 
-/* Outline Luxury: Sharp silver border on black */
+/* Outline: Black border on white surface */
 .outline {
-  border-color: var(--color-border);
-  color: var(--color-platinum);
+  border-color: #111111;
+  color: #111111;
   background: transparent;
 }
 
 .outline:hover:not(:disabled) {
-  border-color: var(--color-silver);
-  color: var(--color-white);
-  background: rgba(255, 255, 255, 0.04);
+  background: #080808;
+  border-color: #080808;
+  color: #FFFFFF;
   transform: translateY(-1px);
 }
 
-/* Secondary Surface Luxury */
+/* Secondary Surface Luxury: White background with black text and subtle border */
 .secondary {
-  background: var(--color-surface);
-  color: var(--color-platinum);
-  border-color: var(--color-border);
+  background: #FFFFFF;
+  color: #111111;
+  border-color: #E5E5E5;
 }
 
 .secondary:hover:not(:disabled) {
-  background: var(--color-charcoal);
-  border-color: var(--color-silver);
-  color: var(--color-white);
+  background: #F0F0F0;
+  border-color: #111111;
+  color: #080808;
+  transform: translateY(-1px);
 }
 
 /* Ghost Minimal */
 .ghost {
   background: transparent;
-  color: var(--color-silver);
+  color: #111111;
   padding: 0 var(--space-2);
 }
 
 .ghost:hover:not(:disabled) {
-  color: var(--color-white);
+  background: #F0F0F0;
+  color: #080808;
 }

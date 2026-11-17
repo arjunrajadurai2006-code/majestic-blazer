@@ -7,15 +7,15 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  background-color: var(--color-obsidian);
+  background-color: var(--color-page-bg, #FFFFFF);
   overflow-x: hidden;
   max-width: 100%;
 }
 
 body {
   margin: 0;
-  background-color: var(--color-obsidian);
-  color: var(--color-silver);
+  background-color: var(--color-page-bg, #FFFFFF);
+  color: var(--color-text-primary, #111111);
   font-family: var(--font-body);
   font-size: 0.95rem;
   line-height: 1.65;
@@ -28,14 +28,14 @@ body {
 }
 
 ::selection {
-  background-color: var(--color-silver);
-  color: var(--color-obsidian);
+  background-color: var(--color-obsidian, #080808);
+  color: #FFFFFF;
 }
 
 /* Luxury Editorial Headings */
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
-  color: var(--color-white);
+  color: var(--color-text-primary, #111111);
   font-family: var(--font-display);
   font-weight: 500;
   line-height: 1.15;
@@ -92,7 +92,7 @@ button, input, textarea, select {
 }
 
 :focus-visible {
-  outline: 1px solid var(--color-silver);
+  outline: 1.5px solid var(--color-text-primary, #111111);
   outline-offset: 3px;
 }
 
@@ -103,16 +103,16 @@ button, input, textarea, select {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-obsidian);
+  background: var(--color-section-alt, #F7F7F7);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-surface);
+  background: #D5D5D5;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-border);
+  background: #A0A0A0;
 }
 
 /* Containers & Grid */
@@ -154,12 +154,12 @@ button, input, textarea, select {
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--color-text-secondary, #666666);
   margin-bottom: var(--space-2);
 }
 
 .eyebrow-silver {
-  color: var(--color-silver);
+  color: var(--color-text-primary, #111111);
 }
 
 @media (prefers-reduced-motion: reduce) {

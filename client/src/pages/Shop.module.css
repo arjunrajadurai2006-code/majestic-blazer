@@ -1,9 +1,10 @@
 .page {
   padding-bottom: 96px;
+  background: var(--color-page-bg);
 }
 
 .header {
-  background: var(--color-obsidian);
+  background: var(--color-section-alt);
   border-bottom: 1px solid var(--color-border);
   padding: 72px 0 64px;
   text-align: center;
@@ -14,7 +15,7 @@
   font-family: var(--font-body);
   font-size: 0.74rem;
   letter-spacing: 0.22em;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   font-weight: 600;
   text-transform: uppercase;
   margin-bottom: 12px;
@@ -22,14 +23,14 @@
 
 .header h1 {
   font-size: clamp(2.4rem, 4.5vw, 3.5rem);
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin-bottom: 14px;
   font-weight: 400;
   letter-spacing: 0.02em;
 }
 
 .subtitle {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   max-width: 640px;
   margin: 0 auto;
   line-height: 1.7;
@@ -53,13 +54,19 @@
   gap: 8px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
   padding: 10px 18px;
   font-size: 0.82rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
   border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.filterToggleBtn:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-text-primary);
 }
 
 .layout {
@@ -71,7 +78,7 @@
 
 /* Sidebar */
 .sidebar {
-  background: var(--color-rich-black);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 32px 24px;
@@ -90,7 +97,7 @@
 
 .sidebarHeader h3 {
   font-size: 1rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   font-family: var(--font-body);
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -100,7 +107,7 @@
 .clearBtn {
   background: transparent;
   border: none;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   font-size: 0.78rem;
   display: flex;
   align-items: center;
@@ -110,14 +117,14 @@
 }
 
 .clearBtn:hover {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .closeMobileBtn {
   display: none;
   background: transparent;
   border: none;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   cursor: pointer;
 }
 
@@ -129,7 +136,7 @@
 
 .filterGroup h4 {
   font-size: 0.76rem;
-  color: var(--color-silver);
+  color: var(--color-text-primary);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   margin: 0;
@@ -147,17 +154,17 @@
   align-items: center;
   gap: 10px;
   font-size: 0.88rem;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   cursor: pointer;
   transition: color var(--transition-fast);
 }
 
 .radioLabel:hover {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .radioLabel input {
-  accent-color: var(--color-silver);
+  accent-color: var(--color-obsidian);
 }
 
 .categoryList {
@@ -169,7 +176,7 @@
 .filterChip {
   background: transparent;
   border: 1px solid transparent;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   text-align: left;
   padding: 8px 12px;
   font-size: 0.85rem;
@@ -179,15 +186,16 @@
 }
 
 .filterChip:hover {
-  color: var(--color-white);
+  color: var(--color-text-primary);
   background: var(--color-surface);
 }
 
 .chipActive {
   background: var(--color-surface);
   border-color: var(--color-border);
-  color: var(--color-white);
+  color: var(--color-text-primary);
   font-weight: 600;
+  box-shadow: var(--shadow-subtle);
 }
 
 .sizeGrid {
@@ -199,7 +207,7 @@
 .sizeBtn {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   padding: 8px;
   font-size: 0.8rem;
   cursor: pointer;
@@ -208,14 +216,14 @@
 }
 
 .sizeBtn:hover {
-  border-color: var(--color-silver);
-  color: var(--color-white);
+  border-color: var(--color-text-primary);
+  color: var(--color-text-primary);
 }
 
 .sizeActive {
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border-color: var(--color-white);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border-color: var(--color-obsidian);
   font-weight: 700;
 }
 
@@ -228,7 +236,7 @@
 .colorChip {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   padding: 5px 10px;
   font-size: 0.78rem;
   cursor: pointer;
@@ -237,14 +245,14 @@
 }
 
 .colorChip:hover {
-  border-color: var(--color-silver);
-  color: var(--color-white);
+  border-color: var(--color-text-primary);
+  color: var(--color-text-primary);
 }
 
 .colorActive {
-  background: var(--color-silver);
-  color: var(--color-obsidian);
-  border-color: var(--color-silver);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border-color: var(--color-obsidian);
   font-weight: 600;
 }
 
@@ -258,7 +266,7 @@
   width: 100%;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-white);
+  color: var(--color-text-primary);
   padding: 8px 12px;
   font-size: 0.82rem;
   border-radius: var(--radius-sm);
@@ -266,11 +274,11 @@
 }
 
 .priceInput:focus {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary);
 }
 
 .priceDash {
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
 }
 
 /* Toolbar */
@@ -285,11 +293,11 @@
 
 .resultCount {
   font-size: 0.88rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
 }
 
 .resultCount strong {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .sortDesktopWrap {
@@ -297,13 +305,13 @@
   align-items: center;
   gap: 12px;
   font-size: 0.82rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
 }
 
 .sortSelect {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
   padding: 8px 14px;
   font-size: 0.82rem;
   outline: none;
@@ -312,7 +320,7 @@
 }
 
 .sortSelect:focus {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary);
 }
 
 .activePills {
@@ -324,9 +332,9 @@
 }
 
 .pill {
-  background: var(--color-surface);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
   padding: 5px 12px;
   font-size: 0.78rem;
   display: inline-flex;
@@ -338,7 +346,7 @@
 .pill button {
   background: transparent;
   border: none;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   cursor: pointer;
   font-size: 0.95rem;
   line-height: 1;
@@ -346,13 +354,13 @@
 }
 
 .pill button:hover {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .clearAllLink {
   background: transparent;
   border: none;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   font-size: 0.78rem;
   cursor: pointer;
   text-decoration: underline;
@@ -361,7 +369,7 @@
 }
 
 .clearAllLink:hover {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 /* Grid */
@@ -372,7 +380,7 @@
 }
 
 .skeleton {
-  background: var(--color-surface);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   aspect-ratio: 3 / 4;
@@ -381,28 +389,28 @@
 .empty {
   text-align: center;
   padding: 88px 24px;
-  background: var(--color-rich-black);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
 }
 
 .empty h3 {
   font-size: 1.5rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin-bottom: 12px;
 }
 
 .empty p {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   max-width: 440px;
   margin: 0 auto 24px;
   line-height: 1.65;
 }
 
 .resetBtn {
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border: 1px solid var(--color-white);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border: 1px solid var(--color-obsidian);
   padding: 12px 28px;
   font-size: 0.82rem;
   font-weight: 600;
@@ -414,8 +422,8 @@
 }
 
 .resetBtn:hover {
-  background: var(--color-platinum);
-  border-color: var(--color-platinum);
+  background: var(--color-rich-black);
+  border-color: var(--color-rich-black);
   transform: translateY(-1px);
 }
 
@@ -433,7 +441,7 @@
 .pageBtn {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
   padding: 10px 22px;
   font-size: 0.82rem;
   font-weight: 500;
@@ -445,8 +453,9 @@
 }
 
 .pageBtn:hover:not(:disabled) {
-  border-color: var(--color-silver);
-  color: var(--color-white);
+  background: var(--color-surface-hover);
+  border-color: var(--color-text-primary);
+  color: var(--color-text-primary);
 }
 
 .pageBtn:disabled {
@@ -456,14 +465,14 @@
 
 .pageInfo {
   font-size: 0.85rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
 }
 
 .applyMobileBtn {
   display: none;
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border: 1px solid var(--color-white);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border: 1px solid var(--color-obsidian);
   padding: 14px;
   font-weight: 600;
   font-size: 0.82rem;
@@ -477,8 +486,8 @@
 }
 
 .applyMobileBtn:hover {
-  background: var(--color-platinum);
-  border-color: var(--color-platinum);
+  background: var(--color-rich-black);
+  border-color: var(--color-rich-black);
 }
 
 @media (max-width: 1024px) {
@@ -510,7 +519,7 @@
     position: fixed;
     inset: 0;
     z-index: 2500;
-    background: var(--color-obsidian);
+    background: var(--color-surface);
     overflow-y: auto;
     display: none;
     padding: 32px 24px;

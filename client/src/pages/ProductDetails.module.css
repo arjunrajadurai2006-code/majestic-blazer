@@ -1,5 +1,6 @@
 .detailsPage {
   padding-bottom: 96px;
+  background: var(--color-page-bg);
 }
 
 .loadingWrap {
@@ -12,7 +13,7 @@
   width: 48px;
   height: 48px;
   border: 2px solid var(--color-border);
-  border-top-color: var(--color-silver);
+  border-top-color: var(--color-obsidian);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -28,11 +29,12 @@
 
 .notFound h2 {
   font-size: 2rem;
+  color: var(--color-text-primary);
   margin-bottom: 16px;
 }
 
 .notFound a {
-  color: var(--color-silver);
+  color: var(--color-text-primary);
   text-decoration: underline;
 }
 
@@ -42,23 +44,24 @@
   align-items: center;
   gap: 10px;
   font-size: 0.78rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   flex-wrap: wrap;
 }
 
 .breadcrumbs a {
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   transition: color var(--transition-fast);
 }
 
 .breadcrumbs a:hover {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .crumbActive {
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
+  font-weight: 600;
 }
 
 .grid {
@@ -79,7 +82,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
-  background: var(--color-obsidian);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   overflow: hidden;
@@ -96,8 +99,8 @@
   position: absolute;
   top: 16px;
   left: 16px;
-  background: var(--color-white);
-  color: var(--color-obsidian);
+  background: var(--color-obsidian);
+  color: var(--color-white);
   font-weight: 700;
   font-size: 0.75rem;
   padding: 6px 12px;
@@ -132,7 +135,7 @@
 }
 
 .thumbActive {
-  border-color: var(--color-silver);
+  border-color: var(--color-obsidian);
 }
 
 /* Info */
@@ -153,7 +156,7 @@
 .categoryName {
   font-size: 0.74rem;
   letter-spacing: 0.2em;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   font-weight: 600;
 }
@@ -165,18 +168,18 @@
 }
 
 .stars {
-  color: var(--color-silver);
+  color: #B99A58;
   font-size: 0.9rem;
 }
 
 .ratingNum {
   font-size: 0.78rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
 }
 
 .title {
   font-size: clamp(1.65rem, 5.5vw, 2.85rem);
-  color: var(--color-white);
+  color: var(--color-text-primary);
   line-height: 1.15;
   font-weight: 500;
   word-break: break-word;
@@ -184,7 +187,7 @@
 
 .sku {
   font-size: 0.78rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   letter-spacing: 0.1em;
 }
 
@@ -214,25 +217,25 @@
   font-size: 0.76rem;
   letter-spacing: 0.14em;
   font-weight: 700;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
 }
 
 .tabPrice {
   font-size: 0.95rem;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .tabActive {
-  background: var(--color-rich-black);
-  border-color: var(--color-silver);
+  background: var(--color-section-alt);
+  border-color: var(--color-obsidian);
 }
 
 .tabActive span:first-child {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .tabActive .tabPrice {
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
@@ -252,15 +255,15 @@
 .sizeHeader label {
   font-size: 0.8rem;
   letter-spacing: 0.1em;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   font-weight: 500;
 }
 
 .fitBadge {
   font-size: 0.74rem;
-  color: var(--color-platinum);
-  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 4px 10px;
@@ -282,29 +285,29 @@
   align-items: center;
   gap: 4px;
   cursor: pointer;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   font-weight: 600;
   transition: all var(--transition-fast);
 }
 
 .sizeBtn:hover:not(:disabled) {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary);
 }
 
 .stockNote {
   font-size: 0.68rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   font-weight: 400;
 }
 
 .sizeSelected {
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border-color: var(--color-white);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border-color: var(--color-obsidian);
 }
 
 .sizeSelected .stockNote {
-  color: var(--color-obsidian);
+  color: var(--color-text-light-secondary);
   font-weight: 500;
 }
 
@@ -319,7 +322,7 @@
   display: flex;
   flex-direction: column;
   gap: 22px;
-  background: var(--color-rich-black);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 26px;
@@ -335,20 +338,20 @@
 .currentPrice {
   font-size: 1.9rem;
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   letter-spacing: 0.02em;
 }
 
 .originalPrice {
   font-size: 1.15rem;
-  color: var(--color-muted);
+  color: var(--color-text-muted);
   text-decoration: line-through;
 }
 
 .taxNote {
   width: 100%;
   font-size: 0.76rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
 }
 
 .actionRow {
@@ -368,7 +371,7 @@
 .qtyPicker button {
   background: transparent;
   border: none;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   padding: 12px 16px;
   font-size: 1.1rem;
   cursor: pointer;
@@ -377,14 +380,14 @@
 .qtyPicker span {
   padding: 0 12px;
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .addCartBtn {
   flex: 1;
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border: 1px solid var(--color-white);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border: 1px solid var(--color-obsidian);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -400,8 +403,8 @@
 }
 
 .addCartBtn:hover:not(:disabled) {
-  background: var(--color-platinum);
-  border-color: var(--color-platinum);
+  background: var(--color-rich-black);
+  border-color: var(--color-rich-black);
   transform: translateY(-1px);
 }
 
@@ -418,17 +421,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--color-text-primary);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .wishBtn:hover {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary);
 }
 
 .wishActive {
-  border-color: var(--color-silver);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--color-obsidian);
+  background: var(--color-surface-hover);
 }
 
 /* Rent Panel */
@@ -436,7 +440,7 @@
   display: flex;
   flex-direction: column;
   gap: 22px;
-  background: var(--color-rich-black);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 26px;
@@ -453,12 +457,12 @@
 .rentDaily {
   font-size: 1.9rem;
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .perDay {
   font-size: 0.82rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   margin-left: 8px;
 }
 
@@ -467,7 +471,7 @@
   align-items: center;
   gap: 8px;
   font-size: 0.8rem;
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -490,24 +494,24 @@
   font-size: 0.76rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .dateInput {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: var(--color-white);
+  color: var(--color-text-primary);
   padding: 11px 14px;
   font-size: 0.88rem;
   outline: none;
-  color-scheme: dark;
+  color-scheme: light;
   width: 100%;
   box-sizing: border-box;
 }
 
 .dateInput:focus {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary);
 }
 
 .availBox {
@@ -518,7 +522,7 @@
 }
 
 .availChecking {
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   font-size: 0.85rem;
   font-style: italic;
   margin: 0;
@@ -534,12 +538,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   font-size: 0.95rem;
 }
 
 .checkIcon {
-  color: var(--color-platinum);
+  color: #16a34a;
 }
 
 .breakdown {
@@ -554,15 +558,15 @@
 .breakRow {
   display: flex;
   justify-content: space-between;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .breakRow strong {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .breakTotal {
-  color: var(--color-white);
+  color: var(--color-text-primary);
   font-size: 0.95rem;
   font-weight: 700;
   border-top: 1px dashed var(--color-border);
@@ -571,14 +575,14 @@
 }
 
 .breakTotal strong {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .availFail {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #e06c75;
+  color: #dc2626;
   font-size: 0.85rem;
 }
 
@@ -598,7 +602,7 @@
   align-items: center;
   gap: 10px;
   font-size: 0.82rem;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 /* Specs Accordion */
@@ -613,7 +617,7 @@
 .specGroup h3 {
   font-size: 0.82rem;
   letter-spacing: 0.14em;
-  color: var(--color-silver);
+  color: var(--color-text-primary);
   text-transform: uppercase;
   margin-bottom: 8px;
   font-family: var(--font-body);
@@ -621,7 +625,7 @@
 }
 
 .specGroup p {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
   line-height: 1.7;
 }
@@ -635,7 +639,7 @@
 
 .reviewsHeader h2 {
   font-size: 2.2rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin-bottom: 36px;
 }
 
@@ -652,7 +656,7 @@
 }
 
 .reviewItem {
-  background: var(--color-rich-black);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 24px;
@@ -669,18 +673,18 @@
 
 .revDate {
   font-size: 0.78rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
 }
 
 .revTitle {
   font-size: 1.05rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin: 0;
   font-weight: 500;
 }
 
 .revComment {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
   line-height: 1.65;
   margin: 0;
@@ -688,17 +692,17 @@
 
 .revAuthor {
   font-size: 0.78rem;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   letter-spacing: 0.05em;
 }
 
 .noReviews {
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   font-style: italic;
 }
 
 .reviewFormWrap {
-  background: var(--color-rich-black);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 32px;
@@ -706,7 +710,7 @@
 
 .reviewFormWrap h3 {
   font-size: 1.25rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin-bottom: 22px;
 }
 
@@ -725,7 +729,7 @@
 .formGroup label {
   font-size: 0.78rem;
   letter-spacing: 0.08em;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
 }
 
@@ -735,11 +739,11 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: var(--color-white);
+  color: var(--color-text-primary);
   padding: 11px 14px;
   font-size: 0.88rem;
   outline: none;
-  color-scheme: dark;
+  color-scheme: light;
   width: 100%;
   box-sizing: border-box;
 }
@@ -747,13 +751,13 @@
 .formGroup select:focus,
 .formGroup input:focus,
 .formGroup textarea:focus {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary);
 }
 
 .submitRevBtn {
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border: 1px solid var(--color-white);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border: 1px solid var(--color-obsidian);
   border-radius: var(--radius-sm);
   padding: 14px;
   font-size: 0.82rem;
@@ -766,8 +770,8 @@
 }
 
 .submitRevBtn:hover:not(:disabled) {
-  background: var(--color-platinum);
-  border-color: var(--color-platinum);
+  background: var(--color-rich-black);
+  border-color: var(--color-rich-black);
 }
 
 /* Related */
@@ -783,7 +787,7 @@
 
 .relatedHeader h2 {
   font-size: 2.2rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .relatedGrid {

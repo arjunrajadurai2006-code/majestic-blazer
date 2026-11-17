@@ -1,5 +1,6 @@
 .page {
   padding: 48px 0 96px;
+  background: var(--color-page-bg);
 }
 
 .header {
@@ -18,7 +19,7 @@
   font-family: var(--font-body);
   font-size: 0.74rem;
   letter-spacing: 0.2em;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   font-weight: 600;
   text-transform: uppercase;
   margin-bottom: 6px;
@@ -26,7 +27,7 @@
 
 .header h1 {
   font-size: clamp(1.8rem, 3.2vw, 2.5rem);
-  color: var(--color-white);
+  color: var(--color-text-primary);
   font-weight: 500;
 }
 
@@ -34,7 +35,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   font-family: var(--font-body);
   font-size: 0.82rem;
   text-transform: uppercase;
@@ -43,7 +44,7 @@
 }
 
 .rentalLink:hover {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .orderList {
@@ -53,13 +54,14 @@
 }
 
 .orderCard {
-  background: var(--color-rich-black);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 28px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  box-shadow: var(--shadow-card);
 }
 
 .orderTop {
@@ -76,21 +78,21 @@
   display: block;
   font-size: 0.7rem;
   letter-spacing: 0.14em;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
 }
 
 .orderTop strong {
   display: block;
   font-size: 1.2rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin: 4px 0;
   font-weight: 500;
 }
 
 .orderDate {
   font-size: 0.8rem;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .topRight {
@@ -110,28 +112,28 @@
 }
 
 .pending {
-  background: var(--color-surface);
-  color: var(--color-silver);
+  background: var(--color-section-alt);
+  color: var(--color-text-secondary);
   border: 1px solid var(--color-border);
 }
 
 .paid,
 .delivered {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-obsidian);
   color: var(--color-white);
-  border: 1px solid var(--color-silver);
+  border: 1px solid var(--color-obsidian);
 }
 
 .processing,
 .shipped {
-  background: var(--color-surface);
-  color: var(--color-platinum);
-  border: 1px solid var(--color-border-glow);
+  background: var(--color-section-alt);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
 }
 
 .cancelled {
   background: rgba(224, 108, 117, 0.1);
-  color: #e06c75;
+  color: #dc2626;
   border: 1px solid rgba(224, 108, 117, 0.3);
 }
 
@@ -139,7 +141,7 @@
 .pdfBtn {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-white);
+  color: var(--color-text-primary);
   padding: 8px 16px;
   font-size: 0.76rem;
   font-weight: 600;
@@ -156,9 +158,9 @@
 
 .invoiceBtn:hover,
 .pdfBtn:hover {
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border-color: var(--color-white);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border-color: var(--color-obsidian);
 }
 
 .itemList,
@@ -178,7 +180,7 @@
   width: 56px;
   height: 74px;
   object-fit: cover;
-  background: var(--color-obsidian);
+  background: var(--color-section-alt);
   border-radius: var(--radius-sm);
   flex-shrink: 0;
 }
@@ -194,26 +196,26 @@
 .itemName {
   font-family: var(--font-display);
   font-size: 1.05rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
 .itemName:hover {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .itemMeta span,
 .itemSpecs {
   font-size: 0.78rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
 }
 
 .itemTotal,
 .itemPrice {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .orderBottom {
@@ -232,11 +234,11 @@
   flex-direction: column;
   gap: 4px;
   font-size: 0.82rem;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .deliveryNote strong {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .totalBlock {
@@ -246,44 +248,50 @@
 }
 
 .totalLabel {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .totalPrice,
 .totalValue {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .empty {
   text-align: center;
   padding: 80px 20px;
-  background: var(--color-rich-black);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
 }
 
 .empty h2 {
   font-size: 1.8rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin-bottom: 12px;
 }
 
 .empty p {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   margin-bottom: 24px;
 }
 
 .shopBtn {
-  background: var(--color-white);
-  color: var(--color-obsidian);
+  background: var(--color-obsidian);
+  color: var(--color-white);
   padding: 12px 28px;
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   border-radius: var(--radius-sm);
+  display: inline-block;
+  text-decoration: none;
+}
+
+.shopBtn:hover {
+  background: var(--color-rich-black);
 }
 
 @media (max-width: 640px) {

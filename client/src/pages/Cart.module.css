@@ -1,5 +1,6 @@
 .page {
   padding: 48px 0 96px;
+  background: var(--color-page-bg);
 }
 
 .header {
@@ -15,12 +16,12 @@
 
 .header h1 {
   font-size: clamp(1.8rem, 3.2vw, 2.5rem);
-  color: var(--color-white);
+  color: var(--color-text-primary);
   font-weight: 500;
 }
 
 .continueLink {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   font-family: var(--font-body);
   font-size: 0.8rem;
   letter-spacing: 0.12em;
@@ -29,7 +30,7 @@
 }
 
 .continueLink:hover {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .layout {
@@ -49,7 +50,7 @@
 .emptyCard {
   text-align: center;
   max-width: 540px;
-  background: var(--color-rich-black);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 56px 36px;
@@ -60,16 +61,16 @@
 }
 
 .emptyIcon {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .emptyCard h2 {
   font-size: 1.85rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .emptyCard p {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   font-size: 0.95rem;
   line-height: 1.65;
 }
@@ -81,8 +82,8 @@
 }
 
 .exploreBtn {
-  background: var(--color-white);
-  color: var(--color-obsidian);
+  background: var(--color-obsidian);
+  color: var(--color-white);
   padding: 12px 24px;
   font-size: 0.82rem;
   font-weight: 600;
@@ -91,14 +92,23 @@
   border-radius: var(--radius-sm);
 }
 
+.exploreBtn:hover {
+  background: var(--color-rich-black);
+}
+
 .rentBtn {
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
   padding: 12px 24px;
   font-size: 0.82rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   border-radius: var(--radius-sm);
+}
+
+.rentBtn:hover {
+  border-color: var(--color-text-primary);
 }
 
 /* Items List */
@@ -116,7 +126,7 @@
 
 .sectionTitle {
   font-size: 0.85rem;
-  color: var(--color-silver);
+  color: var(--color-text-primary);
   font-family: var(--font-body);
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -124,7 +134,7 @@
 }
 
 .rentSectionTitle {
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
 }
 
 .itemsGroup {
@@ -134,22 +144,23 @@
 }
 
 .itemRow {
-  background: var(--color-rich-black);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 22px;
   display: flex;
   align-items: center;
   gap: 22px;
+  box-shadow: var(--shadow-card);
   transition: border-color var(--transition-fast);
 }
 
 .itemRow:hover {
-  border-color: var(--color-border-glow);
+  border-color: var(--color-text-primary);
 }
 
 .rentalRow {
-  background: var(--color-rich-black);
+  background: var(--color-surface);
   border-color: var(--color-border);
 }
 
@@ -157,7 +168,7 @@
   width: 84px;
   height: 112px;
   object-fit: cover;
-  background: var(--color-obsidian);
+  background: var(--color-section-alt);
   border-radius: var(--radius-sm);
   flex-shrink: 0;
 }
@@ -173,7 +184,7 @@
   font-family: var(--font-body);
   font-size: 0.65rem;
   font-weight: 700;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -182,12 +193,12 @@
   font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 500;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   transition: color var(--transition-fast);
 }
 
 .itemName:hover {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .itemMeta {
@@ -195,17 +206,17 @@
   flex-wrap: wrap;
   gap: 6px 14px;
   font-size: 0.8rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
 }
 
 .itemMeta strong {
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
 }
 
 .itemPrice {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
 }
 
 .rentalSchedule {
@@ -213,11 +224,11 @@
   align-items: center;
   gap: 8px;
   font-size: 0.82rem;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .calIcon {
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
 }
 
 .rentalFinancials {
@@ -225,19 +236,19 @@
   flex-wrap: wrap;
   gap: 14px;
   font-size: 0.82rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   margin-top: 4px;
 }
 
 .rentalFinancials strong {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .depositNotice {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .qtyControls {
@@ -250,7 +261,7 @@
 .stepper {
   display: flex;
   align-items: center;
-  background: var(--color-surface);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
 }
@@ -258,7 +269,7 @@
 .stepper button {
   background: transparent;
   border: none;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   padding: 6px 12px;
   font-size: 1rem;
   cursor: pointer;
@@ -266,7 +277,7 @@
 }
 
 .stepper button:hover:not(:disabled) {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .stepper button:disabled {
@@ -278,13 +289,13 @@
   padding: 0 8px;
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .lineTotal {
   font-size: 1.05rem;
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .rentalTotalCol {
@@ -296,21 +307,21 @@
 
 .rentalTotalLabel {
   font-size: 0.72rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
 }
 
 .removeBtn {
   background: transparent;
   border: none;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   cursor: pointer;
   padding: 8px;
   transition: color var(--transition-fast);
 }
 
 .removeBtn:hover {
-  color: #e06c75;
+  color: #dc2626;
 }
 
 /* Summary Card */
@@ -320,7 +331,7 @@
 }
 
 .summaryCard {
-  background: var(--color-rich-black);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 32px;
@@ -331,7 +342,7 @@
 
 .summaryCard h3 {
   font-size: 1.25rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   font-weight: 500;
 }
 
@@ -350,20 +361,20 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: var(--color-white);
+  color: var(--color-text-primary);
   padding: 10px 14px;
   font-size: 0.85rem;
   outline: none;
 }
 
 .couponInput:focus {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary);
 }
 
 .couponBtn {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-white);
+  color: var(--color-text-primary);
   padding: 10px 16px;
   font-size: 0.8rem;
   font-weight: 600;
@@ -375,8 +386,8 @@
 }
 
 .couponBtn:hover:not(:disabled) {
-  border-color: var(--color-silver);
-  background: var(--color-charcoal);
+  border-color: var(--color-text-primary);
+  background: var(--color-surface-hover);
 }
 
 .couponApplied {
@@ -396,31 +407,31 @@
 }
 
 .tagIcon {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .couponInfo strong {
   display: block;
   font-size: 0.85rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .couponInfo span {
   font-size: 0.76rem;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .removeCouponBtn {
   background: transparent;
   border: none;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   font-size: 0.78rem;
   cursor: pointer;
   text-decoration: underline;
 }
 
 .removeCouponBtn:hover {
-  color: #e06c75;
+  color: #dc2626;
 }
 
 .summaryRows {
@@ -433,19 +444,19 @@
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .discountRow {
-  color: #98c379;
+  color: #16a34a;
 }
 
 .freeDelivery {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .depositRow {
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
   border-top: 1px dashed var(--color-border);
   padding-top: 12px;
 }
@@ -453,7 +464,7 @@
 .depositSubtext {
   display: block;
   font-size: 0.72rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   margin-top: 2px;
 }
 
@@ -467,7 +478,7 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -478,9 +489,9 @@
 }
 
 .checkoutBtn {
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border: 1px solid var(--color-white);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border: 1px solid var(--color-obsidian);
   border-radius: var(--radius-sm);
   padding: 16px;
   display: flex;
@@ -496,8 +507,8 @@
 }
 
 .checkoutBtn:hover {
-  background: var(--color-platinum);
-  border-color: var(--color-platinum);
+  background: var(--color-rich-black);
+  border-color: var(--color-rich-black);
   transform: translateY(-1px);
 }
 
@@ -514,7 +525,7 @@
   align-items: center;
   gap: 8px;
   font-size: 0.78rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
 }
 
 @media (max-width: 990px) {

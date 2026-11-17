@@ -1,37 +1,74 @@
 :root {
-  /* Brand Luxury Palette — Black & Silver */
+  /* ==========================================================================
+     MAJESTIC BLAZER — PREMIUM BLACK & WHITE LUXURY SYSTEM
+     ========================================================================== */
+
+  /* 1. Core Backgrounds */
+  --color-page-bg: #FFFFFF;
+  --color-section-alt: #F7F7F7;
   --color-obsidian: #080808;
-  --color-rich-black: #101010;
-  --color-charcoal: #171717;
-  --color-surface: #202020;
-  --color-silver: #C0C0C0;
-  --color-platinum: #E5E5E5;
+  /* Primary black sections */
+  --color-rich-black: #151515;
+  /* Secondary black */
+  --color-charcoal: #202020;
+  --color-surface: #FFFFFF;
+  /* Clean white card surfaces */
+  --color-surface-alt: #F7F7F7;
+  /* Alternate card / section surface */
+  --color-surface-hover: #F0F0F0;
+  /* Hover background */
   --color-white: #FFFFFF;
-  --color-muted: #858585;
-  --color-border: #303030;
-  --color-border-subtle: rgba(192, 192, 192, 0.12);
-  --color-border-glow: rgba(192, 192, 192, 0.35);
 
-  /* Semantic aliases for backward compatibility */
-  --color-black: var(--color-obsidian);
-  --color-graphite: #252525;
-  --color-silver-light: var(--color-platinum);
-  --color-gold: #B99A58; /* Muted crest accent only */
+  /* 2. Core Text */
+  --color-text-primary: #111111;
+  /* Primary text on white */
+  --color-text-secondary: #666666;
+  /* Secondary text on white */
+  --color-text-muted: #888888;
+  --color-text-light: #FFFFFF;
+  /* Primary text on black */
+  --color-text-light-secondary: #BDBDBD;
+  /* Secondary text on black */
 
-  /* Luxury Typography */
+  /* 3. Backward Compatibility Aliases */
+  --color-platinum: #111111;
+  /* Replaced with crisp dark text on white */
+  --color-silver: #666666;
+  /* Replaced with readable secondary dark text */
+  --color-muted: #666666;
+  --color-black: #080808;
+  --color-graphite: #F0F0F0;
+  --color-gold: #B99A58;
+
+  /* 4. Borders */
+  --color-border: #E5E5E5;
+  /* Subtle clean borders */
+  --color-border-subtle: #F0F0F0;
+  --color-border-dark: #303030;
+  /* Subtle dark borders for black sections */
+  --color-border-glow: rgba(0, 0, 0, 0.08);
+
+  /* 5. Luxury Typography */
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Spacing Scale */
-  --space-1: 0.5rem;   /* 8px */
-  --space-2: 1rem;     /* 16px */
-  --space-3: 1.5rem;   /* 24px */
-  --space-4: 2.5rem;   /* 40px */
-  --space-5: 4rem;     /* 64px */
-  --space-6: 6.5rem;   /* 104px */
-  --space-8: 8.5rem;   /* 136px */
+  /* 6. Spacing Scale */
+  --space-1: 0.5rem;
+  /* 8px */
+  --space-2: 1rem;
+  /* 16px */
+  --space-3: 1.5rem;
+  /* 24px */
+  --space-4: 2.5rem;
+  /* 40px */
+  --space-5: 4rem;
+  /* 64px */
+  --space-6: 6.5rem;
+  /* 104px */
+  --space-8: 8.5rem;
+  /* 136px */
 
-  /* Layout Containers */
+  /* 7. Layout Containers */
   --container: 1240px;
   --container-wide: 1400px;
   --header-height: 80px;
@@ -39,13 +76,14 @@
   --radius: 3px;
   --radius-lg: 4px;
 
-  /* Elevation and Borders */
+  /* 8. Elevation and Shadows */
   --border: 1px solid var(--color-border);
-  --border-active: 1px solid var(--color-silver);
-  --shadow-luxury: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
-  --shadow-subtle: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --border-active: 1px solid #111111;
+  --shadow-luxury: 0 12px 30px rgba(0, 0, 0, 0.06);
+  --shadow-subtle: 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
 
-  /* Transitions */
+  /* 9. Transitions */
   --transition-fast: 0.18s ease;
   --transition-smooth: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-editorial: 0.5s cubic-bezier(0.19, 1, 0.22, 1);

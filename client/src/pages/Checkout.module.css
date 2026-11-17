@@ -1,5 +1,6 @@
 .checkoutPage {
   padding: 48px 0 96px;
+  background: var(--color-page-bg);
 }
 
 .emptyPage {
@@ -10,11 +11,11 @@
 .emptyPage h2 {
   font-size: 2rem;
   margin-bottom: 16px;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .emptyPage a {
-  color: var(--color-silver);
+  color: var(--color-text-primary);
   text-decoration: underline;
 }
 
@@ -31,7 +32,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 500;
@@ -45,7 +46,7 @@
   border-radius: 50%;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -54,13 +55,13 @@
 }
 
 .stepActive {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .stepActive .stepNum {
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border-color: var(--color-white);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border-color: var(--color-obsidian);
 }
 
 .stepConnector {
@@ -78,18 +79,19 @@
 }
 
 .leftCol {
-  background: var(--color-rich-black);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 40px;
   display: flex;
   flex-direction: column;
   gap: 32px;
+  box-shadow: var(--shadow-card);
 }
 
 .leftCol h2 {
   font-size: 1.6rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin: 0;
   font-weight: 500;
 }
@@ -115,16 +117,16 @@
 }
 
 .methodBtn:hover {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary);
 }
 
 .methodActive {
-  background: var(--color-charcoal);
-  border-color: var(--color-silver);
+  background: var(--color-section-alt);
+  border-color: var(--color-obsidian);
 }
 
 .methodIcon {
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -132,7 +134,7 @@
 .methodBtn strong {
   display: block;
   font-size: 0.92rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin-bottom: 4px;
   font-weight: 500;
 }
@@ -140,7 +142,7 @@
 .methodBtn span {
   display: block;
   font-size: 0.78rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   line-height: 1.45;
 }
 
@@ -155,7 +157,7 @@
 
 .addressFormBlock h3 {
   font-size: 1.15rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin: 0;
   font-weight: 500;
 }
@@ -164,7 +166,7 @@
   display: block;
   font-size: 0.76rem;
   letter-spacing: 0.08em;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   margin-bottom: 12px;
 }
@@ -185,16 +187,17 @@
   padding: 14px 18px;
   cursor: pointer;
   font-size: 0.88rem;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   transition: border-color var(--transition-fast);
 }
 
 .addrLabel:hover {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary);
+  color: var(--color-text-primary);
 }
 
 .addrLabel input {
-  accent-color: var(--color-silver);
+  accent-color: var(--color-obsidian);
 }
 
 .newAddressForm {
@@ -213,7 +216,7 @@
 .formRow label {
   font-size: 0.76rem;
   letter-spacing: 0.08em;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
 }
 
@@ -222,7 +225,7 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: var(--color-white);
+  color: var(--color-text-primary);
   padding: 12px 14px;
   font-size: 0.88rem;
   outline: none;
@@ -230,7 +233,7 @@
 
 .formRow input:focus,
 .formRow textarea:focus {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary);
 }
 
 .formGrid {
@@ -241,7 +244,7 @@
 
 /* Pickup Notice */
 .pickupNotice {
-  background: var(--color-surface);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 24px;
@@ -254,25 +257,25 @@
 
 .pickupNotice h3 {
   font-size: 1.1rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin: 0;
 }
 
 .pickupNotice p {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
   line-height: 1.6;
 }
 
 .pickupNotice strong {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .nextBtn {
   align-self: flex-start;
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border: 1px solid var(--color-white);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border: 1px solid var(--color-obsidian);
   border-radius: var(--radius-sm);
   padding: 15px 36px;
   font-size: 0.82rem;
@@ -287,8 +290,8 @@
 }
 
 .nextBtn:hover {
-  background: var(--color-platinum);
-  border-color: var(--color-platinum);
+  background: var(--color-rich-black);
+  border-color: var(--color-rich-black);
   transform: translateY(-1px);
 }
 
@@ -318,16 +321,16 @@
 }
 
 .payMethodCard:hover {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary);
 }
 
 .payMethodActive {
-  background: var(--color-charcoal);
-  border-color: var(--color-silver);
+  background: var(--color-section-alt);
+  border-color: var(--color-obsidian);
 }
 
 .payMethodCard input {
-  accent-color: var(--color-silver);
+  accent-color: var(--color-obsidian);
   margin-top: 4px;
 }
 
@@ -338,12 +341,12 @@
 }
 
 .payMethodInfo strong {
-  color: var(--color-white);
+  color: var(--color-text-primary);
   font-size: 0.95rem;
 }
 
 .payMethodInfo span {
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   font-size: 0.8rem;
 }
 
@@ -357,7 +360,7 @@
 .backBtn {
   background: transparent;
   border: 1px solid var(--color-border);
-  color: var(--color-silver);
+  color: var(--color-text-primary);
   padding: 14px 24px;
   font-size: 0.82rem;
   letter-spacing: 0.1em;
@@ -368,15 +371,14 @@
 }
 
 .backBtn:hover {
-  border-color: var(--color-silver);
-  color: var(--color-white);
+  border-color: var(--color-text-primary);
 }
 
 .placeOrderBtn {
   flex: 1;
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border: 1px solid var(--color-white);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border: 1px solid var(--color-obsidian);
   border-radius: var(--radius-sm);
   padding: 16px;
   font-size: 0.85rem;
@@ -388,8 +390,8 @@
 }
 
 .placeOrderBtn:hover:not(:disabled) {
-  background: var(--color-platinum);
-  border-color: var(--color-platinum);
+  background: var(--color-rich-black);
+  border-color: var(--color-rich-black);
   transform: translateY(-1px);
 }
 
@@ -402,7 +404,7 @@
 .confirmWrap {
   max-width: 760px;
   margin: 0 auto;
-  background: var(--color-rich-black);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 56px 44px;
@@ -414,18 +416,18 @@
 }
 
 .confirmIcon {
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .confirmWrap h2 {
   font-size: 2.2rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin: 0;
   font-weight: 500;
 }
 
 .confirmLead {
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
   font-size: 1rem;
   line-height: 1.7;
   max-width: 580px;
@@ -453,20 +455,20 @@
 .recordInfo strong {
   display: block;
   font-size: 0.95rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin-bottom: 4px;
 }
 
 .recordInfo span {
   display: block;
   font-size: 0.8rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
 }
 
 .invoiceBtn {
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border: 1px solid var(--color-white);
+  background: var(--color-obsidian);
+  color: var(--color-white);
+  border: 1px solid var(--color-obsidian);
   border-radius: var(--radius-sm);
   padding: 10px 18px;
   font-size: 0.78rem;
@@ -481,8 +483,8 @@
 }
 
 .invoiceBtn:hover {
-  background: var(--color-platinum);
-  border-color: var(--color-platinum);
+  background: var(--color-rich-black);
+  border-color: var(--color-rich-black);
 }
 
 .confirmBtns {
@@ -492,8 +494,8 @@
 }
 
 .homeBtn {
-  background: var(--color-white);
-  color: var(--color-obsidian);
+  background: var(--color-obsidian);
+  color: var(--color-white);
   padding: 14px 28px;
   font-size: 0.82rem;
   font-weight: 600;
@@ -502,9 +504,14 @@
   border-radius: var(--radius-sm);
 }
 
+.homeBtn:hover {
+  background: var(--color-rich-black);
+}
+
 .ordersBtn {
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
   padding: 14px 28px;
   font-size: 0.82rem;
   letter-spacing: 0.12em;
@@ -512,11 +519,15 @@
   border-radius: var(--radius-sm);
 }
 
+.ordersBtn:hover {
+  border-color: var(--color-text-primary);
+}
+
 /* Sidebar Order Review */
 .sidebarReview {
   position: sticky;
   top: 100px;
-  background: var(--color-rich-black);
+  background: var(--color-section-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 32px;
@@ -527,7 +538,7 @@
 
 .sidebarReview h3 {
   font-size: 1.15rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin: 0;
   font-weight: 500;
 }
@@ -553,7 +564,7 @@
   width: 44px;
   height: 58px;
   object-fit: cover;
-  background: var(--color-obsidian);
+  background: var(--color-surface);
   border-radius: var(--radius-sm);
   flex-shrink: 0;
 }
@@ -566,17 +577,17 @@
 }
 
 .reviewMeta strong {
-  color: var(--color-white);
+  color: var(--color-text-primary);
   font-size: 0.85rem;
 }
 
 .reviewMeta span {
-  color: var(--color-muted);
+  color: var(--color-text-secondary);
   font-size: 0.75rem;
 }
 
 .reviewPrice {
-  color: var(--color-platinum);
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
@@ -590,7 +601,7 @@
 .reviewRow {
   display: flex;
   justify-content: space-between;
-  color: var(--color-silver);
+  color: var(--color-text-secondary);
 }
 
 .reviewDivider {
@@ -603,7 +614,7 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  color: var(--color-white);
+  color: var(--color-text-primary);
   font-size: 1.05rem;
   font-weight: 600;
 }

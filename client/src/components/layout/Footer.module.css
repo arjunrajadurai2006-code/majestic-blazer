@@ -1,8 +1,8 @@
 .footer {
   background: var(--color-obsidian);
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border-dark);
   padding: 88px 0 36px;
-  color: var(--color-muted);
+  color: var(--color-text-light-secondary);
   font-size: 0.9rem;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .tagline {
-  color: var(--color-silver);
+  color: var(--color-text-light-secondary);
   font-size: 0.76rem;
   font-weight: 600;
   letter-spacing: 0.22em;
@@ -29,7 +29,7 @@
 .address {
   font-style: normal;
   line-height: 1.75;
-  color: var(--color-muted);
+  color: var(--color-text-light-secondary);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -37,7 +37,7 @@
 }
 
 .phoneLink {
-  color: var(--color-platinum);
+  color: var(--color-text-light);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
@@ -47,7 +47,7 @@
 }
 
 .hours {
-  color: var(--color-silver);
+  color: var(--color-text-light-secondary);
   font-size: 0.82rem;
   margin-top: 6px;
 }
@@ -70,7 +70,7 @@
 }
 
 .col a {
-  color: var(--color-muted);
+  color: var(--color-text-light-secondary);
   text-decoration: none;
   transition: all var(--transition-fast);
   display: inline-block;
@@ -89,7 +89,7 @@
 }
 
 .newsletter p {
-  color: var(--color-muted);
+  color: var(--color-text-light-secondary);
   line-height: 1.6;
   font-size: 0.86rem;
 }
@@ -103,7 +103,7 @@
 
 .newsInput {
   background: var(--color-rich-black);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-dark);
   color: var(--color-white);
   padding: 13px 16px;
   font-size: 0.88rem;
@@ -113,7 +113,7 @@
 }
 
 .newsInput:focus {
-  border-color: var(--color-silver);
+  border-color: #666666;
 }
 
 .newsBtn {
@@ -131,27 +131,27 @@
 }
 
 .newsBtn:hover {
-  background: var(--color-platinum);
-  border-color: var(--color-platinum);
+  background: #F0F0F0;
+  border-color: #F0F0F0;
   transform: translateY(-1px);
 }
 
 .bottom {
   margin-top: 64px;
   padding-top: 28px;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border-dark);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
   font-size: 0.78rem;
-  color: var(--color-muted);
+  color: var(--color-text-light-secondary);
 }
 
 .signature {
   letter-spacing: 0.05em;
-  color: var(--color-muted);
+  color: var(--color-text-light-secondary);
 }
 
 @media (max-width: 1024px) {
