@@ -11,7 +11,11 @@ try {
   }
 } catch (err) {
   console.error('PostgreSQL connection failed:', err.message);
-  process.exit(1);
+  if (env.isProd) {
+    process.exit(1);
+  } else {
+    console.warn('⚠️ Server continuing in dev mode without DB. Update server/.env with your PostgreSQL credentials when ready.');
+  }
 }
 
 const server = app.listen(env.port, () => console.log(`Majestic Blazer API listening on port ${env.port}`));

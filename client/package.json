@@ -11,7 +11,6 @@
   "dependencies": {
     "axios": "^1.21.1",
     "lucide-react": "^1.72.0",
-    "majestic-blazer": "file:..",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0"

@@ -24,7 +24,6 @@
     "express-validator": "^7.2.0",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
-    "majestic-blazer": "file:..",
     "morgan": "^1.10.0",
     "multer": "^2.5.0",
     "pdfkit": "^0.20.2",
