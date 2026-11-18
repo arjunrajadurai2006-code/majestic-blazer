@@ -2,12 +2,12 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   ChevronDown, ExternalLink, LogOut, Settings, LayoutDashboard, 
-  Calendar, Shield, AlertCircle
+  Calendar, Shield, AlertCircle, Menu
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import styles from './AdminHeader.module.css';
 
-export default function AdminHeader() {
+export default function AdminHeader({ onToggleMobileNav }) {
   const { admin, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -76,9 +76,18 @@ export default function AdminHeader() {
     <>
       <header className={styles.header}>
         <div className={styles.leftSection}>
+          <button
+            type="button"
+            className={styles.hamburgerBtn}
+            onClick={onToggleMobileNav}
+            aria-label="Toggle navigation menu"
+          >
+            <Menu size={20} />
+          </button>
           <div className={styles.atelierBadge}>
             <span className={styles.pulseDot} />
-            <span>Sathy Road Atelier &bull; Admin Console</span>
+            <span className={styles.badgeFullText}>Sathy Road Atelier &bull; Admin Console</span>
+            <span className={styles.badgeShortText}>Atelier Console</span>
           </div>
         </div>
 

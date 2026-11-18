@@ -429,12 +429,35 @@
   color: var(--color-text-primary, #111111);
 }
 
+/* Responsive Grid Classes for Dashboard & Analytics */
+.dashboardTwoColGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.dashboardSecondaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 /* Responsive Media Queries */
 @media (max-width: 768px) {
   .pageHeader {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-2);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .pageHeader h1 {
@@ -443,7 +466,45 @@
 
   .headerActions {
     width: 100%;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    box-sizing: border-box;
+  }
+
+  .headerActions a,
+  .headerActions button {
+    text-align: center;
+    justify-content: center;
+    padding: 0.65rem 0.5rem;
+    font-size: 0.78rem;
+    box-sizing: border-box;
+  }
+
+  .dashboardTwoColGrid,
+  .dashboardSecondaryGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .chartBox {
+    padding: var(--space-3) var(--space-2);
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .tableWrapper {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 580px;
   }
 
   .filterBar {
@@ -465,6 +526,8 @@
   .kpiGrid {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
   }
 
   .modal {
@@ -482,6 +545,17 @@
 @media (max-width: 480px) {
   .pageHeader h1 {
     font-size: 1.45rem;
+  }
+
+  .headerActions {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .headerActions a,
+  .headerActions button {
+    padding: 0.55rem 0.4rem;
+    font-size: 0.74rem;
   }
 
   .kpiGrid {

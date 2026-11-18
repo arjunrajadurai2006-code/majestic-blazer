@@ -222,7 +222,7 @@ export default function Dashboard() {
               Comparative breakdown between bespoke sales and garment rental revenues
             </span>
           </div>
-          <div style={{ display: 'flex', gap: '6px' }}>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
             {['7d', '30d', '90d', '1y'].map((rng) => (
               <button
                 key={rng}
@@ -272,10 +272,10 @@ export default function Dashboard() {
       </div>
 
       {/* Two Column Layout: Recent Orders & Top-Selling Blazers */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(460px, 1fr))', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
+      <div className={styles.dashboardTwoColGrid}>
         {/* Recent Orders Table */}
         <div className={styles.chartBox}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '8px' }}>
             <h3 style={{ margin: 0 }}>Recent Orders</h3>
             <Link to="/orders" className={styles.btnSecondary} style={{ padding: '0.3rem 0.65rem', fontSize: '0.8rem' }}>
               View All <ArrowUpRight size={14} style={{ marginLeft: '4px' }} />
@@ -330,7 +330,7 @@ export default function Dashboard() {
 
         {/* Top-Selling Blazers */}
         <div className={styles.chartBox}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '8px' }}>
             <h3 style={{ margin: 0 }}>Top-Selling Sartorial Blazers</h3>
             <Link to="/products" className={styles.btnSecondary} style={{ padding: '0.3rem 0.65rem', fontSize: '0.8rem' }}>
               Catalog <ArrowUpRight size={14} style={{ marginLeft: '4px' }} />
@@ -392,10 +392,10 @@ export default function Dashboard() {
       </div>
 
       {/* Two Column Layout: Recent Patron Registrations & Quick Shortcuts */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 'var(--space-3)' }}>
+      <div className={styles.dashboardSecondaryGrid}>
         {/* Recent Registered Patrons */}
         <div className={styles.chartBox}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '8px' }}>
             <h3 style={{ margin: 0 }}>Recent Patron Registrations</h3>
             <Link to="/customers" className={styles.btnSecondary} style={{ padding: '0.3rem 0.65rem', fontSize: '0.8rem' }}>
               View All <ArrowUpRight size={14} style={{ marginLeft: '4px' }} />
@@ -460,17 +460,17 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          <h4 style={{ fontSize: '0.9rem', color: '#c0c0c0', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem' }}>
+          <h4 style={{ fontSize: '0.85rem', color: '#666666', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem', fontWeight: 600 }}>
             Action Items & Alerts
           </h4>
           <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #222', paddingBottom: '0.5rem' }}>
+            <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E5E5E5', paddingBottom: '0.5rem' }}>
               <span>Orders Awaiting Fulfillment</span>
               <Link to="/orders" className={`${styles.badge} ${styles.badgeWarning}`}>
                 {summary?.pending_orders ?? summary?.pendingOrders ?? 0} Review
               </Link>
             </li>
-            <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #222', paddingBottom: '0.5rem' }}>
+            <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E5E5E5', paddingBottom: '0.5rem' }}>
               <span>Overdue Garment Rentals</span>
               <Link to="/rental-bookings" className={`${styles.badge} ${styles.badgeDanger}`}>
                 {summary?.overdue_rentals ?? summary?.overdueRentals ?? 0} Settle

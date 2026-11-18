@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
-import { LogOut, AlertCircle } from 'lucide-react';
+import { LogOut, AlertCircle, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/majestic-blazer-logo.jpeg';
 import AdminHeader from './AdminHeader';
@@ -27,6 +27,7 @@ export default function AdminLayout() {
   const { admin, loading, logout } = useAuth();
   const [sidebarSignOutModal, setSidebarSignOutModal] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const navigate = useNavigate();
 
   if (loading) return null;
@@ -50,13 +51,38 @@ export default function AdminLayout() {
 
   return (
     <div className={styles.shell}>
-      <aside className={styles.sidebar}>
-        <img src={logo} alt="Majestic Blazer" className={styles.logo} />
+      {/* Mobile Drawer Overlay */}
+      {mobileNavOpen && (
+        <div 
+          className={styles.sidebarOverlay} 
+          onClick={() => setMobileNavOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside className={`${styles.sidebar} ${mobileNavOpen ? styles.sidebarOpen : ''}`}>
+        <div className={styles.sidebarHeader}>
+          <img src={logo} alt="Majestic Blazer" className={styles.logo} />
+          <button
+            type="button"
+            className={styles.closeDrawerBtn}
+            onClick={() => setMobileNavOpen(false)}
+            aria-label="Close navigation menu"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
         <nav aria-label="Admin">
           <ul className={styles.nav}>
             {ADMIN_NAV.map((item) => (
               <li key={item.to}>
-                <NavLink to={item.to} end={item.end} className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}>
+                <NavLink 
+                  to={item.to} 
+                  end={item.end} 
+                  className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}
+                  onClick={() => setMobileNavOpen(false)}
+                >
                   {item.label}
                 </NavLink>
               </li>
@@ -75,7 +101,7 @@ export default function AdminLayout() {
       </aside>
 
       <div className={styles.mainWrapper}>
-        <AdminHeader />
+        <AdminHeader onToggleMobileNav={() => setMobileNavOpen((prev) => !prev)} />
         <main className={styles.content}>
           <Outlet />
         </main>

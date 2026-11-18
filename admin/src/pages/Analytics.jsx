@@ -165,7 +165,7 @@ export default function Analytics() {
       </div>
 
       {/* Two Column Section: Category Distribution & Top Blazers */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
+      <div className={styles.dashboardTwoColGrid}>
         {/* Categories Bar Chart */}
         <div className={styles.chartBox}>
           <h3>Collection Distribution</h3>
