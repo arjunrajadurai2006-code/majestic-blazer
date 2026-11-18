@@ -2,10 +2,11 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const BackNavigationContext = createContext(null);
+const ROUTE_STACK_KEY = 'mb_route_stack';
 
 /**
  * Maps any pathname to its most sensible fallback route
- * when direct access, refresh, or no in-app history exists.
+ * when direct access, refresh, or no valid in-app history exists.
  */
 export function getFallbackRoute(pathname) {
   if (!pathname || pathname === '/') return '/';
@@ -67,6 +68,51 @@ export function getFallbackRoute(pathname) {
   return '/';
 }
 
+/**
+ * Verifies whether genuine, useful in-app navigation history exists in the current session.
+ * Evaluates Performance Navigation Timing (reload check), React Router state,
+ * History index, and active session route stack.
+ */
+export function checkHasInAppHistory(location) {
+  if (typeof window === 'undefined') return false;
+
+  // 1. Detect if the current page was loaded via browser reload / refresh
+  try {
+    const navEntries = window.performance?.getEntriesByType?.('navigation');
+    if (navEntries && navEntries.length > 0) {
+      if (navEntries[0].type === 'reload') {
+        return false;
+      }
+    } else if (window.performance?.navigation?.type === 1) {
+      return false;
+    }
+  } catch {}
+
+  // 2. React Router key check: 'default' indicates first load or direct external entry
+  if (!location || location.key === 'default') {
+    return false;
+  }
+
+  // 3. Browser history index check
+  const stateIdx = window.history?.state?.idx;
+  if (typeof stateIdx !== 'number' || stateIdx <= 0) {
+    return false;
+  }
+
+  // 4. Session route stack check
+  try {
+    const raw = sessionStorage.getItem(ROUTE_STACK_KEY);
+    const stack = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(stack) || stack.length < 2) {
+      return false;
+    }
+  } catch {
+    return false;
+  }
+
+  return true;
+}
+
 export function BackNavigationProvider({ children }) {
   const [config, setConfig] = useState({
     fallback: null,
@@ -76,6 +122,24 @@ export function BackNavigationProvider({ children }) {
   });
 
   const location = useLocation();
+
+  // Track session route transitions for reliable back navigation
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(ROUTE_STACK_KEY);
+      const stack = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(stack)) {
+        sessionStorage.setItem(ROUTE_STACK_KEY, JSON.stringify([location.pathname]));
+      } else {
+        if (stack[stack.length - 1] !== location.pathname) {
+          stack.push(location.pathname);
+          // Keep the stack bounded to last 20 routes
+          if (stack.length > 20) stack.shift();
+          sessionStorage.setItem(ROUTE_STACK_KEY, JSON.stringify(stack));
+        }
+      }
+    } catch {}
+  }, [location.pathname]);
 
   // Reset page-level overrides on location change unless page sets new ones
   useEffect(() => {
@@ -127,7 +191,6 @@ export function useBackNavigation({ fallback, customHandler, hidden, label } = {
     }));
 
     return () => {
-      // Clean up override on unmount
       setConfig({
         fallback: null,
         customHandler: null,

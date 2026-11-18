@@ -1,6 +1,7 @@
 .checkoutPage {
-  padding: 48px 0 96px;
-  background: var(--color-page-bg);
+  padding: 40px 0 96px;
+  background: var(--color-page-bg, #FFFFFF);
+  min-height: 80vh;
 }
 
 .emptyPage {
@@ -11,11 +12,11 @@
 .emptyPage h2 {
   font-size: 2rem;
   margin-bottom: 16px;
-  color: var(--color-text-primary);
+  color: var(--color-text-primary, #111111);
 }
 
 .emptyPage a {
-  color: var(--color-text-primary);
+  color: var(--color-text-primary, #111111);
   text-decoration: underline;
 }
 
@@ -24,151 +25,269 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 56px;
-  gap: 18px;
+  margin-bottom: 48px;
+  gap: 16px;
 }
 
 .stepIndicator {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: var(--color-text-secondary);
-  font-family: var(--font-body);
-  font-size: 0.8rem;
+  gap: 10px;
+  color: var(--color-text-secondary, #666666);
+  font-family: var(--font-body, inherit);
+  font-size: 0.78rem;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
 }
 
 .stepNum {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
+  color: var(--color-text-secondary, #666666);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
 .stepActive {
-  color: var(--color-text-primary);
+  color: var(--color-text-primary, #111111);
+  font-weight: 600;
 }
 
 .stepActive .stepNum {
-  background: var(--color-obsidian);
-  color: var(--color-white);
-  border-color: var(--color-obsidian);
+  background: var(--color-obsidian, #080808);
+  color: #FFFFFF;
+  border-color: var(--color-obsidian, #080808);
 }
 
 .stepConnector {
-  width: 60px;
+  width: 50px;
   height: 1px;
-  background: var(--color-border);
+  background: var(--color-border, #E5E5E5);
 }
 
 /* Layout */
 .grid {
   display: grid;
   grid-template-columns: 1fr 380px;
-  gap: 48px;
+  gap: 40px;
   align-items: flex-start;
 }
 
 .leftCol {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 40px;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border, #E5E5E5);
+  border-radius: 4px;
+  padding: 36px;
   display: flex;
   flex-direction: column;
   gap: 32px;
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
 }
 
 .leftCol h2 {
-  font-size: 1.6rem;
-  color: var(--color-text-primary);
+  font-size: 1.45rem;
+  color: var(--color-text-primary, #111111);
   margin: 0;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
-/* Delivery Options */
+/* ==========================================================================
+   SHIPPING CARDS (SECTION 2 AUDIT & REDESIGN)
+   ========================================================================== */
 .deliverySelector {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: 16px;
 }
 
-.methodBtn {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 22px;
+.methodCard {
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 4px;
+  padding: 20px;
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14px;
   text-align: left;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.methodBtn:hover {
-  border-color: var(--color-text-primary);
+.methodCard:hover {
+  border-color: #111111;
+  background: #FCFCFC;
 }
 
-.methodActive {
-  background: var(--color-section-alt);
-  border-color: var(--color-obsidian);
+.methodCardActive {
+  border: 2px solid #080808;
+  background: #FFFFFF;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
-.methodIcon {
-  color: var(--color-text-primary);
+.methodIconWrapper {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #F7F7F7;
+  border: 1px solid #E5E5E5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #111111;
+}
+
+.methodCardActive .methodIconWrapper {
+  background: #080808;
+  border-color: #080808;
+  color: #FFFFFF;
+}
+
+.methodDetails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.methodTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.methodTitle {
+  font-size: 0.92rem;
+  color: #111111;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.complimentaryPill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #F4FBF5;
+  color: #1b7a2d;
+  border: 1px solid rgba(27, 122, 45, 0.25);
+  padding: 2px 7px;
+  border-radius: 2px;
+}
+
+.pickupPill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #F7F7F7;
+  color: #111111;
+  border: 1px solid #E5E5E5;
+  padding: 2px 7px;
+  border-radius: 2px;
+}
+
+.methodDesc {
+  font-size: 0.78rem;
+  color: #666666;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.methodRadioCircle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid #CCCCCC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   margin-top: 2px;
 }
 
-.methodBtn strong {
-  display: block;
-  font-size: 0.92rem;
-  color: var(--color-text-primary);
-  margin-bottom: 4px;
-  font-weight: 500;
+.methodCardActive .methodRadioCircle {
+  border-color: #080808;
 }
 
-.methodBtn span {
-  display: block;
-  font-size: 0.78rem;
-  color: var(--color-text-secondary);
-  line-height: 1.45;
+.methodRadioDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #080808;
 }
 
-/* Address Form */
+/* ==========================================================================
+   SHIPPING ADDRESS FORM (SECTION 2 AUDIT & REDESIGN)
+   ========================================================================== */
 .addressFormBlock {
   display: flex;
   flex-direction: column;
   gap: 22px;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid #E5E5E5;
   padding-top: 28px;
 }
 
-.addressFormBlock h3 {
-  font-size: 1.15rem;
-  color: var(--color-text-primary);
-  margin: 0;
-  font-weight: 500;
+.addressHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.savedAddresses label {
-  display: block;
-  font-size: 0.76rem;
-  letter-spacing: 0.08em;
-  color: var(--color-text-secondary);
+.addressHeaderRow h3 {
+  font-size: 1.15rem;
+  color: #111111;
+  margin: 0;
+  font-weight: 600;
+}
+
+.newAddrToggleBtn {
+  background: transparent;
+  border: 1px solid #CCCCCC;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #111111;
+  transition: all 0.2s ease;
+}
+
+.newAddrToggleBtn:hover {
+  border-color: #080808;
+  background: #F7F7F7;
+}
+
+.savedAddresses {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fieldSectionLabel {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: #666666;
+  text-transform: uppercase;
+  font-weight: 600;
 }
 
 .addressRadioList {
@@ -177,221 +296,408 @@
   gap: 10px;
 }
 
-.addrLabel {
+.addressRadioCard {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 14px 18px;
+  align-items: flex-start;
+  gap: 14px;
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 4px;
+  padding: 16px 18px;
   cursor: pointer;
-  font-size: 0.88rem;
-  color: var(--color-text-secondary);
-  transition: border-color var(--transition-fast);
+  transition: all 0.18s ease;
 }
 
-.addrLabel:hover {
-  border-color: var(--color-text-primary);
-  color: var(--color-text-primary);
+.addressRadioCard:hover {
+  border-color: #111111;
 }
 
-.addrLabel input {
-  accent-color: var(--color-obsidian);
+.addrSelected {
+  border-color: #080808;
+  background: #FDFDFD;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.newAddressForm {
+.addressRadioCard input {
+  accent-color: #080808;
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
+}
+
+.addrCardContent {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 8px;
+  gap: 3px;
+}
+
+.addrCardContent strong {
+  font-size: 0.92rem;
+  color: #111111;
+}
+
+.addrCardContent span {
+  font-size: 0.82rem;
+  color: #666666;
+}
+
+/* Manual Address Form */
+.manualAddressForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: #FAFAFA;
+  border: 1px solid #EBEBEB;
+  border-radius: 4px;
+  padding: 24px;
+}
+
+.formSubheading {
+  font-size: 0.95rem;
+  color: #111111;
+  margin: 0 0 6px 0;
+  font-weight: 600;
 }
 
 .formRow {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  width: 100%;
 }
 
 .formRow label {
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   letter-spacing: 0.08em;
-  color: var(--color-text-secondary);
+  color: #444444;
   text-transform: uppercase;
+  font-weight: 600;
 }
 
+.inputField,
 .formRow input,
 .formRow textarea {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-primary);
+  background: #FFFFFF;
+  border: 1px solid #D6D6D6;
+  border-radius: 3px;
+  color: #111111;
   padding: 12px 14px;
   font-size: 0.88rem;
+  font-family: inherit;
   outline: none;
+  box-sizing: border-box;
+  width: 100%;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
+.inputField:focus,
 .formRow input:focus,
 .formRow textarea:focus {
-  border-color: var(--color-text-primary);
+  border-color: #111111;
+  box-shadow: 0 0 0 1px #111111;
 }
 
-.formGrid {
+/* Balanced 3-Column Desktop Grid for City, State, Pincode */
+.cityStatePincodeGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr 140px;
   gap: 14px;
+  width: 100%;
 }
 
-/* Pickup Notice */
-.pickupNotice {
-  background: var(--color-section-alt);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 24px;
+/* Pickup Details Notice Card */
+.pickupCard {
+  background: #F9F9F9;
+  border: 1px solid #E5E5E5;
+  border-radius: 4px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  border-top: 1px solid var(--color-border);
-  margin-top: 10px;
+  gap: 10px;
 }
 
-.pickupNotice h3 {
-  font-size: 1.1rem;
-  color: var(--color-text-primary);
+.pickupCard h3 {
+  font-size: 1.05rem;
+  color: #111111;
+  margin: 0;
+  font-weight: 600;
+}
+
+.pickupCard p {
+  font-size: 0.84rem;
+  color: #666666;
+  line-height: 1.5;
   margin: 0;
 }
 
-.pickupNotice p {
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.6;
+.pickupAddress {
+  font-style: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.82rem;
+  color: #444444;
+  padding-top: 8px;
+  border-top: 1px solid #EBEBEB;
 }
 
-.pickupNotice strong {
-  color: var(--color-text-primary);
+.pickupAddress strong {
+  color: #111111;
+}
+
+/* Notes Block */
+.notesBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid #E5E5E5;
+  padding-top: 22px;
+}
+
+.notesBlock label {
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  color: #444444;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.notesBlock textarea {
+  background: #FFFFFF;
+  border: 1px solid #D6D6D6;
+  border-radius: 3px;
+  color: #111111;
+  padding: 12px 14px;
+  font-size: 0.86rem;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.18s ease;
+}
+
+.notesBlock textarea:focus {
+  border-color: #111111;
+  box-shadow: 0 0 0 1px #111111;
+}
+
+/* Step 1 Continue Button */
+.stepActionRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 10px;
 }
 
 .nextBtn {
-  align-self: flex-start;
-  background: var(--color-obsidian);
-  color: var(--color-white);
-  border: 1px solid var(--color-obsidian);
-  border-radius: var(--radius-sm);
-  padding: 15px 36px;
+  background: #080808;
+  color: #FFFFFF;
+  border: 1px solid #080808;
+  border-radius: 3px;
+  padding: 14px 32px;
   font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  transition: all var(--transition-smooth);
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .nextBtn:hover {
-  background: var(--color-rich-black);
-  border-color: var(--color-rich-black);
+  background: #252525;
+  border-color: #252525;
   transform: translateY(-1px);
 }
 
-/* Step 2 Payment */
-.paymentSection {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+.nextBtn:active {
+  background: #000000;
+  transform: translateY(0);
 }
 
-.paymentOptions {
+/* Step 2 Payment Methods & Breakdown */
+.paymentMethods {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
-.payMethodCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 20px;
+.paymentCard {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14px;
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 4px;
+  padding: 18px 20px;
   cursor: pointer;
-  transition: border-color var(--transition-fast);
+  transition: all 0.18s ease;
 }
 
-.payMethodCard:hover {
-  border-color: var(--color-text-primary);
+.paymentCard:hover {
+  border-color: #111111;
 }
 
-.payMethodActive {
-  background: var(--color-section-alt);
-  border-color: var(--color-obsidian);
+.paySelected {
+  border: 2px solid #080808;
+  background: #FCFCFC;
 }
 
-.payMethodCard input {
-  accent-color: var(--color-obsidian);
-  margin-top: 4px;
+.paymentCard input {
+  accent-color: #080808;
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
 }
 
-.payMethodInfo {
+.payIcon {
+  color: #111111;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.paymentCard div {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
-.payMethodInfo strong {
-  color: var(--color-text-primary);
-  font-size: 0.95rem;
+.paymentCard strong {
+  font-size: 0.92rem;
+  color: #111111;
+  font-weight: 600;
 }
 
-.payMethodInfo span {
-  color: var(--color-text-secondary);
+.paymentCard span {
   font-size: 0.8rem;
+  color: #666666;
 }
 
-.payActions {
+.reviewBlock {
+  border-top: 1px solid #E5E5E5;
+  padding-top: 24px;
+}
+
+.reviewBlock h3 {
+  font-size: 1.15rem;
+  color: #111111;
+  margin: 0 0 16px 0;
+  font-weight: 600;
+}
+
+.reviewTable {
+  background: #F9F9F9;
+  border: 1px solid #E5E5E5;
+  border-radius: 4px;
+  padding: 20px;
   display: flex;
-  gap: 16px;
-  margin-top: 16px;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reviewRow {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  font-size: 0.88rem;
+  color: #444444;
+}
+
+.reviewRow strong {
+  color: #111111;
+  font-weight: 600;
+}
+
+.goldRow {
+  color: #8B7347;
+}
+
+.goldRow strong {
+  color: #8B7347;
+}
+
+.freeText {
+  color: #1b7a2d;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+}
+
+.depositRow {
+  background: #FFFFFF;
+  border: 1px dashed #D6D6D6;
+  border-radius: 3px;
+  padding: 10px 14px;
+}
+
+.depositRow small {
+  display: block;
+  font-size: 0.72rem;
+  color: #666666;
+}
+
+.reviewTotalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 1px solid #E5E5E5;
+  padding-top: 14px;
+  margin-top: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111111;
+}
+
+.totalBig {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .backBtn {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  color: #111111;
   padding: 14px 24px;
-  font-size: 0.82rem;
-  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
+  border-radius: 3px;
+  transition: all 0.2s ease;
 }
 
 .backBtn:hover {
-  border-color: var(--color-text-primary);
+  border-color: #111111;
+  background: #F7F7F7;
 }
 
 .placeOrderBtn {
   flex: 1;
-  background: var(--color-obsidian);
-  color: var(--color-white);
-  border: 1px solid var(--color-obsidian);
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  background: #080808;
+  color: #FFFFFF;
+  border: 1px solid #080808;
+  border-radius: 3px;
+  padding: 14px 28px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all var(--transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
 }
 
 .placeOrderBtn:hover:not(:disabled) {
-  background: var(--color-rich-black);
-  border-color: var(--color-rich-black);
+  background: #252525;
+  border-color: #252525;
   transform: translateY(-1px);
 }
 
@@ -400,308 +706,397 @@
   cursor: not-allowed;
 }
 
-/* Step 3: Confirmation */
-.confirmWrap {
-  max-width: 760px;
-  margin: 0 auto;
-  background: var(--color-section-alt);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 56px 44px;
-  text-align: center;
+/* Right Summary Sidebar */
+.rightCol {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 24px;
+  gap: 20px;
 }
 
-.confirmIcon {
-  color: var(--color-text-primary);
+.miniSummary {
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 4px;
+  padding: 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
 }
 
-.confirmWrap h2 {
-  font-size: 2.2rem;
-  color: var(--color-text-primary);
-  margin: 0;
-  font-weight: 500;
-}
-
-.confirmLead {
-  color: var(--color-text-secondary);
-  font-size: 1rem;
-  line-height: 1.7;
-  max-width: 580px;
-}
-
-.confirmCard {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.confirmDetails,
-.orderRecords {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin: 20px 0;
-}
-
-.confirmItem,
-.recordCard {
-  background: var(--color-surface, #FFFFFF);
-  border: 1px solid var(--color-border, #E5E5E5);
-  border-radius: var(--radius-sm, 4px);
-  padding: 20px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-align: left;
-  gap: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-.refLabel {
-  display: inline-block;
-  font-size: 0.72rem;
+.miniSummary h3 {
+  font-size: 0.95rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-text-secondary, #666666);
-  margin-bottom: 4px;
-}
-
-.rentRefLabel {
   color: #111111;
+  margin: 0 0 18px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #E5E5E5;
 }
 
-.confirmItem strong,
-.recordInfo strong {
-  display: block;
-  font-size: 1rem;
-  color: var(--color-text-primary, #111111);
-  margin-bottom: 4px;
-  letter-spacing: 0.02em;
-}
-
-.confirmItem span,
-.recordInfo span {
-  display: block;
-  font-size: 0.82rem;
-  color: var(--color-text-secondary, #666666);
-}
-
-.invoiceBtn {
-  background: var(--color-obsidian, #080808);
-  color: var(--color-white, #FFFFFF);
-  border: 1px solid var(--color-obsidian, #080808);
-  border-radius: var(--radius-sm, 3px);
-  padding: 10px 18px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: all var(--transition-fast, 0.2s ease);
-}
-
-.invoiceBtn:hover {
-  background: var(--color-rich-black, #252525);
-  border-color: var(--color-rich-black, #252525);
-}
-
-.confirmActions,
-.confirmBtns {
-  display: flex;
-  gap: 16px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.ordersLink,
-.rentalsLink,
-.ordersBtn {
-  background: var(--color-surface, #FFFFFF);
-  border: 1px solid var(--color-border, #E5E5E5);
-  color: var(--color-text-primary, #111111);
-  padding: 12px 24px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  border-radius: var(--radius-sm, 3px);
-  text-decoration: none;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ordersLink:hover,
-.rentalsLink:hover,
-.ordersBtn:hover {
-  background: var(--color-surface-hover, #F7F7F7);
-  border-color: #111111;
-  color: #000000;
-}
-
-.homeLink,
-.homeBtn {
-  background: var(--color-obsidian, #080808);
-  color: var(--color-white, #FFFFFF);
-  padding: 12px 24px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  border-radius: var(--radius-sm, 3px);
-  text-decoration: none;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.homeLink:hover,
-.homeBtn:hover {
-  background: var(--color-rich-black, #252525);
-}
-
-.ordersBtn {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
-  padding: 14px 28px;
-  font-size: 0.82rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  border-radius: var(--radius-sm);
-}
-
-.ordersBtn:hover {
-  border-color: var(--color-text-primary);
-}
-
-/* Sidebar Order Review */
-.sidebarReview {
-  position: sticky;
-  top: 100px;
-  background: var(--color-section-alt);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.sidebarReview h3 {
-  font-size: 1.15rem;
-  color: var(--color-text-primary);
-  margin: 0;
-  font-weight: 500;
-}
-
-.reviewItems {
+.miniList {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-height: 280px;
+  max-height: 380px;
   overflow-y: auto;
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: 16px;
 }
 
-.reviewItem {
+.miniItem {
   display: flex;
-  align-items: center;
   gap: 14px;
-  font-size: 0.85rem;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #F0F0F0;
 }
 
-.reviewThumb {
-  width: 44px;
-  height: 58px;
+.miniItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.miniImg {
+  width: 54px;
+  height: 68px;
   object-fit: cover;
-  background: var(--color-surface);
-  border-radius: var(--radius-sm);
+  border-radius: 2px;
+  background: #F7F7F7;
   flex-shrink: 0;
 }
 
-.reviewMeta {
+.miniItem div {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.reviewMeta strong {
-  color: var(--color-text-primary);
-  font-size: 0.85rem;
+.miniItem strong {
+  font-size: 0.86rem;
+  color: #111111;
+  line-height: 1.3;
 }
 
-.reviewMeta span {
-  color: var(--color-text-secondary);
-  font-size: 0.75rem;
+.miniItem span {
+  font-size: 0.74rem;
+  color: #666666;
 }
 
-.reviewPrice {
-  color: var(--color-text-primary);
-  font-weight: 600;
+.miniPrice {
+  font-weight: 700;
+  color: #111111 !important;
+  font-size: 0.82rem !important;
 }
 
-.reviewTotals {
+.trustBadges {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  font-size: 0.85rem;
+  background: #F9F9F9;
+  border: 1px solid #E5E5E5;
+  border-radius: 4px;
+  padding: 18px 20px;
 }
 
-.reviewRow {
+.trustRow {
   display: flex;
-  justify-content: space-between;
-  color: var(--color-text-secondary);
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  color: #444444;
 }
 
-.reviewDivider {
-  height: 1px;
-  background: var(--color-border);
-  margin: 4px 0;
+/* ==========================================================================
+   ORDER CONFIRMATION (SECTION 3 AUDIT & REDESIGN)
+   ========================================================================== */
+.confirmWrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 32px 0 96px;
+  width: 100%;
 }
 
-.reviewTotalRow {
+.confirmHeader {
+  text-align: center;
+  margin-bottom: 40px;
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  color: var(--color-text-primary);
-  font-size: 1.05rem;
+  flex-direction: column;
+  align-items: center;
+}
+
+.confirmIconRing {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: #F4FBF5;
+  border: 1.5px solid rgba(27, 122, 45, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.confirmCheckIcon {
+  color: #1b7a2d;
+}
+
+.confirmTitle {
+  font-size: clamp(1.8rem, 3.2vw, 2.4rem);
   font-weight: 600;
+  color: #111111;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.01em;
 }
 
-.reviewTotalAmount {
-  font-size: 1.5rem;
+.confirmLead {
+  color: #666666;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.confirmCardsList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.orderSuccessCard {
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 4px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.rentalSuccessCard {
+  border-left: 3px solid #080808;
+}
+
+.orderSuccessCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #EBEBEB;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.orderBadgeGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.orderTypeBadge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: #080808;
+  color: #FFFFFF;
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+
+.rentalBadge {
+  background: #151515;
+  border: 1px solid #333333;
+}
+
+.orderStatusBadge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: #F4FBF5;
+  color: #1b7a2d;
+  border: 1px solid rgba(27, 122, 45, 0.25);
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+
+.orderDateStamp {
+  font-size: 0.8rem;
+  color: #888888;
+}
+
+.orderMetricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.metricBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metricLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #666666;
+}
+
+.orderNumberText {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111111;
+  letter-spacing: 0.04em;
+}
+
+.orderTotalText {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #111111;
   letter-spacing: 0.02em;
 }
 
-@media (max-width: 990px) {
+.taxInclusiveTag {
+  font-size: 0.75rem;
+  color: #666666;
+}
+
+.rentalDatesText {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #111111;
+  line-height: 1.4;
+}
+
+.rentalDurationTag {
+  font-size: 0.75rem;
+  color: #666666;
+}
+
+.depositAmountText {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111111;
+}
+
+.depositNoteText {
+  font-size: 0.75rem;
+  color: #1b7a2d;
+  font-weight: 500;
+}
+
+.orderCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 18px;
+  border-top: 1px solid #EBEBEB;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.cardAssurance {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #666666;
+}
+
+.cardDownloadBtn {
+  flex-shrink: 0;
+}
+
+.confirmNavActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.navActionOutline {
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  color: #111111;
+  padding: 13px 28px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navActionOutline:hover {
+  background: #F7F7F7;
+  border-color: #111111;
+  color: #000000;
+}
+
+.navActionPrimary {
+  background: #080808;
+  border: 1px solid #080808;
+  color: #FFFFFF;
+  padding: 13px 32px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navActionPrimary:hover {
+  background: #252525;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN BREAKPOINTS AUDIT
+   ========================================================================== */
+@media (max-width: 1024px) {
   .grid {
     grid-template-columns: 1fr;
+    gap: 32px;
   }
-  .sidebarReview {
-    position: static;
+
+  .rightCol {
+    order: 2;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .checkoutPage {
-    padding: 32px 0 64px;
+    padding: 28px 0 64px;
+  }
+
+  .leftCol {
+    padding: 24px 20px;
+    gap: 24px;
+  }
+
+  .deliverySelector {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .cityStatePincodeGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 
   .stepperBar {
@@ -709,81 +1104,83 @@
     margin-bottom: 32px;
   }
 
+  .stepIndicator {
+    font-size: 0.7rem;
+    gap: 6px;
+  }
+
   .stepConnector {
     width: 24px;
-    flex-shrink: 1;
   }
 
-  .stepIndicator span:last-child {
-    display: none;
+  .stepActionRow {
+    flex-direction: column-reverse;
   }
 
-  .deliverySelector {
-    grid-template-columns: 1fr;
-  }
-
-  .formGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .leftCol {
-    padding: 24px 18px;
-  }
-
-  .sidebarReview {
-    padding: 20px 16px;
-  }
-
-  .confirmWrap {
-    padding: 32px 18px;
-  }
-
-  .confirmWrap h2 {
-    font-size: 1.75rem;
-  }
-
-  .confirmItem,
-  .recordCard {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
-    padding: 18px 16px;
-  }
-
-  .confirmItem > div {
-    width: 100%;
-  }
-
-  .confirmItem button,
-  .recordCard .invoiceBtn {
+  .nextBtn,
+  .backBtn,
+  .placeOrderBtn {
     width: 100%;
     justify-content: center;
   }
 
-  .confirmActions,
-  .confirmBtns {
+  .orderSuccessCard {
+    padding: 20px 16px;
+    gap: 18px;
+  }
+
+  .orderMetricsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .orderCardFooter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .cardDownloadBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .confirmNavActions {
     flex-direction: column;
     width: 100%;
     gap: 10px;
   }
 
-  .ordersLink,
-  .rentalsLink,
-  .homeLink,
-  .homeBtn,
-  .ordersBtn {
+  .navActionOutline,
+  .navActionPrimary {
     width: 100%;
     text-align: center;
     box-sizing: border-box;
   }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 480px) {
   .leftCol {
     padding: 18px 14px;
   }
 
-  .methodBtn {
+  .methodCard {
+    padding: 16px 14px;
+  }
+
+  .manualAddressForm {
+    padding: 16px 14px;
+  }
+
+  .orderSuccessCard {
     padding: 16px 12px;
+  }
+
+  .orderTotalText {
+    font-size: 1.25rem;
+  }
+
+  .orderNumberText {
+    font-size: 1.05rem;
   }
 }

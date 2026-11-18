@@ -120,7 +120,10 @@ export const downloadPdf = asyncHandler(async (req, res) => {
 
   const pdfBuffer = await generateInvoicePdf(invoicePayload);
   const refNumber = invoicePayload?.orderOrBookingNumber || invoice.invoice_number;
-  const filename = `Majestic-Blazer-Invoice-${refNumber}.pdf`;
+  const isRental = invoicePayload?.type === 'rental' || Boolean(invoice.rental_booking_id);
+  const filename = isRental
+    ? `Majestic-Blazer-Rental-Invoice-${refNumber}.pdf`
+    : `Majestic-Blazer-Invoice-${refNumber}.pdf`;
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
   res.send(pdfBuffer);

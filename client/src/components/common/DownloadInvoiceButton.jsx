@@ -20,6 +20,7 @@ import styles from './DownloadInvoiceButton.module.css';
 export default function DownloadInvoiceButton({
   invoiceIdentifier,
   orderNumber,
+  invoiceType,
   label = 'Download Invoice (PDF)',
   variant = 'outline',
   size = 'md',
@@ -58,6 +59,7 @@ export default function DownloadInvoiceButton({
       const result = await downloadInvoicePdf({
         identifier: ref,
         orderNumber: orderNumber || String(ref),
+        invoiceType: invoiceType || (label?.toLowerCase().includes('rental') ? 'rental' : 'purchase'),
       });
 
       setStatus('success');

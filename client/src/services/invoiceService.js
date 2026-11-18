@@ -8,7 +8,7 @@ import { api, tokenStore } from './api';
  * @param {string} [options.orderNumber] - Optional order/booking number for the saved filename
  * @returns {Promise<{ fileName: string, blob: Blob }>}
  */
-export async function downloadInvoicePdf({ identifier, orderNumber }) {
+export async function downloadInvoicePdf({ identifier, orderNumber, invoiceType }) {
   if (!identifier) {
     throw new Error('No invoice or order reference provided.');
   }
@@ -47,7 +47,13 @@ export async function downloadInvoicePdf({ identifier, orderNumber }) {
   }
 
   const refName = orderNumber || identifier;
-  const fileName = `Majestic-Blazer-Invoice-${refName}.pdf`;
+  const isRental = Boolean(
+    invoiceType === 'rental' ||
+    (orderNumber && String(orderNumber).startsWith('RNT')) ||
+    (identifier && String(identifier).includes('RNT'))
+  );
+  const prefix = isRental ? 'Majestic-Blazer-Rental-Invoice' : 'Majestic-Blazer-Invoice';
+  const fileName = `${prefix}-${refName}.pdf`;
 
   // Create downloadable anchor and trigger download
   const blobUrl = window.URL.createObjectURL(blob);

@@ -65,16 +65,42 @@ export default function Checkout() {
   const buyItems = items.filter((i) => i.type === 'buy');
   const rentalItems = items.filter((i) => i.type === 'rental');
 
+  const handleContinueToPayment = () => {
+    if (deliveryType === 'delivery') {
+      const isUsingSaved = selectedAddressId && selectedAddressId !== 'new';
+      if (!isUsingSaved) {
+        if (!line1.trim()) {
+          toastError('Please enter Address Line 1 for delivery.');
+          return;
+        }
+        if (!city.trim()) {
+          toastError('Please enter your City.');
+          return;
+        }
+        if (!state.trim()) {
+          toastError('Please enter your State.');
+          return;
+        }
+        if (!pincode.trim() || pincode.trim().length !== 6) {
+          toastError('Please enter a valid 6-digit postal Pincode.');
+          return;
+        }
+      }
+    }
+    setStep(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handlePlaceOrder = async () => {
     setIsProcessing(true);
     try {
-      let finalAddressId = selectedAddressId;
+      let finalAddressId = selectedAddressId && selectedAddressId !== 'new' ? selectedAddressId : null;
 
       // If user typed in an address and didn't select an existing one
       if (deliveryType === 'delivery' && !finalAddressId && line1.trim()) {
         const addrRes = await api.post('/auth/addresses', {
           line1,
-          line2,
+          line2: line2 || null,
           city,
           state,
           pincode,
@@ -181,36 +207,75 @@ export default function Checkout() {
             <div className={styles.deliverySelector}>
               <button
                 type="button"
-                className={`${styles.methodBtn} ${deliveryType === 'delivery' ? styles.methodActive : ''}`}
+                className={`${styles.methodCard} ${deliveryType === 'delivery' ? styles.methodCardActive : ''}`}
                 onClick={() => setDeliveryType('delivery')}
+                aria-pressed={deliveryType === 'delivery'}
               >
-                <Truck size={22} className={styles.methodIcon} />
-                <div>
-                  <strong>Insured Luxury Courier Delivery</strong>
-                  <span>Direct to your doorstep across India • Complimentary</span>
+                <div className={styles.methodIconWrapper}>
+                  <Truck size={20} className={styles.methodIcon} />
+                </div>
+                <div className={styles.methodDetails}>
+                  <div className={styles.methodTitleRow}>
+                    <strong className={styles.methodTitle}>Insured Luxury Courier Delivery</strong>
+                    <span className={styles.complimentaryPill}>Complimentary</span>
+                  </div>
+                  <p className={styles.methodDesc}>
+                    Direct to your doorstep across India in protective garment casing with transit insurance.
+                  </p>
+                </div>
+                <div className={styles.methodRadioCircle}>
+                  {deliveryType === 'delivery' && <div className={styles.methodRadioDot} />}
                 </div>
               </button>
 
               <button
                 type="button"
-                className={`${styles.methodBtn} ${deliveryType === 'pickup' ? styles.methodActive : ''}`}
+                className={`${styles.methodCard} ${deliveryType === 'pickup' ? styles.methodCardActive : ''}`}
                 onClick={() => setDeliveryType('pickup')}
+                aria-pressed={deliveryType === 'pickup'}
               >
-                <MapPin size={22} className={styles.methodIcon} />
-                <div>
-                  <strong>Flagship Boutique Collection</strong>
-                  <span>Sathy Road, Kurumbampalayam, Coimbatore • Try-on & steam ready</span>
+                <div className={styles.methodIconWrapper}>
+                  <MapPin size={20} className={styles.methodIcon} />
+                </div>
+                <div className={styles.methodDetails}>
+                  <div className={styles.methodTitleRow}>
+                    <strong className={styles.methodTitle}>Flagship Boutique Collection</strong>
+                    <span className={styles.pickupPill}>Atelier Ready</span>
+                  </div>
+                  <p className={styles.methodDesc}>
+                    Sathy Road, Kurumbampalayam, Coimbatore • Private fitting room & steam ready.
+                  </p>
+                </div>
+                <div className={styles.methodRadioCircle}>
+                  {deliveryType === 'pickup' && <div className={styles.methodRadioDot} />}
                 </div>
               </button>
             </div>
 
             {deliveryType === 'delivery' && (
               <div className={styles.addressFormBlock}>
-                <h3>Shipping Address</h3>
+                <div className={styles.addressHeaderRow}>
+                  <h3>Shipping Address</h3>
+                  {addresses.length > 0 && (
+                    <button
+                      type="button"
+                      className={styles.newAddrToggleBtn}
+                      onClick={() => {
+                        if (selectedAddressId === 'new') {
+                          setSelectedAddressId(addresses[0]?.id || null);
+                        } else {
+                          setSelectedAddressId('new');
+                        }
+                      }}
+                    >
+                      {selectedAddressId === 'new' ? 'Use Saved Address' : '+ Add New Address'}
+                    </button>
+                  )}
+                </div>
 
-                {addresses.length > 0 && (
+                {addresses.length > 0 && selectedAddressId !== 'new' && (
                   <div className={styles.savedAddresses}>
-                    <label>Select Saved Address:</label>
+                    <label className={styles.fieldSectionLabel}>Select Saved Delivery Address:</label>
                     <div className={styles.addressRadioList}>
                       {addresses.map((addr) => (
                         <label
@@ -223,7 +288,7 @@ export default function Checkout() {
                             checked={selectedAddressId === addr.id}
                             onChange={() => setSelectedAddressId(addr.id)}
                           />
-                          <div>
+                          <div className={styles.addrCardContent}>
                             <strong>{addr.line1}</strong>
                             {addr.line2 && <span>{addr.line2}</span>}
                             <span>{addr.city}, {addr.state} - {addr.pincode}</span>
@@ -234,40 +299,88 @@ export default function Checkout() {
                   </div>
                 )}
 
-                {(!selectedAddressId || addresses.length === 0) && (
-                  <div className={styles.manualAddress}>
-                    <h4>Enter Delivery Address</h4>
+                {(selectedAddressId === 'new' || !selectedAddressId || addresses.length === 0) && (
+                  <div className={styles.manualAddressForm}>
+                    <h4 className={styles.formSubheading}>
+                      {addresses.length > 0 ? 'Enter New Delivery Address' : 'Enter Delivery Address'}
+                    </h4>
+
                     <div className={styles.formRow}>
-                      <label>Address Line 1</label>
+                      <label htmlFor="checkout-line1">Address Line 1 (House / Street)</label>
                       <input
+                        id="checkout-line1"
                         type="text"
+                        name="street-address"
+                        autoComplete="shipping street-address"
                         placeholder="House / Flat / Street address"
                         value={line1}
                         onChange={(e) => setLine1(e.target.value)}
                         required
+                        className={styles.inputField}
                       />
                     </div>
+
                     <div className={styles.formRow}>
-                      <label>Address Line 2 (Optional)</label>
+                      <label htmlFor="checkout-line2">Address Line 2 (Apartment / Landmark - Optional)</label>
                       <input
+                        id="checkout-line2"
                         type="text"
-                        placeholder="Apartment, suite, landmark"
+                        name="address-line2"
+                        autoComplete="shipping address-line2"
+                        placeholder="Apartment, suite, unit, landmark (optional)"
                         value={line2}
                         onChange={(e) => setLine2(e.target.value)}
+                        className={styles.inputField}
                       />
                     </div>
-                    <div className={styles.formGrid3}>
-                      <div>
-                        <label>City</label>
-                        <input type="text" value={city} onChange={(e) => setCity(e.target.value)} required />
+
+                    <div className={styles.cityStatePincodeGrid}>
+                      <div className={styles.formRow}>
+                        <label htmlFor="checkout-city">City</label>
+                        <input
+                          id="checkout-city"
+                          type="text"
+                          name="city"
+                          autoComplete="shipping address-level2"
+                          placeholder="City / Town"
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
+                          required
+                          className={styles.inputField}
+                        />
                       </div>
-                      <div>
-                        <label>State</label>
-                        <input type="text" value={state} onChange={(e) => setState(e.target.value)} required />
+
+                      <div className={styles.formRow}>
+                        <label htmlFor="checkout-state">State</label>
+                        <input
+                          id="checkout-state"
+                          type="text"
+                          name="state"
+                          autoComplete="shipping address-level1"
+                          placeholder="State"
+                          value={state}
+                          onChange={(e) => setState(e.target.value)}
+                          required
+                          className={styles.inputField}
+                        />
                       </div>
-                      <div>
-                        <label>Pincode</label>
-                        <input type="text" value={pincode} onChange={(e) => setPincode(e.target.value)} required />
+
+                      <div className={styles.formRow}>
+                        <label htmlFor="checkout-pincode">Pincode</label>
+                        <input
+                          id="checkout-pincode"
+                          type="text"
+                          name="postal-code"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          maxLength={6}
+                          autoComplete="shipping postal-code"
+                          placeholder="6-digit pincode"
+                          value={pincode}
+                          onChange={(e) => setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                          required
+                          className={styles.inputField}
+                        />
                       </div>
                     </div>
                   </div>
@@ -292,8 +405,9 @@ export default function Checkout() {
             )}
 
             <div className={styles.notesBlock}>
-              <label>Special Instructions / Fitting Notes (Optional)</label>
+              <label htmlFor="checkout-notes">Special Instructions / Fitting Notes (Optional)</label>
               <textarea
+                id="checkout-notes"
                 rows={3}
                 placeholder="e.g. Please leave with concierge or deliver before 5 PM"
                 value={orderNotes}
@@ -305,10 +419,10 @@ export default function Checkout() {
               <button
                 type="button"
                 className={styles.nextBtn}
-                onClick={() => setStep(2)}
+                onClick={handleContinueToPayment}
               >
                 <span>Continue to Payment</span>
-                <ArrowRight size={18} />
+                <ArrowRight size={17} />
               </button>
             </div>
           </div>
@@ -446,58 +560,121 @@ export default function Checkout() {
       {/* Step 3: Confirmation */}
       {step === 3 && (
         <div className={styles.confirmWrap}>
-          <div className={styles.confirmCard}>
-            <CheckCircle2 size={64} className={styles.successIcon} />
-            <h1>Order & Reservation Confirmed</h1>
+          <div className={styles.confirmHeader}>
+            <div className={styles.confirmIconRing}>
+              <CheckCircle2 size={40} className={styles.confirmCheckIcon} />
+            </div>
+            <h1 className={styles.confirmTitle}>Order & Reservation Confirmed</h1>
             <p className={styles.confirmLead}>
               Thank you, {user?.fullName || 'valued patron'}. Your request has been recorded with
               the Majestic Blazer tailoring house.
             </p>
+          </div>
 
-            <div className={styles.confirmDetails}>
-              {confirmedOrders.map((o) => (
-                <div key={o.id} className={styles.confirmItem}>
-                  <div>
-                    <span className={styles.refLabel}>PURCHASE ORDER</span>
-                    <strong>{o.order_number}</strong>
-                    <span>Total: ₹{Number(o.total).toLocaleString('en-IN')} • Status: Confirmed</span>
+          <div className={styles.confirmCardsList}>
+            {/* Purchase Orders Section */}
+            {confirmedOrders.map((o) => (
+              <div key={o.id} className={styles.orderSuccessCard}>
+                <div className={styles.orderSuccessCardHeader}>
+                  <div className={styles.orderBadgeGroup}>
+                    <span className={styles.orderTypeBadge}>PURCHASE ORDER</span>
+                    <span className={styles.orderStatusBadge}>CONFIRMED</span>
+                  </div>
+                  <span className={styles.orderDateStamp}>
+                    {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  </span>
+                </div>
+
+                <div className={styles.orderMetricsGrid}>
+                  <div className={styles.metricBlock}>
+                    <span className={styles.metricLabel}>Order Reference Number</span>
+                    <strong className={styles.orderNumberText}>{o.order_number}</strong>
+                  </div>
+
+                  <div className={styles.metricBlock}>
+                    <span className={styles.metricLabel}>Total Amount Paid</span>
+                    <strong className={styles.orderTotalText}>₹{Number(o.total).toLocaleString('en-IN')}</strong>
+                    <span className={styles.taxInclusiveTag}>Includes GST & Complimentary Delivery</span>
+                  </div>
+                </div>
+
+                <div className={styles.orderCardFooter}>
+                  <div className={styles.cardAssurance}>
+                    <Shield size={15} />
+                    <span>Complimentary insured courier delivery dispatched within 24 hours</span>
                   </div>
                   <DownloadInvoiceButton
                     invoiceIdentifier={o.invoice_number || o.order_number || o.id}
                     orderNumber={o.order_number}
+                    invoiceType="purchase"
                     label="Download Tax Invoice (PDF)"
                     variant="primary"
                     size="md"
+                    className={styles.cardDownloadBtn}
                   />
                 </div>
-              ))}
+              </div>
+            ))}
 
-              {confirmedRentals.map((r) => (
-                <div key={r.id} className={styles.confirmItem}>
-                  <div>
-                    <span className={`${styles.refLabel} ${styles.rentRefLabel}`}>RENTAL RESERVATION</span>
-                    <strong>{r.booking_number}</strong>
-                    <span>
-                      Duration: {new Date(r.start_date).toLocaleDateString('en-IN')} to {new Date(r.end_date).toLocaleDateString('en-IN')} ({r.rental_days} Days)
-                    </span>
-                    <span>Deposit: ₹{Number(r.deposit_amount).toLocaleString('en-IN')} (Refundable)</span>
+            {/* Rental Reservations Section (Rendered only when rental bookings exist) */}
+            {confirmedRentals.map((r) => (
+              <div key={r.id} className={`${styles.orderSuccessCard} ${styles.rentalSuccessCard}`}>
+                <div className={styles.orderSuccessCardHeader}>
+                  <div className={styles.orderBadgeGroup}>
+                    <span className={`${styles.orderTypeBadge} ${styles.rentalBadge}`}>RENTAL RESERVATION</span>
+                    <span className={styles.orderStatusBadge}>CONFIRMED</span>
+                  </div>
+                  <span className={styles.orderDateStamp}>
+                    {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  </span>
+                </div>
+
+                <div className={styles.orderMetricsGrid}>
+                  <div className={styles.metricBlock}>
+                    <span className={styles.metricLabel}>Rental Booking Number</span>
+                    <strong className={styles.orderNumberText}>{r.booking_number}</strong>
+                  </div>
+
+                  <div className={styles.metricBlock}>
+                    <span className={styles.metricLabel}>Rental Window & Fitting</span>
+                    <strong className={styles.rentalDatesText}>
+                      {new Date(r.start_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} — {new Date(r.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </strong>
+                    <span className={styles.rentalDurationTag}>{r.rental_days} Day Fitting & Event Window</span>
+                  </div>
+
+                  <div className={styles.metricBlock}>
+                    <span className={styles.metricLabel}>Refundable Security Deposit</span>
+                    <strong className={styles.depositAmountText}>₹{Number(r.deposit_amount).toLocaleString('en-IN')}</strong>
+                    <span className={styles.depositNoteText}>100% credited back upon return inspection</span>
+                  </div>
+                </div>
+
+                <div className={styles.orderCardFooter}>
+                  <div className={styles.cardAssurance}>
+                    <Shield size={15} />
+                    <span>Garment bag and professional dry cleaning included with rental</span>
                   </div>
                   <DownloadInvoiceButton
                     invoiceIdentifier={r.invoice_number || r.booking_number || r.id}
                     orderNumber={r.booking_number}
+                    invoiceType="rental"
                     label="Download Rental Invoice (PDF)"
                     variant="primary"
                     size="md"
+                    className={styles.cardDownloadBtn}
                   />
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
 
-            <div className={styles.confirmActions}>
-              <Link to="/orders" className={styles.ordersLink}>View My Orders</Link>
-              <Link to="/rental-bookings" className={styles.rentalsLink}>View Rental Bookings</Link>
-              <Link to="/shop" className={styles.homeLink}>Continue Shopping</Link>
-            </div>
+          <div className={styles.confirmNavActions}>
+            <Link to="/orders" className={styles.navActionOutline}>View My Orders</Link>
+            {confirmedRentals.length > 0 && (
+              <Link to="/rental-bookings" className={styles.navActionOutline}>View Rental Bookings</Link>
+            )}
+            <Link to="/shop" className={styles.navActionPrimary}>Continue Shopping</Link>
           </div>
         </div>
       )}

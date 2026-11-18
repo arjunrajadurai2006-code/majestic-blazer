@@ -1,11 +1,11 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { useBackNavigationContext, getFallbackRoute } from '../../context/BackNavigationContext';
+import { useBackNavigationContext, getFallbackRoute, checkHasInAppHistory } from '../../context/BackNavigationContext';
 import styles from './BackButton.module.css';
 
 /**
  * Reusable BackButton component.
- * Uses React Router history to return to previous page with intelligent safe fallback.
+ * Uses React Router history to return to previous page with multi-factor safe fallback.
  * 
  * @param {Object} props
  * @param {string} [props.fallback] - Fallback route override
@@ -36,15 +36,9 @@ export default function BackButton({
       return;
     }
 
-    // 2. Check if valid in-app navigation history exists in the current session
-    // In React Router v6:
-    // - Initial entry or hard refresh has location.key === 'default' and window.history.state.idx === 0 (or null)
-    const hasInAppHistory =
-      typeof window !== 'undefined' &&
-      window.history.state &&
-      typeof window.history.state.idx === 'number' &&
-      window.history.state.idx > 0 &&
-      location.key !== 'default';
+    // 2. Multi-factor verification of useful in-app history
+    // (Checks reload status, session stack, history index, and location key)
+    const hasInAppHistory = checkHasInAppHistory(location);
 
     if (hasInAppHistory) {
       // Safe to step back in browser history within app

@@ -418,3 +418,82 @@
   margin-bottom: var(--space-3);
   color: var(--color-white);
 }
+
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .pageHeader h1 {
+    font-size: 1.75rem;
+  }
+
+  .headerActions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .filterBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+    padding: var(--space-2);
+  }
+
+  .searchInput {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .selectInput {
+    width: 100%;
+  }
+
+  .kpiGrid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--space-2);
+  }
+
+  .modal {
+    width: 95vw;
+    max-width: 95vw;
+    padding: var(--space-3);
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+}
+
+@media (max-width: 480px) {
+  .pageHeader h1 {
+    font-size: 1.45rem;
+  }
+
+  .kpiGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpiValue {
+    font-size: 1.85rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .modalFooter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modalFooter button {
+    width: 100%;
+  }
+}
