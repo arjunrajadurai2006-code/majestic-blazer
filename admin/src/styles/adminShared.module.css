@@ -12,11 +12,11 @@
   font-size: 2.35rem;
   font-weight: 500;
   letter-spacing: 0.02em;
-  color: var(--color-white);
+  color: var(--color-text-primary, #111111);
 }
 
 .subtitle {
-  color: var(--color-silver);
+  color: var(--color-text-secondary, #666666);
   font-size: 0.88rem;
   margin-top: 4px;
 }
@@ -36,20 +36,21 @@
 }
 
 .kpiCard {
-  background: var(--color-rich-black);
-  border: 1px solid var(--color-border);
+  background: var(--color-elevated, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
   padding: var(--space-3);
   border-radius: var(--radius-sm);
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
   transition: all var(--transition-smooth);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .kpiCard:hover {
-  border-color: var(--color-silver);
+  border-color: #CCCCCC;
   transform: translateY(-2px);
-  box-shadow: var(--shadow-luxury);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
 }
 
 .kpiLabel {
@@ -57,7 +58,7 @@
   font-size: 0.74rem;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: var(--color-muted);
+  color: var(--color-text-secondary, #666666);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -67,7 +68,7 @@
 .kpiValue {
   font-family: var(--font-display);
   font-size: 2.3rem;
-  color: var(--color-white);
+  color: var(--color-text-primary, #111111);
   font-weight: 500;
   line-height: 1.1;
   letter-spacing: 0.02em;
@@ -75,7 +76,7 @@
 
 .kpiMeta {
   font-size: 0.78rem;
-  color: var(--color-silver);
+  color: var(--color-text-secondary, #666666);
 }
 
 /* Filter Bar */
@@ -85,18 +86,18 @@
   align-items: center;
   margin-bottom: var(--space-3);
   flex-wrap: wrap;
-  background: var(--color-rich-black);
+  background: var(--color-secondary-bg, #F7F7F7);
   padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border, #E5E5E5);
   border-radius: var(--radius-sm);
 }
 
 .searchInput {
   flex: 1;
   min-width: 220px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-white);
+  background: var(--color-elevated, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
+  color: var(--color-text-primary, #111111);
   padding: 0.65rem 1rem;
   border-radius: var(--radius-sm);
   font-size: 0.88rem;
@@ -104,14 +105,18 @@
   transition: border-color var(--transition-fast);
 }
 
+.searchInput::placeholder {
+  color: #999999;
+}
+
 .searchInput:focus {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary, #111111);
 }
 
 .selectInput {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-white);
+  background: var(--color-elevated, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
+  color: var(--color-text-primary, #111111);
   padding: 0.65rem 1rem;
   border-radius: var(--radius-sm);
   font-size: 0.88rem;
@@ -121,16 +126,17 @@
 }
 
 .selectInput:focus {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary, #111111);
 }
 
 /* Table Styles */
 .tableWrapper {
-  background: var(--color-rich-black);
-  border: 1px solid var(--color-border);
+  background: var(--color-elevated, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
   border-radius: var(--radius-sm);
   overflow-x: auto;
   margin-bottom: var(--space-4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .table {
@@ -138,29 +144,31 @@
   border-collapse: collapse;
   text-align: left;
   font-size: 0.88rem;
+  background: var(--color-elevated, #FFFFFF);
 }
 
 .table th {
-  background: var(--color-charcoal);
-  color: var(--color-silver);
+  background: var(--color-secondary-bg, #F7F7F7);
+  color: #555555;
   font-weight: 600;
   padding: 0.9rem 1.1rem;
   text-transform: uppercase;
   font-size: 0.72rem;
   letter-spacing: 0.12em;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border, #E5E5E5);
   white-space: nowrap;
 }
 
 .table td {
   padding: 0.95rem 1.1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  color: var(--color-platinum);
+  border-bottom: 1px solid #F0F0F0;
+  color: var(--color-text-primary, #111111);
   vertical-align: middle;
+  background: var(--color-elevated, #FFFFFF);
 }
 
 .table tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: #F9F9F9;
 }
 
 .table tr:last-child td {
@@ -180,39 +188,39 @@
 
 .badgeSuccess {
   background: rgba(46, 213, 115, 0.12);
-  color: #2ed573;
-  border: 1px solid rgba(46, 213, 115, 0.25);
+  color: #1e824c;
+  border: 1px solid rgba(46, 213, 115, 0.3);
 }
 
 .badgeWarning {
   background: rgba(255, 171, 0, 0.12);
-  color: #ffab00;
-  border: 1px solid rgba(255, 171, 0, 0.25);
+  color: #b7791f;
+  border: 1px solid rgba(255, 171, 0, 0.3);
 }
 
 .badgeDanger {
   background: rgba(255, 71, 87, 0.12);
-  color: #ff4757;
-  border: 1px solid rgba(255, 71, 87, 0.25);
+  color: #d63031;
+  border: 1px solid rgba(255, 71, 87, 0.3);
 }
 
 .badgeInfo {
   background: rgba(52, 152, 219, 0.12);
-  color: #3498db;
-  border: 1px solid rgba(52, 152, 219, 0.25);
+  color: #2980b9;
+  border: 1px solid rgba(52, 152, 219, 0.3);
 }
 
 .badgeDefault {
-  background: var(--color-surface);
-  color: var(--color-silver);
-  border: 1px solid var(--color-border);
+  background: var(--color-secondary-bg, #F7F7F7);
+  color: #555555;
+  border: 1px solid var(--color-border, #E5E5E5);
 }
 
 /* Buttons */
 .btnPrimary {
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border: 1px solid var(--color-white);
+  background: #080808;
+  color: #FFFFFF;
+  border: 1px solid #080808;
   padding: 0.65rem 1.3rem;
   font-size: 0.82rem;
   letter-spacing: 0.1em;
@@ -227,15 +235,15 @@
 }
 
 .btnPrimary:hover {
-  background: var(--color-platinum);
-  border-color: var(--color-platinum);
+  background: #252525;
+  border-color: #252525;
   transform: translateY(-1px);
 }
 
 .btnSecondary {
-  background: transparent;
-  color: var(--color-platinum);
-  border: 1px solid var(--color-border);
+  background: var(--color-elevated, #FFFFFF);
+  color: var(--color-text-primary, #111111);
+  border: 1px solid var(--color-border, #E5E5E5);
   padding: 0.65rem 1.3rem;
   font-size: 0.82rem;
   letter-spacing: 0.1em;
@@ -249,9 +257,9 @@
 }
 
 .btnSecondary:hover {
-  border-color: var(--color-silver);
-  color: var(--color-white);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--color-text-primary, #111111);
+  color: #000000;
+  background: var(--color-secondary-bg, #F7F7F7);
 }
 
 .btnSmall {
@@ -261,8 +269,8 @@
 
 .btnDanger {
   background: transparent;
-  color: #ff4757;
-  border: 1px solid rgba(255, 71, 87, 0.3);
+  color: #d63031;
+  border: 1px solid rgba(214, 48, 49, 0.3);
   padding: 0.4rem 0.85rem;
   font-size: 0.75rem;
   cursor: pointer;
@@ -271,17 +279,17 @@
 }
 
 .btnDanger:hover {
-  background: rgba(255, 71, 87, 0.12);
-  border-color: #ff4757;
+  background: rgba(214, 48, 49, 0.08);
+  border-color: #d63031;
 }
 
 /* Modal */
 .modalBackdrop {
   position: fixed;
   inset: 0;
-  background: rgba(8, 8, 8, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -290,8 +298,8 @@
 }
 
 .modalContent {
-  background: var(--color-rich-black);
-  border: 1px solid var(--color-silver);
+  background: var(--color-elevated, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
   border-radius: var(--radius-sm);
   width: 100%;
   max-width: 680px;
@@ -299,7 +307,7 @@
   overflow-y: auto;
   padding: var(--space-4);
   position: relative;
-  box-shadow: var(--shadow-luxury);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
 }
 
 .modalHeader {
@@ -307,28 +315,28 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--space-3);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border, #E5E5E5);
   padding-bottom: var(--space-2);
 }
 
 .modalHeader h2 {
   font-size: 1.5rem;
   font-family: var(--font-display);
-  color: var(--color-white);
+  color: var(--color-text-primary, #111111);
   font-weight: 500;
 }
 
 .closeBtn {
   background: none;
   border: none;
-  color: var(--color-silver);
+  color: var(--color-text-secondary, #666666);
   font-size: 1.5rem;
   cursor: pointer;
   transition: color var(--transition-fast);
 }
 
 .closeBtn:hover {
-  color: var(--color-white);
+  color: var(--color-text-primary, #111111);
 }
 
 .formGrid {
@@ -351,14 +359,14 @@
   font-size: 0.76rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--color-silver);
+  color: #555555;
   font-weight: 500;
 }
 
 .input {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-white);
+  background: var(--color-elevated, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
+  color: var(--color-text-primary, #111111);
   padding: 0.7rem 0.9rem;
   border-radius: var(--radius-sm);
   font-size: 0.88rem;
@@ -367,7 +375,7 @@
 }
 
 .input:focus {
-  border-color: var(--color-silver);
+  border-color: var(--color-text-primary, #111111);
 }
 
 .checkboxLabel {
@@ -375,7 +383,7 @@
   align-items: center;
   gap: 0.6rem;
   font-size: 0.88rem;
-  color: var(--color-platinum);
+  color: var(--color-text-primary, #111111);
   cursor: pointer;
 }
 
@@ -384,7 +392,7 @@
   justify-content: flex-end;
   gap: var(--space-2);
   margin-top: var(--space-4);
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border, #E5E5E5);
   padding-top: var(--space-3);
 }
 
@@ -392,23 +400,25 @@
 .emptyState {
   padding: var(--space-5);
   text-align: center;
-  color: var(--color-silver);
+  color: var(--color-text-secondary, #666666);
+  background: var(--color-elevated, #FFFFFF);
 }
 
 .loadingSpinner {
   padding: var(--space-5);
   text-align: center;
-  color: var(--color-silver);
+  color: var(--color-text-secondary, #666666);
   font-size: 0.95rem;
 }
 
 /* Chart Container */
 .chartBox {
-  background: var(--color-rich-black);
-  border: 1px solid var(--color-border);
+  background: var(--color-elevated, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
   border-radius: var(--radius-sm);
   padding: var(--space-4);
   margin-bottom: var(--space-4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .chartBox h3 {
@@ -416,7 +426,7 @@
   font-family: var(--font-display);
   font-weight: 500;
   margin-bottom: var(--space-3);
-  color: var(--color-white);
+  color: var(--color-text-primary, #111111);
 }
 
 /* Responsive Media Queries */

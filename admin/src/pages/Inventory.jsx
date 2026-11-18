@@ -143,18 +143,18 @@ export default function Inventory() {
                           style={{ width: '38px', height: '48px', objectFit: 'cover', borderRadius: '2px', border: '1px solid #333' }}
                         />
                         <div>
-                          <div style={{ fontWeight: 600, color: '#fff' }}>{item.product_name}</div>
-                          <div style={{ fontSize: '0.75rem', color: '#888' }}>{item.category_name}</div>
+                          <div style={{ fontWeight: 600, color: '#111111' }}>{item.product_name}</div>
+                          <div style={{ fontSize: '0.75rem', color: '#666666' }}>{item.category_name}</div>
                         </div>
                       </div>
                     </td>
                     <td>
-                      <code style={{ background: '#1c1c1c', padding: '2px 6px', borderRadius: '2px', color: '#b99a58' }}>
+                      <code style={{ background: '#F7F7F7', border: '1px solid #E5E5E5', padding: '2px 6px', borderRadius: '2px', color: '#b99a58' }}>
                         {item.sku}
                       </code>
                     </td>
                     <td>
-                      <strong style={{ color: '#fff' }}>{item.size}</strong>
+                      <strong style={{ color: '#111111' }}>{item.size}</strong>
                     </td>
                     <td>
                       {isEditing ? (

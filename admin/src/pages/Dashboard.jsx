@@ -254,15 +254,15 @@ export default function Dashboard() {
                     <stop offset="95%" stopColor="#c0c0c0" stopOpacity={0.05}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#252525" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#EFEFEF" />
                 <XAxis dataKey="date" stroke="#888" fontSize={12} />
                 <YAxis stroke="#888" fontSize={12} tickFormatter={(v) => `₹${v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v}`} />
                 <Tooltip
-                  contentStyle={{ background: '#121212', border: '1px solid #333', color: '#fff', borderRadius: '4px' }}
+                  contentStyle={{ background: '#FFFFFF', border: '1px solid #E5E5E5', color: '#111111', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                   formatter={(val, name) => [formatCurrency(val), name === 'sales' ? 'Sartorial Sales' : 'Garment Rentals']}
                 />
-                <Area type="monotone" dataKey="sales" name="Sartorial Sales" stroke="#ffffff" fillOpacity={1} fill="url(#colorSales)" strokeWidth={2} />
-                <Area type="monotone" dataKey="rentals" name="Garment Rentals" stroke="#c0c0c0" fillOpacity={1} fill="url(#colorRent)" strokeWidth={2} />
+                <Area type="monotone" dataKey="sales" name="Sartorial Sales" stroke="#111111" fillOpacity={1} fill="url(#colorSales)" strokeWidth={2} />
+                <Area type="monotone" dataKey="rentals" name="Garment Rentals" stroke="#888888" fillOpacity={1} fill="url(#colorRent)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -297,16 +297,16 @@ export default function Dashboard() {
                   recentOrders.map((o) => (
                     <tr key={o.id}>
                       <td>
-                        <Link to={`/orders?search=${o.order_number}`} style={{ color: '#fff', fontWeight: 600 }}>
+                        <Link to={`/orders?search=${o.order_number}`} style={{ color: '#111111', fontWeight: 600 }}>
                           #{o.order_number}
                         </Link>
                       </td>
                       <td>
-                        <div style={{ color: '#e5e5e5' }}>{o.customer_name || 'Client'}</div>
-                        <div style={{ fontSize: '0.75rem', color: '#777' }}>{o.customer_email}</div>
+                        <div style={{ color: '#111111' }}>{o.customer_name || 'Client'}</div>
+                        <div style={{ fontSize: '0.75rem', color: '#666666' }}>{o.customer_email}</div>
                       </td>
                       <td>
-                        <strong style={{ color: '#fff' }}>{formatCurrency(o.total)}</strong>
+                        <strong style={{ color: '#111111' }}>{formatCurrency(o.total)}</strong>
                       </td>
                       <td>
                         <span className={getOrderStatusBadge(o.status)}>
@@ -356,27 +356,27 @@ export default function Dashboard() {
                             <img
                               src={b.image_url}
                               alt={b.name}
-                              style={{ width: 36, height: 48, objectFit: 'cover', borderRadius: 3, border: '1px solid #333' }}
+                              style={{ width: 36, height: 48, objectFit: 'cover', borderRadius: 3, border: '1px solid #E5E5E5' }}
                             />
                           ) : (
-                            <div style={{ width: 36, height: 48, background: '#222', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              <Package size={16} color="#666" />
+                            <div style={{ width: 36, height: 48, background: '#F7F7F7', border: '1px solid #E5E5E5', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <Package size={16} color="#888" />
                             </div>
                           )}
                           <div>
-                            <div style={{ fontWeight: 600, color: '#fff' }}>{b.name}</div>
-                            <div style={{ fontSize: '0.75rem', color: '#888' }}>
+                            <div style={{ fontWeight: 600, color: '#111111' }}>{b.name}</div>
+                            <div style={{ fontSize: '0.75rem', color: '#666666' }}>
                               {b.rental_count ? `${b.rental_count} rentals` : ''}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td style={{ color: '#bbb' }}>{b.category_name || 'Blazer'}</td>
+                      <td style={{ color: '#666666' }}>{b.category_name || 'Blazer'}</td>
                       <td>
-                        <span style={{ fontWeight: 600, color: '#e5e5e5' }}>{b.total_units_sold || 0}</span>
+                        <span style={{ fontWeight: 600, color: '#111111' }}>{b.total_units_sold || 0}</span>
                       </td>
                       <td>
-                        <strong style={{ color: '#fff' }}>{formatCurrency(b.revenue)}</strong>
+                        <strong style={{ color: '#111111' }}>{formatCurrency(b.revenue)}</strong>
                       </td>
                     </tr>
                   ))
@@ -416,13 +416,13 @@ export default function Dashboard() {
                   recentCustomers.map((c) => (
                     <tr key={c.id}>
                       <td>
-                        <div style={{ fontWeight: 600, color: '#fff' }}>{c.full_name}</div>
+                        <div style={{ fontWeight: 600, color: '#111111' }}>{c.full_name}</div>
                       </td>
                       <td>
-                        <div style={{ color: '#ccc', fontSize: '0.8rem' }}>{c.email}</div>
-                        <div style={{ color: '#777', fontSize: '0.75rem' }}>{c.phone || '—'}</div>
+                        <div style={{ color: '#111111', fontSize: '0.8rem' }}>{c.email}</div>
+                        <div style={{ color: '#666666', fontSize: '0.75rem' }}>{c.phone || '—'}</div>
                       </td>
-                      <td style={{ color: '#999', fontSize: '0.8rem' }}>
+                      <td style={{ color: '#666666', fontSize: '0.8rem' }}>
                         {new Date(c.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                       </td>
                       <td>

@@ -87,7 +87,7 @@ export default function AdminLayout() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0, 0, 0, 0.75)',
+            background: 'rgba(0, 0, 0, 0.65)',
             backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
@@ -99,13 +99,13 @@ export default function AdminLayout() {
         >
           <div 
             style={{
-              background: '#141414',
-              border: '1px solid #333',
+              background: '#FFFFFF',
+              border: '1px solid #E5E5E5',
               borderRadius: '4px',
               padding: '1.75rem',
               maxWidth: '440px',
               width: '100%',
-              boxShadow: '0 15px 35px rgba(0, 0, 0, 0.8)',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
             }}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
@@ -125,13 +125,13 @@ export default function AdminLayout() {
               }}>
                 <AlertCircle size={22} />
               </div>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', color: '#fff', margin: 0 }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', color: '#111111', margin: 0 }}>
                 Confirm Sign Out
               </h2>
             </div>
 
-            <p style={{ fontSize: '0.88rem', color: '#aaa', lineHeight: '1.5', marginBottom: '1.5rem' }}>
-              Are you sure you want to end your active administrative session for <strong style={{ color: '#fff' }}>{admin?.email}</strong>?
+            <p style={{ fontSize: '0.88rem', color: '#666666', lineHeight: '1.5', marginBottom: '1.5rem' }}>
+              Are you sure you want to end your active administrative session for <strong style={{ color: '#111111' }}>{admin?.email}</strong>?
             </p>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
@@ -139,9 +139,9 @@ export default function AdminLayout() {
                 type="button"
                 style={{
                   padding: '0.6rem 1.2rem',
-                  background: 'transparent',
-                  border: '1px solid var(--color-border)',
-                  color: 'var(--color-silver)',
+                  background: '#F7F7F7',
+                  border: '1px solid #E5E5E5',
+                  color: '#111111',
                   borderRadius: 'var(--radius-sm)',
                   fontSize: '0.85rem',
                   cursor: 'pointer'

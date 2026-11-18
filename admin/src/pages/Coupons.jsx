@@ -189,22 +189,22 @@ export default function Coupons() {
                       fontFamily: 'monospace',
                       fontWeight: 700,
                       letterSpacing: '0.08em',
-                      color: '#ffffff',
-                      background: '#1f1f1f',
+                      color: '#111111',
+                      background: '#F7F7F7',
                       padding: '4px 8px',
                       borderRadius: '4px',
-                      border: '1px solid #333'
+                      border: '1px solid #E5E5E5'
                     }}>
                       {c.code}
                     </span>
                   </td>
                   <td>
-                    <strong style={{ color: '#fff' }}>
+                    <strong style={{ color: '#111111' }}>
                       {c.discount_type === 'percentage'
                         ? `${c.discount_value}% OFF`
                         : `${formatCurrency(c.discount_value)} OFF`}
                     </strong>
-                    <div style={{ fontSize: '0.75rem', color: '#888' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#666666' }}>
                       {c.discount_type === 'percentage' ? 'Percentage Deduction' : 'Fixed Rupee Deduction'}
                     </div>
                   </td>
@@ -215,8 +215,8 @@ export default function Coupons() {
                     {c.max_discount ? formatCurrency(c.max_discount) : 'Unlimited'}
                   </td>
                   <td>
-                    <span style={{ color: '#fff', fontWeight: 600 }}>{c.times_used}</span>
-                    <span style={{ color: '#888' }}>
+                    <span style={{ color: '#111111', fontWeight: 600 }}>{c.times_used}</span>
+                    <span style={{ color: '#666666' }}>
                       {c.usage_limit ? ` / ${c.usage_limit}` : ' (No limit)'}
                     </span>
                   </td>

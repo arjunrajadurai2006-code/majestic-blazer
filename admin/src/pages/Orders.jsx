@@ -155,7 +155,7 @@ export default function Orders() {
               orders.map(o => (
                 <tr key={o.id}>
                   <td>
-                    <strong style={{ color: '#fff', letterSpacing: '0.05em' }}>
+                    <strong style={{ color: '#111111', letterSpacing: '0.05em' }}>
                       #{o.order_number || o.id}
                     </strong>
                     {o.invoice_number && (
@@ -165,10 +165,10 @@ export default function Orders() {
                     )}
                   </td>
                   <td>
-                    <div style={{ fontWeight: 500, color: '#e5e5e5' }}>{o.customer_name || 'Patron'}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#888' }}>{o.customer_email}</div>
+                    <div style={{ fontWeight: 500, color: '#111111' }}>{o.customer_name || 'Patron'}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#666666' }}>{o.customer_email}</div>
                   </td>
-                  <td style={{ color: '#aaa', fontSize: '0.85rem' }}>
+                  <td style={{ color: '#666666', fontSize: '0.85rem' }}>
                     {new Date(o.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </td>
                   <td>
@@ -177,10 +177,10 @@ export default function Orders() {
                     </span>
                   </td>
                   <td>
-                    <strong style={{ color: '#fff' }}>{formatCurrency(o.total || o.total_amount)}</strong>
+                    <strong style={{ color: '#111111' }}>{formatCurrency(o.total || o.total_amount)}</strong>
                   </td>
                   <td>
-                    <span style={{ fontSize: '0.85rem', color: (o.delivery_type || o.fulfillment_type) === 'pickup' ? '#b99a58' : '#aaa' }}>
+                    <span style={{ fontSize: '0.85rem', color: (o.delivery_type || o.fulfillment_type) === 'pickup' ? '#b99a58' : '#666666' }}>
                       {(o.delivery_type || o.fulfillment_type) === 'pickup' ? 'Coimbatore Atelier Pickup' : 'Courier Delivery'}
                     </span>
                   </td>
@@ -233,14 +233,14 @@ export default function Orders() {
             </div>
 
             {/* Customer & Fulfillment Info */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem', background: '#0e0e0e', padding: '1rem', borderRadius: '4px', border: '1px solid #222' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem', background: '#F7F7F7', padding: '1rem', borderRadius: '4px', border: '1px solid #E5E5E5' }}>
               <div>
                 <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#b99a58', letterSpacing: '0.08em', display: 'block', marginBottom: '4px' }}>
                   Customer Details
                 </span>
-                <div style={{ fontWeight: 600, color: '#fff' }}>{selectedOrder.shipping_name || selectedOrder.user_name}</div>
-                <div style={{ fontSize: '0.85rem', color: '#aaa' }}>{selectedOrder.shipping_phone || selectedOrder.user_phone}</div>
-                <div style={{ fontSize: '0.85rem', color: '#aaa' }}>{selectedOrder.user_email}</div>
+                <div style={{ fontWeight: 600, color: '#111111' }}>{selectedOrder.shipping_name || selectedOrder.user_name}</div>
+                <div style={{ fontSize: '0.85rem', color: '#666666' }}>{selectedOrder.shipping_phone || selectedOrder.user_phone}</div>
+                <div style={{ fontSize: '0.85rem', color: '#666666' }}>{selectedOrder.user_email}</div>
               </div>
 
               <div>
@@ -248,12 +248,12 @@ export default function Orders() {
                   Fulfillment Destination
                 </span>
                 {selectedOrder.fulfillment_type === 'pickup' ? (
-                  <div style={{ fontSize: '0.85rem', color: '#fff' }}>
+                  <div style={{ fontSize: '0.85rem', color: '#111111' }}>
                     <strong>Flagship Atelier In-Store Pickup</strong><br />
                     Sathy Road, Kurumbampalayam, Coimbatore - 641107
                   </div>
                 ) : (
-                  <div style={{ fontSize: '0.85rem', color: '#ccc' }}>
+                  <div style={{ fontSize: '0.85rem', color: '#555555' }}>
                     {selectedOrder.shipping_address_line1}<br />
                     {selectedOrder.shipping_address_line2 && <>{selectedOrder.shipping_address_line2}<br /></>}
                     {selectedOrder.shipping_city}, {selectedOrder.shipping_state} - {selectedOrder.shipping_postal_code}
@@ -264,11 +264,11 @@ export default function Orders() {
 
             {/* Line Items */}
             <div style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem', color: '#e5e5e5' }}>Ordered Garments</h3>
-              <div style={{ border: '1px solid #222', borderRadius: '4px', overflow: 'hidden' }}>
+              <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem', color: '#111111' }}>Ordered Garments</h3>
+              <div style={{ border: '1px solid #E5E5E5', borderRadius: '4px', overflow: 'hidden' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                   <thead>
-                    <tr style={{ background: '#111', color: '#888', borderBottom: '1px solid #222' }}>
+                    <tr style={{ background: '#F7F7F7', color: '#666666', borderBottom: '1px solid #E5E5E5' }}>
                       <th style={{ padding: '8px 12px', textAlign: 'left' }}>Item</th>
                       <th style={{ padding: '8px 12px', textAlign: 'left' }}>Size</th>
                       <th style={{ padding: '8px 12px', textAlign: 'center' }}>Qty</th>
@@ -278,15 +278,15 @@ export default function Orders() {
                   </thead>
                   <tbody>
                     {(selectedOrder.items || []).map((item, idx) => (
-                      <tr key={idx} style={{ borderBottom: '1px solid #1a1a1a' }}>
+                      <tr key={idx} style={{ borderBottom: '1px solid #F0F0F0' }}>
                         <td style={{ padding: '10px 12px' }}>
-                          <div style={{ fontWeight: 600, color: '#fff' }}>{item.productName || item.product_name}</div>
-                          <div style={{ fontSize: '0.75rem', color: '#888' }}>SKU: {item.sku}</div>
+                          <div style={{ fontWeight: 600, color: '#111111' }}>{item.productName || item.product_name}</div>
+                          <div style={{ fontSize: '0.75rem', color: '#666666' }}>SKU: {item.sku}</div>
                         </td>
-                        <td style={{ padding: '10px 12px', color: '#ccc' }}>{item.size}</td>
-                        <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fff' }}>{item.quantity}</td>
-                        <td style={{ padding: '10px 12px', textAlign: 'right', color: '#aaa' }}>{formatCurrency(item.unitPrice || item.unit_price)}</td>
-                        <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600, color: '#fff' }}>
+                        <td style={{ padding: '10px 12px', color: '#555555' }}>{item.size}</td>
+                        <td style={{ padding: '10px 12px', textAlign: 'center', color: '#111111' }}>{item.quantity}</td>
+                        <td style={{ padding: '10px 12px', textAlign: 'right', color: '#666666' }}>{formatCurrency(item.unitPrice || item.unit_price)}</td>
+                        <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600, color: '#111111' }}>
                           {formatCurrency((item.unitPrice || item.unit_price) * item.quantity)}
                         </td>
                       </tr>
@@ -299,21 +299,21 @@ export default function Orders() {
             {/* Financial Summary */}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
               <div style={{ width: '260px', display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#aaa' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#666666' }}>
                   <span>Subtotal:</span>
                   <span>{formatCurrency(selectedOrder.subtotal ?? selectedOrder.subtotal_amount)}</span>
                 </div>
                 {Number(selectedOrder.discount ?? selectedOrder.discount_amount) > 0 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#2ed573' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#1e824c' }}>
                     <span>Coupon Discount:</span>
                     <span>- {formatCurrency(selectedOrder.discount ?? selectedOrder.discount_amount)}</span>
                   </div>
                 )}
-                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#aaa' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#666666' }}>
                   <span>GST Tax:</span>
                   <span>{formatCurrency(selectedOrder.tax ?? selectedOrder.tax_amount)}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff', fontWeight: 700, fontSize: '1rem', borderTop: '1px solid #333', paddingTop: '6px', marginTop: '4px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#111111', fontWeight: 700, fontSize: '1rem', borderTop: '1px solid #E5E5E5', paddingTop: '6px', marginTop: '4px' }}>
                   <span>Grand Total:</span>
                   <span>{formatCurrency(selectedOrder.total ?? selectedOrder.total_amount)}</span>
                 </div>
@@ -321,8 +321,8 @@ export default function Orders() {
             </div>
 
             {/* Status Update Form */}
-            <form onSubmit={handleUpdateStatus} style={{ background: '#111', padding: '1rem', borderRadius: '4px', border: '1px solid #222' }}>
-              <h3 style={{ fontSize: '0.95rem', marginBottom: '0.75rem', color: '#fff' }}>
+            <form onSubmit={handleUpdateStatus} style={{ background: '#F7F7F7', padding: '1rem', borderRadius: '4px', border: '1px solid #E5E5E5' }}>
+              <h3 style={{ fontSize: '0.95rem', marginBottom: '0.75rem', color: '#111111' }}>
                 Update Fulfillment & Dispatch
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>

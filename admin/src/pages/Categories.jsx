@@ -156,14 +156,14 @@ export default function Categories() {
             {categories.length > 0 ? (
               categories.map(c => (
                 <tr key={c.id}>
-                  <td style={{ width: '60px', color: '#888' }}>{c.sort_order}</td>
+                  <td style={{ width: '60px', color: '#666666' }}>{c.sort_order}</td>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <FolderTree size={16} color="#b99a58" />
-                      <strong style={{ color: '#fff' }}>{c.name}</strong>
+                      <strong style={{ color: '#111111' }}>{c.name}</strong>
                     </div>
                   </td>
-                  <td style={{ color: '#888', fontSize: '0.8rem' }}>{c.slug}</td>
+                  <td style={{ color: '#666666', fontSize: '0.8rem' }}>{c.slug}</td>
                   <td style={{ maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {c.description || '—'}
                   </td>

@@ -346,11 +346,11 @@ export default function Products() {
                       <img 
                         src={p.primary_image || '/assets/products/imperial-navy-velvet-front.webp'} 
                         alt={p.name}
-                        style={{ width: '42px', height: '52px', objectFit: 'cover', borderRadius: '2px', border: '1px solid #333' }}
+                        style={{ width: '42px', height: '52px', objectFit: 'cover', borderRadius: '2px', border: '1px solid #E5E5E5' }}
                       />
                       <div>
-                        <div style={{ fontWeight: 600, color: '#fff' }}>{p.name}</div>
-                        <div style={{ fontSize: '0.75rem', color: '#888' }}>{p.slug}</div>
+                        <div style={{ fontWeight: 600, color: '#111111' }}>{p.name}</div>
+                        <div style={{ fontSize: '0.75rem', color: '#666666' }}>{p.slug}</div>
                       </div>
                     </div>
                   </td>
@@ -627,8 +627,8 @@ export default function Products() {
                 {/* Size Variants & Stock */}
                 <div className={`${styles.formGroup} ${styles.formFull}`}>
                   <label style={{ marginBottom: '0.5rem', display: 'block' }}>Size Variants & Stock Units</label>
-                  <div style={{ background: '#0e0e0e', padding: '0.75rem', borderRadius: '4px', border: '1px solid #222' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 100px 100px', gap: '8px', marginBottom: '8px', fontSize: '0.75rem', color: '#888', textTransform: 'uppercase' }}>
+                  <div style={{ background: '#F7F7F7', padding: '0.75rem', borderRadius: '4px', border: '1px solid #E5E5E5' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 100px 100px', gap: '8px', marginBottom: '8px', fontSize: '0.75rem', color: '#666666', textTransform: 'uppercase' }}>
                       <div>Size</div>
                       <div>SKU Code</div>
                       <div>Retail Stock</div>
@@ -636,7 +636,7 @@ export default function Products() {
                     </div>
                     {formData.variants.map((v, i) => (
                       <div key={v.size} style={{ display: 'grid', gridTemplateColumns: '80px 1fr 100px 100px', gap: '8px', marginBottom: '6px' }}>
-                        <div style={{ padding: '6px 8px', fontWeight: 600, color: '#fff' }}>{v.size}</div>
+                        <div style={{ padding: '6px 8px', fontWeight: 600, color: '#111111' }}>{v.size}</div>
                         <input
                           type="text"
                           className={styles.input}

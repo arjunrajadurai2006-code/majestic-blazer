@@ -271,15 +271,15 @@ export default function Settings() {
         </div>
 
         {/* Developer Sandbox & Demo Data */}
-        <div className={styles.chartBox} style={{ marginBottom: '1.5rem', border: '1px solid #333', background: '#121212' }}>
-          <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ffffff' }}>
-            <Database size={18} color="#c0c0c0" /> Developer Sandbox & Demonstration Data
+        <div className={styles.chartBox} style={{ marginBottom: '1.5rem', border: '1px solid #E5E5E5', background: '#F7F7F7' }}>
+          <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#111111' }}>
+            <Database size={18} color="#666666" /> Developer Sandbox & Demonstration Data
           </h3>
-          <p style={{ fontSize: '0.85rem', color: '#aaa', margin: '0.5rem 0 1rem 0', lineHeight: '1.5' }}>
+          <p style={{ fontSize: '0.85rem', color: '#666666', margin: '0.5rem 0 1rem 0', lineHeight: '1.5' }}>
             Populate or replenish realistic luxury menswear sample data across all admin tables: 37 catalog blazers, 6 categories, 45+ patron accounts, 36 orders, 20 rental schedules, coupons, and customer reviews.
           </p>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#888' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#666666' }}>
               <Shield size={14} color="#2ed573" />
               <span>Safe operation &bull; Automatically disabled in production</span>
             </div>
@@ -288,7 +288,7 @@ export default function Settings() {
               onClick={handleSeedDemo}
               disabled={seeding}
               className={styles.btnSecondary}
-              style={{ padding: '0.6rem 1.25rem', borderColor: '#555', color: '#fff' }}
+              style={{ padding: '0.6rem 1.25rem', borderColor: '#E5E5E5', color: '#111111' }}
             >
               <RefreshCw size={14} className={seeding ? styles.spinner : ''} style={{ marginRight: '6px' }} />
               {seeding ? 'Seeding Demonstration Data...' : 'Load Demo Data'}

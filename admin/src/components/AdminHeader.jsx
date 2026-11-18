@@ -192,7 +192,7 @@ export default function AdminHeader() {
 
             <p className={styles.modalBody}>
               Are you sure you want to end your active administrative session for{' '}
-              <strong style={{ color: '#fff' }}>{admin?.email}</strong>? You will need to sign in again to access the management portal.
+              <strong style={{ color: '#111111' }}>{admin?.email}</strong>? You will need to sign in again to access the management portal.
             </p>
 
             <div className={styles.modalActions}>

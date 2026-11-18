@@ -1,21 +1,33 @@
 :root {
-  /* Brand Luxury Palette — Black & Silver */
-  --color-obsidian: #080808;
-  --color-rich-black: #101010;
-  --color-charcoal: #171717;
-  --color-surface: #202020;
-  --color-silver: #C0C0C0;
-  --color-platinum: #E5E5E5;
-  --color-white: #FFFFFF;
-  --color-muted: #858585;
-  --color-border: #303030;
-  --color-border-subtle: rgba(192, 192, 192, 0.12);
-  --color-border-glow: rgba(192, 192, 192, 0.35);
+  /* Brand Luxury Palette — Black & White Palette */
+  --color-obsidian: #080808;      /* Primary obsidian black (Sidebar: #080808) */
+  --color-rich-black: #FFFFFF;    /* Elevated surface: #FFFFFF */
+  --color-charcoal: #F7F7F7;      /* Secondary background / Table headers: #F7F7F7 */
+  --color-surface: #FFFFFF;       /* Elevated surfaces & inputs: #FFFFFF */
+  --color-silver: #666666;        /* Secondary text: #666666 */
+  --color-platinum: #111111;      /* Primary text: #111111 */
+  --color-white: #111111;         /* Primary text / titles on light surfaces: #111111 */
+  --color-true-white: #FFFFFF;    /* Pure white for backgrounds / dark surfaces */
+  --color-muted: #666666;         /* Muted secondary text: #666666 */
+  --color-border: #E5E5E5;        /* Borders: #E5E5E5 */
+  --color-border-subtle: #E5E5E5;
+  --color-border-glow: rgba(0, 0, 0, 0.05);
+
+  /* Specific palette variables as requested */
+  --color-page-bg: #FFFFFF;       /* Main page background: #FFFFFF */
+  --color-secondary-bg: #F7F7F7;  /* Secondary background: #F7F7F7 */
+  --color-elevated: #FFFFFF;      /* Elevated surface: #FFFFFF */
+  --color-sidebar-bg: #080808;    /* Sidebar background: #080808 */
+  --color-header-bg: #FFFFFF;     /* Header background: #FFFFFF */
+  --color-text-primary: #111111;  /* Primary text: #111111 */
+  --color-text-secondary: #666666;/* Secondary text: #666666 */
+  --color-dark-surface: #151515;  /* Dark elevated surfaces: #151515 */
+  --color-hover-bg: #F0F0F0;      /* Hover background: #F0F0F0 */
 
   /* Semantic aliases for backward compatibility */
-  --color-black: var(--color-obsidian);
-  --color-graphite: #252525;
-  --color-silver-light: var(--color-platinum);
+  --color-black: #080808;
+  --color-graphite: #F7F7F7;
+  --color-silver-light: #E5E5E5;
   --color-gold: #B99A58;
 
   /* Typography */
@@ -33,6 +45,8 @@
   --radius-sm: 2px;
   --radius: 3px;
   --border: 1px solid var(--color-border);
-  --border-active: 1px solid var(--color-silver);
+  --border-active: 1px solid var(--color-text-primary);
+  --shadow-luxury: 0 4px 20px rgba(0, 0, 0, 0.04);
   --transition-smooth: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.15s ease;
 }

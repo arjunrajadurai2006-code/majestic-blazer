@@ -121,14 +121,14 @@ export default function Customers() {
               customers.map(c => (
                 <tr key={c.id}>
                   <td>
-                    <strong style={{ color: '#fff', fontSize: '0.95rem' }}>{c.full_name}</strong>
-                    <div style={{ fontSize: '0.75rem', color: '#888' }}>ID: #{c.id}</div>
+                    <strong style={{ color: '#111111', fontSize: '0.95rem' }}>{c.full_name}</strong>
+                    <div style={{ fontSize: '0.75rem', color: '#666666' }}>ID: #{c.id}</div>
                   </td>
                   <td>
-                    <div style={{ fontSize: '0.85rem', color: '#e5e5e5' }}>{c.email}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#aaa' }}>{c.phone || 'No phone recorded'}</div>
+                    <div style={{ fontSize: '0.85rem', color: '#111111' }}>{c.email}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#666666' }}>{c.phone || 'No phone recorded'}</div>
                   </td>
-                  <td style={{ color: '#aaa', fontSize: '0.85rem' }}>
+                  <td style={{ color: '#666666', fontSize: '0.85rem' }}>
                     {new Date(c.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </td>
                   <td>
@@ -195,17 +195,17 @@ export default function Customers() {
             </div>
 
             {/* Profile Info */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', background: '#0e0e0e', padding: '1rem', borderRadius: '4px', border: '1px solid #222', marginBottom: '1.25rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', background: '#F7F7F7', padding: '1rem', borderRadius: '4px', border: '1px solid #E5E5E5', marginBottom: '1.25rem' }}>
               <div>
-                <span style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase' }}>Email</span>
-                <div style={{ color: '#fff', fontSize: '0.9rem' }}>{selectedCustomer.email}</div>
+                <span style={{ fontSize: '0.75rem', color: '#666666', textTransform: 'uppercase' }}>Email</span>
+                <div style={{ color: '#111111', fontSize: '0.9rem' }}>{selectedCustomer.email}</div>
               </div>
               <div>
-                <span style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase' }}>Phone</span>
-                <div style={{ color: '#fff', fontSize: '0.9rem' }}>{selectedCustomer.phone || 'Not provided'}</div>
+                <span style={{ fontSize: '0.75rem', color: '#666666', textTransform: 'uppercase' }}>Phone</span>
+                <div style={{ color: '#111111', fontSize: '0.9rem' }}>{selectedCustomer.phone || 'Not provided'}</div>
               </div>
               <div>
-                <span style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase' }}>Account Status</span>
+                <span style={{ fontSize: '0.75rem', color: '#666666', textTransform: 'uppercase' }}>Account Status</span>
                 <div>
                   {selectedCustomer.is_active ? (
                     <span className={`${styles.badge} ${styles.badgeSuccess}`}>Active Patron</span>
@@ -218,14 +218,14 @@ export default function Customers() {
 
             {/* Orders History */}
             <div style={{ marginBottom: '1.25rem' }}>
-              <h3 style={{ fontSize: '1rem', color: '#e5e5e5', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <ShoppingBag size={16} color="#c0c0c0" /> Sartorial Purchases ({(selectedCustomer.orders || []).length})
+              <h3 style={{ fontSize: '1rem', color: '#111111', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <ShoppingBag size={16} color="#666666" /> Sartorial Purchases ({(selectedCustomer.orders || []).length})
               </h3>
               {(selectedCustomer.orders || []).length > 0 ? (
-                <div style={{ maxHeight: '180px', overflowY: 'auto', border: '1px solid #222', borderRadius: '4px' }}>
+                <div style={{ maxHeight: '180px', overflowY: 'auto', border: '1px solid #E5E5E5', borderRadius: '4px' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                     <thead>
-                      <tr style={{ background: '#111', color: '#888' }}>
+                      <tr style={{ background: '#F7F7F7', color: '#666666' }}>
                         <th style={{ padding: '6px 10px', textAlign: 'left' }}>Order #</th>
                         <th style={{ padding: '6px 10px', textAlign: 'left' }}>Date</th>
                         <th style={{ padding: '6px 10px', textAlign: 'right' }}>Amount</th>
@@ -234,10 +234,10 @@ export default function Customers() {
                     </thead>
                     <tbody>
                       {selectedCustomer.orders.map(o => (
-                        <tr key={o.id} style={{ borderBottom: '1px solid #1a1a1a' }}>
-                          <td style={{ padding: '6px 10px', color: '#fff' }}>#{o.order_number}</td>
-                          <td style={{ padding: '6px 10px', color: '#888' }}>{new Date(o.created_at).toLocaleDateString('en-IN')}</td>
-                          <td style={{ padding: '6px 10px', textAlign: 'right', color: '#e5e5e5' }}>{formatCurrency(o.total_amount)}</td>
+                        <tr key={o.id} style={{ borderBottom: '1px solid #F0F0F0' }}>
+                          <td style={{ padding: '6px 10px', color: '#111111' }}>#{o.order_number}</td>
+                          <td style={{ padding: '6px 10px', color: '#666666' }}>{new Date(o.created_at).toLocaleDateString('en-IN')}</td>
+                          <td style={{ padding: '6px 10px', textAlign: 'right', color: '#111111' }}>{formatCurrency(o.total_amount)}</td>
                           <td style={{ padding: '6px 10px', textAlign: 'center' }}>
                             <span className={`${styles.badge} ${styles.badgeDefault}`}>{o.status}</span>
                           </td>
@@ -247,20 +247,20 @@ export default function Customers() {
                   </table>
                 </div>
               ) : (
-                <div style={{ fontSize: '0.85rem', color: '#888', padding: '0.5rem 0' }}>No purchase transactions yet.</div>
+                <div style={{ fontSize: '0.85rem', color: '#666666', padding: '0.5rem 0' }}>No purchase transactions yet.</div>
               )}
             </div>
 
             {/* Rentals History */}
             <div>
-              <h3 style={{ fontSize: '1rem', color: '#e5e5e5', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <h3 style={{ fontSize: '1rem', color: '#111111', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Calendar size={16} color="#b99a58" /> Blazer Rentals ({(selectedCustomer.rentals || []).length})
               </h3>
               {(selectedCustomer.rentals || []).length > 0 ? (
-                <div style={{ maxHeight: '180px', overflowY: 'auto', border: '1px solid #222', borderRadius: '4px' }}>
+                <div style={{ maxHeight: '180px', overflowY: 'auto', border: '1px solid #E5E5E5', borderRadius: '4px' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                     <thead>
-                      <tr style={{ background: '#111', color: '#888' }}>
+                      <tr style={{ background: '#F7F7F7', color: '#666666' }}>
                         <th style={{ padding: '6px 10px', textAlign: 'left' }}>Booking #</th>
                         <th style={{ padding: '6px 10px', textAlign: 'left' }}>Blazer</th>
                         <th style={{ padding: '6px 10px', textAlign: 'left' }}>Dates</th>
@@ -269,10 +269,10 @@ export default function Customers() {
                     </thead>
                     <tbody>
                       {selectedCustomer.rentals.map(r => (
-                        <tr key={r.id} style={{ borderBottom: '1px solid #1a1a1a' }}>
-                          <td style={{ padding: '6px 10px', color: '#fff' }}>#{r.booking_number}</td>
-                          <td style={{ padding: '6px 10px', color: '#e5e5e5' }}>{r.product_name} ({r.size})</td>
-                          <td style={{ padding: '6px 10px', color: '#888' }}>
+                        <tr key={r.id} style={{ borderBottom: '1px solid #F0F0F0' }}>
+                          <td style={{ padding: '6px 10px', color: '#111111' }}>#{r.booking_number}</td>
+                          <td style={{ padding: '6px 10px', color: '#111111' }}>{r.product_name} ({r.size})</td>
+                          <td style={{ padding: '6px 10px', color: '#666666' }}>
                             {new Date(r.start_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} - {new Date(r.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                           </td>
                           <td style={{ padding: '6px 10px', textAlign: 'center' }}>

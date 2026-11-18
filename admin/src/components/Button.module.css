@@ -13,7 +13,7 @@
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 .button:disabled { opacity: 0.5; cursor: not-allowed; }
-.primary { background: var(--color-white); color: var(--color-black); }
-.primary:hover:not(:disabled) { background: var(--color-silver-light); }
-.outline { border-color: var(--color-silver); color: var(--color-white); background: transparent; }
-.outline:hover:not(:disabled) { background: var(--color-graphite); }
+.primary { background: #080808; color: #FFFFFF; }
+.primary:hover:not(:disabled) { background: #222222; }
+.outline { border-color: #E5E5E5; color: #111111; background: #FFFFFF; }
+.outline:hover:not(:disabled) { background: #F7F7F7; border-color: #111111; }

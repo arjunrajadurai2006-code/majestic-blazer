@@ -65,14 +65,14 @@ export default function Analytics() {
           <p className={styles.subtitle}>Comprehensive financial performance, garment velocity and rental telemetry</p>
         </div>
         <div className={styles.headerActions}>
-          <div style={{ display: 'flex', gap: '4px', background: '#1c1c1c', padding: '3px', borderRadius: '4px', border: '1px solid #333' }}>
+          <div style={{ display: 'flex', gap: '4px', background: '#F7F7F7', padding: '3px', borderRadius: '4px', border: '1px solid #E5E5E5' }}>
             {TIME_RANGES.map(t => (
               <button
                 key={t.value}
                 onClick={() => setRange(t.value)}
                 style={{
-                  background: range === t.value ? '#333' : 'transparent',
-                  color: range === t.value ? '#fff' : '#aaa',
+                  background: range === t.value ? '#111111' : 'transparent',
+                  color: range === t.value ? '#FFFFFF' : '#666666',
                   border: 'none',
                   padding: '6px 12px',
                   borderRadius: '2px',
@@ -146,16 +146,16 @@ export default function Analytics() {
                     <stop offset="95%" stopColor="#c0c0c0" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#252525" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#EFEFEF" />
                 <XAxis dataKey="date" stroke="#888" fontSize={12} />
                 <YAxis stroke="#888" fontSize={12} tickFormatter={(v) => `₹${v/1000}k`} />
                 <Tooltip
-                  contentStyle={{ background: '#151515', border: '1px solid #333', color: '#fff' }}
+                  contentStyle={{ background: '#FFFFFF', border: '1px solid #E5E5E5', color: '#111111', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                   formatter={(val) => [formatCurrency(val), '']}
                 />
                 <Legend />
-                <Area type="monotone" dataKey="sales" name="Purchase Sales" stroke="#ffffff" fillOpacity={1} fill="url(#salesGrad)" />
-                <Area type="monotone" dataKey="rentals" name="Rental Fees" stroke="#c0c0c0" fillOpacity={1} fill="url(#rentGrad)" />
+                <Area type="monotone" dataKey="sales" name="Purchase Sales" stroke="#111111" fillOpacity={1} fill="url(#salesGrad)" />
+                <Area type="monotone" dataKey="rentals" name="Rental Fees" stroke="#888888" fillOpacity={1} fill="url(#rentGrad)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -173,12 +173,12 @@ export default function Analytics() {
             <div style={{ height: 280, width: '100%' }}>
               <ResponsiveContainer>
                 <BarChart data={categories} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#252525" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#EFEFEF" />
                   <XAxis dataKey="name" stroke="#888" fontSize={11} />
                   <YAxis stroke="#888" fontSize={11} />
-                  <Tooltip contentStyle={{ background: '#151515', border: '1px solid #333', color: '#fff' }} />
+                  <Tooltip contentStyle={{ background: '#FFFFFF', border: '1px solid #E5E5E5', color: '#111111', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} />
                   <Legend />
-                  <Bar dataKey="products_count" name="Active Blazers" fill="#c0c0c0" />
+                  <Bar dataKey="products_count" name="Active Blazers" fill="#555555" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -193,7 +193,7 @@ export default function Analytics() {
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
               <thead>
-                <tr style={{ borderBottom: '1px solid #222', color: '#888', textAlign: 'left' }}>
+                <tr style={{ borderBottom: '1px solid #E5E5E5', color: '#666666', textAlign: 'left', background: '#F7F7F7' }}>
                   <th style={{ padding: '8px 10px' }}>Blazer</th>
                   <th style={{ padding: '8px 10px' }}>Category</th>
                   <th style={{ padding: '8px 10px', textAlign: 'center' }}>Sold</th>
@@ -203,10 +203,10 @@ export default function Analytics() {
               <tbody>
                 {topProducts.length > 0 ? (
                   topProducts.map(p => (
-                    <tr key={p.id} style={{ borderBottom: '1px solid #1a1a1a' }}>
-                      <td style={{ padding: '10px 10px', color: '#fff', fontWeight: 600 }}>{p.name}</td>
-                      <td style={{ padding: '10px 10px', color: '#aaa' }}>{p.category_name}</td>
-                      <td style={{ padding: '10px 10px', textAlign: 'center', color: '#e5e5e5' }}>{p.units_sold || 0}</td>
+                    <tr key={p.id} style={{ borderBottom: '1px solid #F0F0F0' }}>
+                      <td style={{ padding: '10px 10px', color: '#111111', fontWeight: 600 }}>{p.name}</td>
+                      <td style={{ padding: '10px 10px', color: '#666666' }}>{p.category_name}</td>
+                      <td style={{ padding: '10px 10px', textAlign: 'center', color: '#111111' }}>{p.units_sold || 0}</td>
                       <td style={{ padding: '10px 10px', textAlign: 'center', color: '#b99a58', fontWeight: 600 }}>{p.rental_count || 0}</td>
                     </tr>
                   ))
@@ -229,7 +229,7 @@ export default function Analytics() {
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid #222', color: '#888', textAlign: 'left' }}>
+              <tr style={{ borderBottom: '1px solid #E5E5E5', color: '#666666', textAlign: 'left', background: '#F7F7F7' }}>
                 <th style={{ padding: '8px 10px' }}>Blazer</th>
                 <th style={{ padding: '8px 10px' }}>SKU</th>
                 <th style={{ padding: '8px 10px' }}>Size</th>
@@ -241,11 +241,11 @@ export default function Analytics() {
             <tbody>
               {lowStock.length > 0 ? (
                 lowStock.map((it, idx) => (
-                  <tr key={idx} style={{ borderBottom: '1px solid #1a1a1a' }}>
-                    <td style={{ padding: '10px 10px', color: '#fff', fontWeight: 600 }}>{it.product_name}</td>
+                  <tr key={idx} style={{ borderBottom: '1px solid #F0F0F0' }}>
+                    <td style={{ padding: '10px 10px', color: '#111111', fontWeight: 600 }}>{it.product_name}</td>
                     <td style={{ padding: '10px 10px', color: '#b99a58' }}>{it.sku}</td>
-                    <td style={{ padding: '10px 10px', color: '#ccc' }}>{it.size}</td>
-                    <td style={{ padding: '10px 10px', textAlign: 'center', color: it.stock_quantity <= 1 ? '#ff4757' : '#fff' }}>
+                    <td style={{ padding: '10px 10px', color: '#555555' }}>{it.size}</td>
+                    <td style={{ padding: '10px 10px', textAlign: 'center', color: it.stock_quantity <= 1 ? '#d63031' : '#111111' }}>
                       {it.stock_quantity}
                     </td>
                     <td style={{ padding: '10px 10px', textAlign: 'center', color: it.rental_stock_quantity <= 1 ? '#ffab00' : '#b99a58' }}>

@@ -3,8 +3,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem var(--space-5);
-  background: var(--color-rich-black);
-  border-bottom: 1px solid var(--color-border);
+  background: var(--color-header-bg, #FFFFFF);
+  border-bottom: 1px solid var(--color-border, #E5E5E5);
   position: sticky;
   top: 0;
   z-index: 90;
@@ -25,11 +25,11 @@
   font-size: 0.74rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-silver);
-  background: var(--color-surface);
+  color: var(--color-text-secondary, #666666);
+  background: var(--color-secondary-bg, #F7F7F7);
   padding: 4px 10px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border, #E5E5E5);
 }
 
 .pulseDot {
@@ -51,20 +51,20 @@
   align-items: center;
   gap: 6px;
   font-size: 0.78rem;
-  color: var(--color-silver);
+  color: var(--color-text-primary, #111111);
   text-decoration: none;
   padding: 6px 12px;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border, #E5E5E5);
   border-radius: var(--radius-sm);
-  background: transparent;
+  background: var(--color-elevated, #FFFFFF);
   transition: all var(--transition-fast);
   letter-spacing: 0.04em;
 }
 
 .storefrontLink:hover {
-  color: var(--color-white);
-  border-color: var(--color-silver);
-  background: var(--color-surface);
+  color: #000000;
+  border-color: var(--color-text-primary, #111111);
+  background: var(--color-secondary-bg, #F7F7F7);
 }
 
 /* Account Dropdown Control */
@@ -77,32 +77,32 @@
   align-items: center;
   gap: 10px;
   padding: 5px 12px 5px 6px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--color-secondary-bg, #F7F7F7);
+  border: 1px solid var(--color-border, #E5E5E5);
   border-radius: 9999px;
-  color: var(--color-white);
+  color: var(--color-text-primary, #111111);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .accountButton:hover,
 .accountButtonOpen {
-  border-color: var(--color-silver);
-  background: #252525;
+  border-color: var(--color-text-primary, #111111);
+  background: #EAEAEA;
 }
 
 .avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2a2a2a 0%, #151515 100%);
-  border: 1px solid var(--color-silver);
+  background: #080808;
+  border: 1px solid #333333;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.78rem;
   font-weight: 700;
-  color: var(--color-white);
+  color: #FFFFFF;
   letter-spacing: 0.05em;
 }
 
@@ -116,12 +116,12 @@
 .accountName {
   font-size: 0.82rem;
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--color-text-primary, #111111);
 }
 
 .accountRole {
   font-size: 0.68rem;
-  color: var(--color-silver);
+  color: var(--color-text-secondary, #666666);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -132,10 +132,10 @@
   top: calc(100% + 8px);
   right: 0;
   width: 250px;
-  background: #141414;
-  border: 1px solid var(--color-border);
+  background: var(--color-elevated, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
   border-radius: var(--radius-sm);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   padding: 8px 0;
   z-index: 1000;
   animation: fadeIn 0.15s ease-out;
@@ -148,19 +148,19 @@
 
 .menuHeader {
   padding: 10px 16px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border, #E5E5E5);
   margin-bottom: 4px;
 }
 
 .menuHeaderName {
   font-weight: 600;
   font-size: 0.88rem;
-  color: var(--color-white);
+  color: var(--color-text-primary, #111111);
 }
 
 .menuHeaderEmail {
   font-size: 0.74rem;
-  color: var(--color-muted);
+  color: var(--color-text-secondary, #666666);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -173,12 +173,12 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #b99a58;
-  background: rgba(185, 154, 88, 0.1);
+  color: var(--color-text-primary, #111111);
+  background: var(--color-secondary-bg, #F7F7F7);
   padding: 2px 6px;
   border-radius: 2px;
   margin-top: 6px;
-  border: 1px solid rgba(185, 154, 88, 0.25);
+  border: 1px solid var(--color-border, #E5E5E5);
 }
 
 .menuItem {
@@ -189,7 +189,7 @@
   padding: 9px 16px;
   background: transparent;
   border: none;
-  color: var(--color-silver);
+  color: var(--color-text-secondary, #666666);
   font-size: 0.82rem;
   text-decoration: none;
   cursor: pointer;
@@ -198,30 +198,30 @@
 }
 
 .menuItem:hover {
-  background: var(--color-surface);
-  color: var(--color-white);
+  background: var(--color-secondary-bg, #F7F7F7);
+  color: var(--color-text-primary, #111111);
 }
 
 .menuDivider {
   height: 1px;
-  background: var(--color-border);
+  background: var(--color-border, #E5E5E5);
   margin: 6px 0;
 }
 
 .signOutItem {
-  color: #ff6b6b;
+  color: #e02424;
 }
 
 .signOutItem:hover {
-  background: rgba(255, 107, 107, 0.1);
-  color: #ff5252;
+  background: rgba(224, 36, 36, 0.08);
+  color: #b91c1c;
 }
 
 /* Confirmation Modal */
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -232,13 +232,13 @@
 }
 
 .modalCard {
-  background: #141414;
-  border: 1px solid #333;
+  background: var(--color-elevated, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
   border-radius: var(--radius-sm);
   padding: 1.75rem;
   max-width: 440px;
   width: 100%;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
 .modalHeader {
@@ -263,13 +263,13 @@
 .modalTitle {
   font-family: var(--font-display);
   font-size: 1.25rem;
-  color: var(--color-white);
+  color: var(--color-text-primary, #111111);
   margin: 0;
 }
 
 .modalBody {
   font-size: 0.88rem;
-  color: #aaa;
+  color: var(--color-text-secondary, #666666);
   line-height: 1.5;
   margin-bottom: 1.5rem;
 }
@@ -282,9 +282,9 @@
 
 .modalCancelBtn {
   padding: 0.6rem 1.2rem;
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-silver);
+  background: var(--color-secondary-bg, #F7F7F7);
+  border: 1px solid var(--color-border, #E5E5E5);
+  color: var(--color-text-primary, #111111);
   border-radius: var(--radius-sm);
   font-size: 0.85rem;
   cursor: pointer;
@@ -292,8 +292,8 @@
 }
 
 .modalCancelBtn:hover {
-  background: var(--color-surface);
-  color: var(--color-white);
+  background: #EAEAEA;
+  color: #000000;
 }
 
 .modalSignOutBtn {

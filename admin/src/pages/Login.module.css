@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MAJESTIC BLAZER ADMIN — LUXURY BLACK & SILVER AUTHENTICATION STYLES
+   MAJESTIC BLAZER ADMIN — LUXURY BLACK & WHITE AUTHENTICATION STYLES
    ========================================================================== */
 
 /* Admin Login Page Wrapper */
@@ -9,20 +9,19 @@
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  background-color: var(--color-obsidian, #080808);
-  background-image: radial-gradient(circle at 50% 25%, rgba(32, 32, 32, 0.45) 0%, rgba(8, 8, 8, 0.98) 75%);
+  background-color: var(--color-secondary-bg, #F7F7F7);
   box-sizing: border-box;
 }
 
-/* Centered Dark Login Card */
+/* Centered White Login Card */
 .card {
   width: 100%;
   max-width: 460px;
-  background: var(--color-rich-black, #101010);
-  border: 1px solid var(--color-border, #282828);
+  background: var(--color-elevated, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E5E5);
   border-radius: var(--radius-sm, 3px);
   padding: 42px 36px 36px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 1px rgba(192, 192, 192, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -57,7 +56,7 @@
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-silver, #888888);
+  color: var(--color-text-secondary, #666666);
 }
 
 /* ==========================================================================
@@ -68,8 +67,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4px;
-  background: #181818;
-  border: 1px solid #282828;
+  background: var(--color-secondary-bg, #F7F7F7);
+  border: 1px solid var(--color-border, #E5E5E5);
   border-radius: 4px;
   padding: 4px;
   margin-bottom: 22px;
@@ -86,19 +85,19 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  color: #777777;
+  color: var(--color-text-secondary, #666666);
   user-select: none;
 }
 
 .segmentBtn:hover:not(.segmentActive) {
-  color: #b0b0b0;
-  background: rgba(255, 255, 255, 0.02);
+  color: var(--color-text-primary, #111111);
+  background: #EFEFEF;
 }
 
 .segmentActive {
-  background: #252525;
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  background: #FFFFFF;
+  color: #111111;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 0 0 1px #E5E5E5;
 }
 
 .segmentTitle {
@@ -113,13 +112,13 @@
 .segmentDesc {
   font-family: var(--font-body, 'Inter', sans-serif);
   font-size: 0.64rem;
-  color: #707070;
+  color: #888888;
   letter-spacing: 0.03em;
   transition: color 0.2s ease;
 }
 
 .segmentActive .segmentDesc {
-  color: #b8b8b8;
+  color: #666666;
 }
 
 /* Heading & Subtitle */
@@ -131,7 +130,7 @@
 .title {
   font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
   font-size: clamp(1.6rem, 3vw, 1.95rem);
-  color: #ffffff;
+  color: var(--color-text-primary, #111111);
   margin: 0 0 6px;
   font-weight: 400;
   letter-spacing: 0.02em;
@@ -141,7 +140,7 @@
 
 .subtitle {
   font-family: var(--font-body, 'Inter', sans-serif);
-  color: #7d7d7d;
+  color: var(--color-text-secondary, #666666);
   font-size: 0.82rem;
   line-height: 1.5;
   margin: 0 auto;
@@ -153,11 +152,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(46, 213, 115, 0.08);
-  border: 1px solid rgba(46, 213, 115, 0.25);
+  background: rgba(46, 213, 115, 0.1);
+  border: 1px solid rgba(46, 213, 115, 0.3);
   border-radius: 3px;
   padding: 10px 14px;
-  color: #2ed573;
+  color: #1e824c;
   font-size: 0.82rem;
   margin-bottom: 16px;
   animation: fadeIn 0.2s ease;
@@ -167,11 +166,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 107, 107, 0.08);
-  border: 1px solid rgba(255, 107, 107, 0.28);
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
   border-radius: 3px;
   padding: 10px 14px;
-  color: #ff6b6b;
+  color: #d63031;
   font-size: 0.82rem;
   margin-bottom: 16px;
   animation: fadeIn 0.2s ease;
@@ -200,7 +199,7 @@
   width: 100%;
 }
 
-/* Platinum Form Labels */
+/* Form Labels */
 .fieldLabel {
   display: flex;
   flex-direction: column;
@@ -210,16 +209,16 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-platinum, #a0a0a0);
+  color: var(--color-text-primary, #111111);
   user-select: none;
 }
 
-/* Dark Input Fields */
+/* Light Input Fields */
 .input {
   height: 46px;
-  background-color: #1a1a1a !important;
-  color: #F5F5F5 !important;
-  border: 1px solid #2e2e2e !important;
+  background-color: #FFFFFF !important;
+  color: #111111 !important;
+  border: 1px solid #E5E5E5 !important;
   border-radius: 3px;
   padding: 0 14px;
   font-family: var(--font-body, 'Inter', sans-serif);
@@ -227,18 +226,18 @@
   outline: none;
   box-sizing: border-box;
   width: 100%;
-  color-scheme: dark;
+  color-scheme: light;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input::placeholder {
-  color: #656565 !important;
+  color: #999999 !important;
   opacity: 1;
 }
 
 .input:focus {
-  border-color: #888888 !important;
-  box-shadow: 0 0 0 1px #888888, 0 0 12px rgba(192, 192, 192, 0.12) !important;
+  border-color: #111111 !important;
+  box-shadow: 0 0 0 1px #111111 !important;
 }
 
 /* Primary Sign-In Button */
@@ -246,9 +245,9 @@
   margin-top: 4px;
   height: 46px;
   width: 100%;
-  background: linear-gradient(180deg, #2d2d2d 0%, #1e1e1e 100%);
+  background: #080808;
   color: #ffffff !important;
-  border: 1px solid #484848 !important;
+  border: 1px solid #080808 !important;
   border-radius: 3px;
   font-family: var(--font-body, 'Inter', sans-serif);
   font-size: 0.8rem;
@@ -259,15 +258,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease;
   box-sizing: border-box;
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: linear-gradient(180deg, #3c3c3c 0%, #282828 100%);
-  border-color: #777777 !important;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+  background: #222222;
+  border-color: #222222 !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
   transform: translateY(-1px);
 }
 
@@ -291,10 +290,10 @@
 
 .demoActionBtn {
   height: 38px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #F7F7F7;
+  border: 1px solid #E5E5E5;
   border-radius: 3px;
-  color: #b5b5b5;
+  color: #444444;
   font-family: var(--font-body, 'Inter', sans-serif);
   font-size: 0.74rem;
   font-weight: 500;
@@ -308,9 +307,9 @@
 }
 
 .demoActionBtn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
+  background: #EFEFEF;
+  border-color: #D5D5D5;
+  color: #111111;
 }
 
 .demoActionBtn:disabled {
@@ -323,12 +322,12 @@
   text-align: center;
   font-family: var(--font-body, 'Inter', sans-serif);
   font-size: 0.78rem;
-  color: #777777;
+  color: #666666;
   margin: 6px 0 0;
 }
 
 .altLink {
-  color: #C0C0C0;
+  color: #111111;
   text-decoration: underline;
   text-underline-offset: 3px;
   font-weight: 500;
@@ -336,7 +335,7 @@
 }
 
 .altLink:hover {
-  color: #ffffff;
+  color: #000000;
 }
 
 /* Security & Storefront Link Footer */
@@ -345,7 +344,7 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  border-top: 1px solid #222222;
+  border-top: 1px solid #E5E5E5;
   margin-top: 20px;
   padding-top: 18px;
   text-align: center;
@@ -355,19 +354,19 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #666666;
+  color: #888888;
   font-size: 0.67rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .lockIcon {
-  color: #777777;
+  color: #888888;
   flex-shrink: 0;
 }
 
 .storefrontLink {
-  color: var(--color-silver, #999999);
+  color: #666666;
   font-size: 0.78rem;
   text-decoration: none;
   letter-spacing: 0.03em;
@@ -375,7 +374,7 @@
 }
 
 .storefrontLink:hover {
-  color: #FFFFFF;
+  color: #111111;
 }
 
 /* Mobile Responsiveness */

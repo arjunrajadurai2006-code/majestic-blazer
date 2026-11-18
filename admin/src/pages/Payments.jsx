@@ -112,26 +112,26 @@ export default function Payments() {
               payments.map(p => (
                 <tr key={p.id}>
                   <td>
-                    <strong style={{ color: '#fff' }}>#{p.id}</strong>
+                    <strong style={{ color: '#111111' }}>#{p.id}</strong>
                   </td>
                   <td>
                     {p.order_number && (
                       <div>
                         <span className={`${styles.badge} ${styles.badgeDefault}`}>Purchase</span>
-                        <div style={{ fontSize: '0.8rem', color: '#ccc', marginTop: '2px' }}>Order #{p.order_number}</div>
+                        <div style={{ fontSize: '0.8rem', color: '#666666', marginTop: '2px' }}>Order #{p.order_number}</div>
                       </div>
                     )}
                     {p.booking_number && (
                       <div>
                         <span className={`${styles.badge} ${styles.badgeInfo}`}>Rental</span>
-                        <div style={{ fontSize: '0.8rem', color: '#ccc', marginTop: '2px' }}>Booking #{p.booking_number}</div>
+                        <div style={{ fontSize: '0.8rem', color: '#666666', marginTop: '2px' }}>Booking #{p.booking_number}</div>
                       </div>
                     )}
-                    {!p.order_number && !p.booking_number && <span style={{ color: '#888' }}>Direct</span>}
+                    {!p.order_number && !p.booking_number && <span style={{ color: '#666666' }}>Direct</span>}
                   </td>
                   <td>
-                    <div style={{ fontWeight: 500, color: '#e5e5e5' }}>{p.customer_name || 'Client'}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#888' }}>{p.customer_email}</div>
+                    <div style={{ fontWeight: 500, color: '#111111' }}>{p.customer_name || 'Client'}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#666666' }}>{p.customer_email}</div>
                   </td>
                   <td>
                     <span style={{ textTransform: 'uppercase', fontSize: '0.8rem', color: '#b99a58' }}>
@@ -139,12 +139,12 @@ export default function Payments() {
                     </span>
                   </td>
                   <td>
-                    <div style={{ fontSize: '0.75rem', color: '#aaa', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#666666', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {p.provider_payment_id || p.provider_order_id || '—'}
                     </div>
                   </td>
                   <td>
-                    <strong style={{ color: '#fff', fontSize: '0.95rem' }}>{formatCurrency(p.amount)}</strong>
+                    <strong style={{ color: '#111111', fontSize: '0.95rem' }}>{formatCurrency(p.amount)}</strong>
                     {Number(p.refund_amount) > 0 && (
                       <div style={{ fontSize: '0.75rem', color: '#3498db' }}>
                         Refunded: {formatCurrency(p.refund_amount)}

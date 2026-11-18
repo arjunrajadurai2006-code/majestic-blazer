@@ -94,7 +94,7 @@ export default function Invoices() {
                 return (
                   <tr key={inv.id}>
                     <td>
-                      <strong style={{ color: '#fff', letterSpacing: '0.05em' }}>
+                      <strong style={{ color: '#111111', letterSpacing: '0.05em' }}>
                         {inv.invoice_number}
                       </strong>
                     </td>
@@ -105,13 +105,13 @@ export default function Invoices() {
                         <span className={`${styles.badge} ${styles.badgeDefault}`}>Purchase</span>
                       )}
                     </td>
-                    <td style={{ color: '#ccc', fontSize: '0.85rem' }}>
+                    <td style={{ color: '#666666', fontSize: '0.85rem' }}>
                       {inv.order_number ? `#${inv.order_number}` : inv.booking_number ? `#${inv.booking_number}` : '—'}
                     </td>
                     <td>
-                      <span style={{ fontWeight: 500, color: '#e5e5e5' }}>{inv.customer_name || 'Client'}</span>
+                      <span style={{ fontWeight: 500, color: '#111111' }}>{inv.customer_name || 'Client'}</span>
                     </td>
-                    <td style={{ color: '#888', fontSize: '0.85rem' }}>
+                    <td style={{ color: '#666666', fontSize: '0.85rem' }}>
                       {new Date(inv.issued_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
                     <td>{formatCurrency(inv.subtotal_amount)}</td>
@@ -121,12 +121,12 @@ export default function Invoices() {
                           {formatCurrency(inv.deposit_amount)}
                         </span>
                       ) : (
-                        <span style={{ color: '#666' }}>—</span>
+                        <span style={{ color: '#888888' }}>—</span>
                       )}
                     </td>
                     <td>{formatCurrency(inv.tax_amount)}</td>
                     <td>
-                      <strong style={{ color: '#fff', fontSize: '0.95rem' }}>
+                      <strong style={{ color: '#111111', fontSize: '0.95rem' }}>
                         {formatCurrency(inv.total_amount)}
                       </strong>
                     </td>

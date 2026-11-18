@@ -206,7 +206,7 @@ export default function RentalBookings() {
               rentals.map(r => (
                 <tr key={r.id}>
                   <td>
-                    <strong style={{ color: '#fff', letterSpacing: '0.05em' }}>
+                    <strong style={{ color: '#111111', letterSpacing: '0.05em' }}>
                       #{r.booking_number || r.id}
                     </strong>
                     {r.invoice_number && (
@@ -216,31 +216,31 @@ export default function RentalBookings() {
                     )}
                   </td>
                   <td>
-                    <div style={{ fontWeight: 600, color: '#fff' }}>{r.product_name}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#aaa' }}>Size: {r.size}</div>
+                    <div style={{ fontWeight: 600, color: '#111111' }}>{r.product_name}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#666666' }}>Size: {r.size}</div>
                   </td>
                   <td>
-                    <div style={{ fontWeight: 500, color: '#e5e5e5' }}>{r.customer_name || 'Client'}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#888' }}>{r.customer_phone || r.customer_email}</div>
+                    <div style={{ fontWeight: 500, color: '#111111' }}>{r.customer_name || 'Client'}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#666666' }}>{r.customer_phone || r.customer_email}</div>
                   </td>
                   <td>
-                    <div style={{ fontSize: '0.85rem', color: '#ccc' }}>
+                    <div style={{ fontSize: '0.85rem', color: '#555555' }}>
                       {new Date(r.start_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} &rarr;{' '}
                       {new Date(r.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#888' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#666666' }}>
                       {r.rental_days || r.duration_days || 1} Days Duration
                     </div>
                   </td>
                   <td>
-                    <strong style={{ color: '#fff' }}>{formatCurrency(r.rent_amount || r.rental_fee)}</strong>
+                    <strong style={{ color: '#111111' }}>{formatCurrency(r.rent_amount || r.rental_fee)}</strong>
                   </td>
                   <td>
                     <span style={{ color: '#b99a58', fontWeight: 600 }}>
                       {formatCurrency(r.deposit_amount || r.security_deposit)}
                     </span>
                     {r.deposit_refund_status && (
-                      <div style={{ fontSize: '0.75rem', color: '#888' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#666666' }}>
                         {r.deposit_refund_status}
                       </div>
                     )}
@@ -322,27 +322,27 @@ export default function RentalBookings() {
             </div>
 
             <form onSubmit={handleProcessReturn}>
-              <div style={{ background: '#0e0e0e', padding: '1rem', borderRadius: '4px', border: '1px solid #222', marginBottom: '1.25rem' }}>
+              <div style={{ background: '#F7F7F7', padding: '1rem', borderRadius: '4px', border: '1px solid #E5E5E5', marginBottom: '1.25rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '0.85rem' }}>
                   <div>
-                    <span style={{ color: '#888', display: 'block' }}>Patron:</span>
-                    <strong style={{ color: '#fff' }}>{returnModalBooking.customer_name}</strong>
+                    <span style={{ color: '#666666', display: 'block' }}>Patron:</span>
+                    <strong style={{ color: '#111111' }}>{returnModalBooking.customer_name}</strong>
                   </div>
                   <div>
-                    <span style={{ color: '#888', display: 'block' }}>Scheduled Return Date:</span>
-                    <strong style={{ color: '#fff' }}>
+                    <span style={{ color: '#666666', display: 'block' }}>Scheduled Return Date:</span>
+                    <strong style={{ color: '#111111' }}>
                       {new Date(returnModalBooking.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </strong>
                   </div>
                   <div>
-                    <span style={{ color: '#888', display: 'block' }}>Security Deposit Held:</span>
+                    <span style={{ color: '#666666', display: 'block' }}>Security Deposit Held:</span>
                     <strong style={{ color: '#b99a58', fontSize: '1.1rem' }}>
                       {formatCurrency(returnModalBooking.deposit_amount || returnModalBooking.security_deposit)}
                     </strong>
                   </div>
                   <div>
-                    <span style={{ color: '#888', display: 'block' }}>Rental Charge Paid:</span>
-                    <strong style={{ color: '#fff' }}>
+                    <span style={{ color: '#666666', display: 'block' }}>Rental Charge Paid:</span>
+                    <strong style={{ color: '#111111' }}>
                       {formatCurrency(returnModalBooking.rent_amount || returnModalBooking.rental_fee)}
                     </strong>
                   </div>
@@ -403,17 +403,17 @@ export default function RentalBookings() {
                 </div>
 
                 {/* Refund Balance Calculation Box */}
-                <div className={`${styles.formGroup} ${styles.formFull}`} style={{ background: '#161616', padding: '1rem', borderRadius: '4px', border: '1px solid #333' }}>
+                <div className={`${styles.formGroup} ${styles.formFull}`} style={{ background: '#F7F7F7', padding: '1rem', borderRadius: '4px', border: '1px solid #E5E5E5' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                      <span style={{ fontSize: '0.8rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      <span style={{ fontSize: '0.8rem', color: '#666666', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                         Refund Payable to Patron
                       </span>
-                      <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#2ed573', marginTop: '2px' }}>
+                      <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#1e824c', marginTop: '2px' }}>
                         {formatCurrency(calculateDepositRefund())}
                       </div>
                     </div>
-                    <div style={{ fontSize: '0.8rem', color: '#888', textAlign: 'right' }}>
+                    <div style={{ fontSize: '0.8rem', color: '#666666', textAlign: 'right' }}>
                       Deposit ({formatCurrency(returnModalBooking.security_deposit)})<br />
                       - Deductions ({formatCurrency((Number(damageFee) || 0) + (Number(lateFee) || 0))})
                     </div>

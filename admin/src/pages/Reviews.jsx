@@ -186,30 +186,30 @@ export default function Reviews() {
               filteredReviews.map((r) => (
                 <tr key={r.id}>
                   <td>
-                    <strong style={{ color: '#ffffff' }}>{r.product_name}</strong>
+                    <strong style={{ color: '#111111' }}>{r.product_name}</strong>
                     {r.product_slug && (
-                      <div style={{ fontSize: '0.75rem', color: '#888' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#666666' }}>
                         {r.product_slug}
                       </div>
                     )}
                   </td>
                   <td>
-                    <div style={{ fontWeight: 600, color: '#e5e5e5' }}>{r.user_name || 'Client'}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#888' }}>{r.user_email}</div>
+                    <div style={{ fontWeight: 600, color: '#111111' }}>{r.user_name || 'Client'}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#666666' }}>{r.user_email}</div>
                   </td>
                   <td>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                       {renderStars(r.rating)}
-                      <span style={{ fontSize: '0.75rem', color: '#aaa', fontWeight: 600 }}>{r.rating} / 5</span>
+                      <span style={{ fontSize: '0.75rem', color: '#666666', fontWeight: 600 }}>{r.rating} / 5</span>
                     </div>
                   </td>
                   <td style={{ maxWidth: '340px' }}>
                     {r.title && (
-                      <div style={{ fontWeight: 600, color: '#fff', marginBottom: '2px', fontSize: '0.85rem' }}>
+                      <div style={{ fontWeight: 600, color: '#111111', marginBottom: '2px', fontSize: '0.85rem' }}>
                         &ldquo;{r.title}&rdquo;
                       </div>
                     )}
-                    <div style={{ fontSize: '0.82rem', color: '#bbb', lineHeight: '1.4' }}>
+                    <div style={{ fontSize: '0.82rem', color: '#333333', lineHeight: '1.4' }}>
                       {r.comment}
                     </div>
                   </td>
@@ -218,7 +218,7 @@ export default function Reviews() {
                       {r.is_approved ? 'Approved' : 'Pending Review'}
                     </span>
                   </td>
-                  <td style={{ color: '#888', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+                  <td style={{ color: '#666666', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
                     {new Date(r.created_at).toLocaleDateString('en-IN', {
                       day: 'numeric',
                       month: 'short',
