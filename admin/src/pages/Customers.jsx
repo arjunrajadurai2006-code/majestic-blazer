@@ -79,7 +79,7 @@ export default function Customers() {
       <div className={styles.pageHeader}>
         <div>
           <h1>Patron Registry & Client Relations</h1>
-          <p className={styles.subtitle}>Directory of registered luxury clients, purchase profiles and rental records</p>
+          <p className={styles.subtitle}>Directory of registered luxury clients and purchase profiles</p>
         </div>
       </div>
 
@@ -110,7 +110,6 @@ export default function Customers() {
               <th>Contact Details</th>
               <th>Joined Date</th>
               <th>Orders</th>
-              <th>Rentals</th>
               <th>Role</th>
               <th>Status</th>
               <th>Actions</th>
@@ -134,11 +133,6 @@ export default function Customers() {
                   <td>
                     <span className={`${styles.badge} ${styles.badgeDefault}`}>
                       {c.orders_count || 0} Orders
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`${styles.badge} ${styles.badgeInfo}`}>
-                      {c.rentals_count || 0} Rentals
                     </span>
                   </td>
                   <td>
@@ -249,49 +243,12 @@ export default function Customers() {
               ) : (
                 <div style={{ fontSize: '0.85rem', color: '#666666', padding: '0.5rem 0' }}>No purchase transactions yet.</div>
               )}
-            </div>
-
-            {/* Rentals History */}
-            <div>
-              <h3 style={{ fontSize: '1rem', color: '#111111', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Calendar size={16} color="#b99a58" /> Blazer Rentals ({(selectedCustomer.rentals || []).length})
-              </h3>
-              {(selectedCustomer.rentals || []).length > 0 ? (
-                <div style={{ maxHeight: '180px', overflowY: 'auto', border: '1px solid #E5E5E5', borderRadius: '4px' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-                    <thead>
-                      <tr style={{ background: '#F7F7F7', color: '#666666' }}>
-                        <th style={{ padding: '6px 10px', textAlign: 'left' }}>Booking #</th>
-                        <th style={{ padding: '6px 10px', textAlign: 'left' }}>Blazer</th>
-                        <th style={{ padding: '6px 10px', textAlign: 'left' }}>Dates</th>
-                        <th style={{ padding: '6px 10px', textAlign: 'center' }}>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedCustomer.rentals.map(r => (
-                        <tr key={r.id} style={{ borderBottom: '1px solid #F0F0F0' }}>
-                          <td style={{ padding: '6px 10px', color: '#111111' }}>#{r.booking_number}</td>
-                          <td style={{ padding: '6px 10px', color: '#111111' }}>{r.product_name} ({r.size})</td>
-                          <td style={{ padding: '6px 10px', color: '#666666' }}>
-                            {new Date(r.start_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} - {new Date(r.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-                          </td>
-                          <td style={{ padding: '6px 10px', textAlign: 'center' }}>
-                            <span className={`${styles.badge} ${styles.badgeInfo}`}>{r.status}</span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div style={{ fontSize: '0.85rem', color: '#888', padding: '0.5rem 0' }}>No rental bookings recorded yet.</div>
-              )}
-            </div>
-
-            <div className={styles.modalFooter}>
-              <button type="button" className={styles.btnSecondary} onClick={() => setSelectedCustomer(null)}>
-                Close Dossier
-              </button>
+              {/* Close Button */}
+              <div className={styles.modalFooter} style={{ marginTop: '1.5rem' }}>
+                <button type="button" className={styles.btnSecondary} onClick={() => setSelectedCustomer(null)}>
+                  Close Dossier
+                </button>
+              </div>
             </div>
           </div>
         </div>

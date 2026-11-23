@@ -2,12 +2,16 @@ import { useState, useEffect } from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { ShieldCheck, UserCheck, AlertCircle, CheckCircle2, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useSettings } from '../context/SettingsContext';
 import { api } from '../services/api';
 import logo from '../assets/majestic-blazer-logo.jpeg';
 import styles from './Login.module.css';
 
 export default function Login() {
   const { admin, login, demoAdminLogin, customerLogin, demoCustomerLogin } = useAuth();
+  const { settings } = useSettings();
+  const brandTagline = settings?.brand_tagline || 'Style That Speaks';
+  const storeName = settings?.store_name || 'Majestic Blazer';
   const navigate = useNavigate();
   const location = useLocation();
   const logoutMessage = location.state?.message;
@@ -128,9 +132,9 @@ export default function Login() {
         {/* Brand Header */}
         <div className={styles.header}>
           <div className={styles.logoWrap}>
-            <img src={logo} alt="Majestic Blazer: Style that speaks" className={styles.logo} />
+            <img src={logo} alt={`${storeName}: ${brandTagline}`} className={styles.logo} />
           </div>
-          <span className={styles.eyebrow}>STYLE THAT SPEAKS</span>
+          <span className={styles.eyebrow}>{brandTagline.toUpperCase()}</span>
         </div>
 
         {/* Unified Role Segmented Control */}
@@ -143,7 +147,7 @@ export default function Login() {
             onClick={() => setActiveRole('customer')}
           >
             <span className={styles.segmentTitle}>CUSTOMER</span>
-            <span className={styles.segmentDesc}>Shopping &amp; Rentals</span>
+            <span className={styles.segmentDesc}>Bespoke Menswear</span>
           </button>
           <button
             type="button"
@@ -165,7 +169,7 @@ export default function Login() {
           <p className={styles.subtitle}>
             {activeRole === 'admin'
               ? 'Atelier Operations Console • Secure Management Gateway'
-              : 'Sign in to access your orders, active rentals and saved preferences.'}
+              : 'Sign in to access your orders, saved pieces and preferences.'}
           </p>
         </div>
 

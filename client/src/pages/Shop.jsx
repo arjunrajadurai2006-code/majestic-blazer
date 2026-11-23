@@ -21,7 +21,6 @@ export default function Shop() {
 
   // Filter states derived from search params
   const currentCategory = searchParams.get('category') || '';
-  const currentType = searchParams.get('type') || ''; // 'buy' | 'rent' | ''
   const currentSearch = searchParams.get('search') || '';
   const currentColor = searchParams.get('color') || '';
   const currentSize = searchParams.get('size') || '';
@@ -42,7 +41,6 @@ export default function Shop() {
       try {
         const query = new URLSearchParams();
         if (currentCategory) query.set('category', currentCategory);
-        if (currentType) query.set('type', currentType);
         if (currentSearch) query.set('search', currentSearch);
         if (currentColor) query.set('color', currentColor);
         if (currentSize) query.set('size', currentSize);
@@ -80,7 +78,7 @@ export default function Shop() {
   };
 
   const hasActiveFilters = Boolean(
-    currentCategory || currentType || currentSearch || currentColor || currentSize || currentMinPrice || currentMaxPrice
+    currentCategory || currentSearch || currentColor || currentSize || currentMinPrice || currentMaxPrice
   );
 
   return (
@@ -92,7 +90,7 @@ export default function Shop() {
           <h1>Tailored Blazers</h1>
           <p className={styles.subtitle}>
             Explore our curated inventory of hand-canvassed formal blazers, midnight velvets, and black-tie tuxedos.
-            Available for purchase or premium occasion rental.
+            Available for purchase with complimentary bespoke alterations.
           </p>
         </div>
       </div>
@@ -113,6 +111,7 @@ export default function Shop() {
               value={currentSort}
               onChange={(e) => updateParam('sort', e.target.value)}
               className={styles.sortSelect}
+              aria-label="Sort blazers"
             >
               <option value="newest">Sort: Newest</option>
               <option value="price_asc">Price: Low to High</option>
@@ -139,40 +138,6 @@ export default function Shop() {
               >
                 <X size={20} />
               </button>
-            </div>
-
-            {/* Availability Option */}
-            <div className={styles.filterGroup}>
-              <h4>Availability</h4>
-              <div className={styles.radioList}>
-                <label className={styles.radioLabel}>
-                  <input
-                    type="radio"
-                    name="type"
-                    checked={!currentType}
-                    onChange={() => updateParam('type', '')}
-                  />
-                  <span>All Blazers</span>
-                </label>
-                <label className={styles.radioLabel}>
-                  <input
-                    type="radio"
-                    name="type"
-                    checked={currentType === 'buy'}
-                    onChange={() => updateParam('type', 'buy')}
-                  />
-                  <span>Buy to Own</span>
-                </label>
-                <label className={styles.radioLabel}>
-                  <input
-                    type="radio"
-                    name="type"
-                    checked={currentType === 'rent'}
-                    onChange={() => updateParam('type', 'rent')}
-                  />
-                  <span>Rent for Occasion</span>
-                </label>
-              </div>
             </div>
 
             {/* Categories */}
@@ -283,7 +248,6 @@ export default function Shop() {
                   <option value="newest">Newest Additions</option>
                   <option value="price_asc">Price: Low to High</option>
                   <option value="price_desc">Price: High to Low</option>
-                  <option value="rent_asc">Rental: Low to High</option>
                   <option value="rating">Top Rated</option>
                 </select>
               </div>
@@ -292,12 +256,6 @@ export default function Shop() {
             {/* Active filter badges */}
             {hasActiveFilters && (
               <div className={styles.activePills}>
-                {currentType && (
-                  <span className={styles.pill}>
-                    Type: {currentType === 'buy' ? 'Buy' : 'Rent'}
-                    <button onClick={() => updateParam('type', '')}>×</button>
-                  </span>
-                )}
                 {currentCategory && (
                   <span className={styles.pill}>
                     Category: {categories.find((c) => c.slug === currentCategory)?.name || currentCategory}

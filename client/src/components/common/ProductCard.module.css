@@ -306,3 +306,26 @@
     height: 32px;
   }
 }
+
+@media (max-width: 360px) {
+  .body {
+    padding: 12px 10px;
+  }
+
+  .title {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+  }
+
+  .price {
+    font-size: 0.95rem;
+  }
+
+  .rentAmount {
+    font-size: 0.92rem;
+  }
+
+  .category {
+    font-size: 0.65rem;
+  }
+}

@@ -5,6 +5,15 @@ import styles from '../styles/adminShared.module.css';
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled', 'refunded'];
 
+const PERMITTED_STATUS_TRANSITIONS = {
+  pending: ['pending', 'confirmed', 'cancelled'],
+  confirmed: ['confirmed', 'shipped', 'delivered', 'cancelled', 'refunded'],
+  shipped: ['shipped', 'delivered', 'cancelled', 'refunded'],
+  delivered: ['delivered', 'refunded'],
+  cancelled: ['cancelled'],
+  refunded: ['refunded'],
+};
+
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,6 +27,7 @@ export default function Orders() {
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [statusToUpdate, setStatusToUpdate] = useState('');
   const [trackingNumber, setTrackingNumber] = useState('');
+  const [restockShipped, setRestockShipped] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
 
   const loadOrders = async () => {
@@ -54,6 +64,7 @@ export default function Orders() {
       setSelectedOrder(res.data);
       setStatusToUpdate(res.data.status);
       setTrackingNumber(res.data.tracking_number || '');
+      setRestockShipped(false);
     } catch (err) {
       setError(err.message || 'Failed to load order details');
     } finally {
@@ -72,6 +83,7 @@ export default function Orders() {
       await api.patch(`/orders/${selectedOrder.id}/status`, {
         status: statusToUpdate,
         trackingNumber: trackingNumber.trim() || null,
+        restock: restockShipped,
       });
       setSuccess(`Order #${selectedOrder.order_number} status updated to ${statusToUpdate}`);
       setSelectedOrder(prev => ({ ...prev, status: statusToUpdate, tracking_number: trackingNumber }));
@@ -80,6 +92,21 @@ export default function Orders() {
       setError(err.message || 'Failed to update order status');
     } finally {
       setUpdatingStatus(false);
+    }
+  };
+
+  const handleCollectCod = async () => {
+    if (!selectedOrder?.payment?.id) return;
+    try {
+      setError('');
+      setSuccess('');
+      await api.post(`/payments/${selectedOrder.payment.id}/collect-cod`);
+      setSuccess(`COD payment for order #${selectedOrder.order_number} marked as collected and paid.`);
+      const res = await api.get(`/orders/${selectedOrder.id}`);
+      setSelectedOrder(res.data);
+      loadOrders();
+    } catch (err) {
+      setError(err.message || 'Failed to record COD payment collection');
     }
   };
 
@@ -232,31 +259,91 @@ export default function Orders() {
               <button className={styles.closeBtn} onClick={() => setSelectedOrder(null)}>×</button>
             </div>
 
-            {/* Customer & Fulfillment Info */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem', background: '#F7F7F7', padding: '1rem', borderRadius: '4px', border: '1px solid #E5E5E5' }}>
+            {/* Customer, Fulfillment & Payment Info */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1.5rem', background: '#F7F7F7', padding: '1rem', borderRadius: '4px', border: '1px solid #E5E5E5' }}>
               <div>
                 <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#b99a58', letterSpacing: '0.08em', display: 'block', marginBottom: '4px' }}>
                   Customer Details
                 </span>
-                <div style={{ fontWeight: 600, color: '#111111' }}>{selectedOrder.shipping_name || selectedOrder.user_name}</div>
-                <div style={{ fontSize: '0.85rem', color: '#666666' }}>{selectedOrder.shipping_phone || selectedOrder.user_phone}</div>
-                <div style={{ fontSize: '0.85rem', color: '#666666' }}>{selectedOrder.user_email}</div>
+                <div style={{ fontWeight: 600, color: '#111111' }}>{selectedOrder.shipping_name || selectedOrder.user_name || selectedOrder.customer_name}</div>
+                <div style={{ fontSize: '0.85rem', color: '#666666' }}>{selectedOrder.shipping_phone || selectedOrder.user_phone || selectedOrder.customer_phone}</div>
+                <div style={{ fontSize: '0.85rem', color: '#666666' }}>{selectedOrder.user_email || selectedOrder.customer_email}</div>
               </div>
 
               <div>
                 <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#b99a58', letterSpacing: '0.08em', display: 'block', marginBottom: '4px' }}>
                   Fulfillment Destination
                 </span>
-                {selectedOrder.fulfillment_type === 'pickup' ? (
+                {selectedOrder.fulfillment_type === 'pickup' || selectedOrder.delivery_type === 'pickup' ? (
                   <div style={{ fontSize: '0.85rem', color: '#111111' }}>
                     <strong>Flagship Atelier In-Store Pickup</strong><br />
                     Sathy Road, Kurumbampalayam, Coimbatore - 641107
                   </div>
                 ) : (
                   <div style={{ fontSize: '0.85rem', color: '#555555' }}>
-                    {selectedOrder.shipping_address_line1}<br />
-                    {selectedOrder.shipping_address_line2 && <>{selectedOrder.shipping_address_line2}<br /></>}
-                    {selectedOrder.shipping_city}, {selectedOrder.shipping_state} - {selectedOrder.shipping_postal_code}
+                    {selectedOrder.line1 || selectedOrder.shipping_address_line1}<br />
+                    {(selectedOrder.line2 || selectedOrder.shipping_address_line2) && <>{selectedOrder.line2 || selectedOrder.shipping_address_line2}<br /></>}
+                    {selectedOrder.city || selectedOrder.shipping_city}, {selectedOrder.state || selectedOrder.shipping_state} - {selectedOrder.pincode || selectedOrder.shipping_postal_code}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#b99a58', letterSpacing: '0.08em', display: 'block', marginBottom: '4px' }}>
+                  Payment & Refund State
+                </span>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#111111', textTransform: 'uppercase' }}>
+                  {selectedOrder.payment?.provider || 'Unknown'} (₹{Number(selectedOrder.total || 0).toLocaleString('en-IN')})
+                </div>
+                <div style={{ fontSize: '0.85rem', color: '#666666', marginTop: '2px' }}>
+                  Payment:{' '}
+                  <strong
+                    style={{
+                      color:
+                        selectedOrder.payment?.status === 'paid'
+                          ? '#27ae60'
+                          : selectedOrder.payment?.status === 'refunded'
+                          ? '#2980b9'
+                          : '#e67e22',
+                    }}
+                  >
+                    {selectedOrder.payment?.provider === 'cod' && selectedOrder.payment?.status === 'created'
+                      ? 'AWAITING COLLECTION (COD)'
+                      : selectedOrder.payment?.status
+                      ? selectedOrder.payment.status.toUpperCase()
+                      : 'PENDING'}
+                  </strong>
+                </div>
+                {selectedOrder.payment?.provider === 'cod' && selectedOrder.payment?.status === 'created' && (
+                  <button
+                    type="button"
+                    onClick={handleCollectCod}
+                    className={styles.btnSecondary}
+                    style={{ marginTop: '4px', padding: '2px 8px', fontSize: '0.75rem', display: 'inline-block' }}
+                  >
+                    Record Cash Collection
+                  </button>
+                )}
+                {selectedOrder.payment?.refundStatus && (
+                  <div
+                    style={{
+                      fontSize: '0.8rem',
+                      color:
+                        selectedOrder.payment.refundStatus === 'failed'
+                          ? '#c0392b'
+                          : selectedOrder.payment.refundStatus === 'processed'
+                          ? '#2980b9'
+                          : '#b99a58',
+                      marginTop: '2px',
+                    }}
+                  >
+                    Refund:{' '}
+                    <strong>
+                      {selectedOrder.payment.refundStatus === 'pending'
+                        ? 'PENDING (AWAITING GATEWAY)'
+                        : selectedOrder.payment.refundStatus.toUpperCase()}
+                    </strong>{' '}
+                    (₹{Number(selectedOrder.payment.refundAmount || 0).toLocaleString('en-IN')})
                   </div>
                 )}
               </div>
@@ -321,50 +408,81 @@ export default function Orders() {
             </div>
 
             {/* Status Update Form */}
-            <form onSubmit={handleUpdateStatus} style={{ background: '#F7F7F7', padding: '1rem', borderRadius: '4px', border: '1px solid #E5E5E5' }}>
-              <h3 style={{ fontSize: '0.95rem', marginBottom: '0.75rem', color: '#111111' }}>
-                Update Fulfillment & Dispatch
-              </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div className={styles.formGroup}>
-                  <label>Order Status</label>
-                  <select
-                    className={styles.selectInput}
-                    value={statusToUpdate}
-                    onChange={(e) => setStatusToUpdate(e.target.value)}
-                  >
-                    {ORDER_STATUSES.map(s => (
-                      <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
-                    ))}
-                  </select>
-                </div>
+            {(() => {
+              const isTerminal = ['cancelled', 'refunded'].includes(selectedOrder.status);
+              const allowedOptions = PERMITTED_STATUS_TRANSITIONS[selectedOrder.status] || [selectedOrder.status];
 
-                <div className={styles.formGroup}>
-                  <label>Courier Tracking Number (BlueDart / DTDC)</label>
-                  <input
-                    type="text"
-                    className={styles.input}
-                    placeholder="e.g. BD7829102IN"
-                    value={trackingNumber}
-                    onChange={(e) => setTrackingNumber(e.target.value)}
-                  />
-                </div>
-              </div>
+              return (
+                <form onSubmit={handleUpdateStatus} style={{ background: '#F7F7F7', padding: '1rem', borderRadius: '4px', border: '1px solid #E5E5E5' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                    <h3 style={{ fontSize: '0.95rem', margin: 0, color: '#111111' }}>
+                      Update Fulfillment & Dispatch
+                    </h3>
+                    {isTerminal && (
+                      <span style={{ fontSize: '0.75rem', color: '#c0392b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        Terminal State — Modification Locked
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className={styles.formGroup}>
+                      <label>Order Status</label>
+                      <select
+                        className={styles.selectInput}
+                        value={statusToUpdate}
+                        onChange={(e) => setStatusToUpdate(e.target.value)}
+                        disabled={isTerminal || updatingStatus}
+                      >
+                        {allowedOptions.map(s => (
+                          <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                        ))}
+                      </select>
+                    </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', gap: '0.5rem' }}>
-                <a
-                  href={api.getApiUrl(`/invoices/${selectedOrder.id}/pdf`)}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={styles.btnSecondary}
-                >
-                  <FileText size={14} /> Download PDF Invoice
-                </a>
-                <button type="submit" className={styles.btnPrimary} disabled={updatingStatus}>
-                  {updatingStatus ? 'Updating...' : 'Save Order Status'}
-                </button>
-              </div>
-            </form>
+                    <div className={styles.formGroup}>
+                      <label>Courier Tracking Number (BlueDart / DTDC)</label>
+                      <input
+                        type="text"
+                        className={styles.input}
+                        placeholder="e.g. BD7829102IN"
+                        value={trackingNumber}
+                        onChange={(e) => setTrackingNumber(e.target.value)}
+                        disabled={isTerminal || updatingStatus}
+                      />
+                    </div>
+
+                    {selectedOrder.status === 'shipped' && statusToUpdate === 'cancelled' && (
+                      <div style={{ gridColumn: '1 / -1', background: '#fff', padding: '0.75rem', borderRadius: '4px', border: '1px solid #d4c5a9' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.85rem', color: '#111' }}>
+                          <input
+                            type="checkbox"
+                            checked={restockShipped}
+                            onChange={(e) => setRestockShipped(e.target.checked)}
+                          />
+                          <span><strong>Physical Return & Quality Inspection Complete:</strong> Restock physical garments immediately. (Default: physical stock withheld while in transit / pending inspection).</span>
+                        </label>
+                      </div>
+                    )}
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', gap: '0.5rem' }}>
+                    <a
+                      href={api.getApiUrl(`/invoices/${selectedOrder.id}/pdf`)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={styles.btnSecondary}
+                    >
+                      <FileText size={14} /> Download PDF Invoice
+                    </a>
+                    {!isTerminal && (
+                      <button type="submit" className={styles.btnPrimary} disabled={updatingStatus}>
+                        {updatingStatus ? 'Updating...' : 'Save Order Status'}
+                      </button>
+                    )}
+                  </div>
+                </form>
+              );
+            })()}
           </div>
         </div>
       )}

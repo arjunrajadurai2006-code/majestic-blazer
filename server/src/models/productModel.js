@@ -1,8 +1,8 @@
 import { pool } from '../config/db.js';
 
 const LIST_COLUMNS = `p.id, p.name, p.slug, p.description, p.color, p.material, p.fit,
-  p.sale_price, p.original_price, p.rent_price_per_day, p.security_deposit,
-  p.is_purchasable, p.is_rentable, p.is_featured, p.is_active, p.created_at,
+  p.sale_price, p.original_price,
+  p.is_purchasable, p.is_featured, p.is_active, p.created_at,
   c.id AS category_id, c.name AS category_name, c.slug AS category_slug,
   (SELECT url FROM product_images i WHERE i.product_id = p.id ORDER BY i.is_primary DESC, i.sort_order LIMIT 1) AS image_url,
   (SELECT COALESCE(AVG(r.rating), 5.0) FROM reviews r WHERE r.product_id = p.id AND r.is_approved = true) AS avg_rating,
@@ -32,7 +32,6 @@ export const list = async ({
   }
 
   if (type === 'buy') where.push('p.is_purchasable = true');
-  if (type === 'rent') where.push('p.is_rentable = true');
   if (featured === true || featured === 'true') where.push('p.is_featured = true');
 
   if (category) {
@@ -57,7 +56,7 @@ export const list = async ({
 
   if (size) {
     whereParams.push(size);
-    where.push(`EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = p.id AND pv.size = $${whereParams.length} AND (pv.stock_quantity > 0 OR pv.rental_stock_quantity > 0))`);
+    where.push(`EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = p.id AND pv.size = $${whereParams.length} AND pv.stock_quantity > 0)`);
   }
 
   if (minPrice != null && minPrice !== '') {
@@ -83,8 +82,6 @@ export const list = async ({
   let orderBy = 'p.created_at DESC';
   if (sort === 'price_asc') orderBy = 'p.sale_price ASC NULLS LAST';
   else if (sort === 'price_desc') orderBy = 'p.sale_price DESC NULLS LAST';
-  else if (sort === 'rent_asc') orderBy = 'p.rent_price_per_day ASC NULLS LAST';
-  else if (sort === 'rent_desc') orderBy = 'p.rent_price_per_day DESC NULLS LAST';
   else if (sort === 'rating') orderBy = 'avg_rating DESC, p.created_at DESC';
 
   const countSql = `SELECT COUNT(*) AS total FROM products p JOIN categories c ON c.id = p.category_id ${whereSql}`;
@@ -117,7 +114,17 @@ export const findBySlug = async (slug) => {
   );
 
   const { rows: variants } = await pool.query(
-    'SELECT id, sku, size, stock_quantity, rental_stock_quantity FROM product_variants WHERE product_id = $1 ORDER BY id',
+    `SELECT pv.id, pv.sku, pv.size,
+       GREATEST(0, pv.stock_quantity - COALESCE((
+         SELECT SUM(ir.quantity)
+         FROM inventory_reservations ir
+         WHERE ir.variant_id = pv.id
+           AND ir.status = 'active'
+           AND ir.expires_at > NOW()
+       ), 0)) AS stock_quantity
+     FROM product_variants pv
+     WHERE pv.product_id = $1
+     ORDER BY pv.id`,
     [product.id]
   );
 
@@ -147,7 +154,17 @@ export const findById = async (id) => {
   );
 
   const { rows: variants } = await pool.query(
-    'SELECT id, sku, size, stock_quantity, rental_stock_quantity FROM product_variants WHERE product_id = $1 ORDER BY id',
+    `SELECT pv.id, pv.sku, pv.size,
+       GREATEST(0, pv.stock_quantity - COALESCE((
+         SELECT SUM(ir.quantity)
+         FROM inventory_reservations ir
+         WHERE ir.variant_id = pv.id
+           AND ir.status = 'active'
+           AND ir.expires_at > NOW()
+       ), 0)) AS stock_quantity
+     FROM product_variants pv
+     WHERE pv.product_id = $1
+     ORDER BY pv.id`,
     [product.id]
   );
 
@@ -161,9 +178,8 @@ export const create = async (p) => {
     const { rows } = await client.query(
       `INSERT INTO products (
         category_id, name, slug, description, color, material, fit, care_instructions,
-        is_purchasable, is_rentable, is_featured, sale_price, original_price,
-        rent_price_per_day, security_deposit, is_active
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+        is_purchasable, is_featured, sale_price, original_price, is_active
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       RETURNING id`,
       [
         p.categoryId,
@@ -175,12 +191,9 @@ export const create = async (p) => {
         p.fit ?? 'Tailored Slim Fit',
         p.careInstructions ?? 'Dry clean only. Store on wooden hanger.',
         p.isPurchasable ?? true,
-        p.isRentable ?? false,
         p.isFeatured ?? false,
         p.salePrice ?? null,
         p.originalPrice ?? null,
-        p.rentPricePerDay ?? null,
-        p.securityDeposit ?? null,
         p.isActive ?? true,
       ]
     );
@@ -200,9 +213,9 @@ export const create = async (p) => {
     if (Array.isArray(p.variants) && p.variants.length) {
       for (const v of p.variants) {
         await client.query(
-          `INSERT INTO product_variants (product_id, sku, size, stock_quantity, rental_stock_quantity)
-           VALUES ($1, $2, $3, $4, $5)`,
-          [productId, v.sku.trim(), v.size.trim(), Number(v.stockQuantity) || 0, Number(v.rentalStockQuantity) || 0]
+          `INSERT INTO product_variants (product_id, sku, size, stock_quantity)
+           VALUES ($1, $2, $3, $4)`,
+          [productId, v.sku.trim(), v.size.trim(), Number(v.stockQuantity) || 0]
         );
       }
     }
@@ -224,10 +237,9 @@ export const update = async (id, p) => {
     const { rows } = await client.query(
       `UPDATE products SET
         category_id = $1, name = $2, slug = $3, description = $4, color = $5, material = $6,
-        fit = $7, care_instructions = $8, is_purchasable = $9, is_rentable = $10, is_featured = $11,
-        sale_price = $12, original_price = $13, rent_price_per_day = $14, security_deposit = $15,
-        is_active = $16, updated_at = CURRENT_TIMESTAMP
-       WHERE id = $17
+        fit = $7, care_instructions = $8, is_purchasable = $9, is_featured = $10,
+        sale_price = $11, original_price = $12, is_active = $13, updated_at = CURRENT_TIMESTAMP
+       WHERE id = $14
        RETURNING id`,
       [
         p.categoryId,
@@ -239,12 +251,9 @@ export const update = async (id, p) => {
         p.fit ?? 'Tailored Slim Fit',
         p.careInstructions ?? 'Dry clean only. Store on wooden hanger.',
         p.isPurchasable ?? true,
-        p.isRentable ?? false,
         p.isFeatured ?? false,
         p.salePrice ?? null,
         p.originalPrice ?? null,
-        p.rentPricePerDay ?? null,
-        p.securityDeposit ?? null,
         p.isActive ?? true,
         id,
       ]
@@ -265,13 +274,12 @@ export const update = async (id, p) => {
     if (Array.isArray(p.variants)) {
       for (const v of p.variants) {
         await client.query(
-          `INSERT INTO product_variants (product_id, sku, size, stock_quantity, rental_stock_quantity)
-           VALUES ($1, $2, $3, $4, $5)
+          `INSERT INTO product_variants (product_id, sku, size, stock_quantity)
+           VALUES ($1, $2, $3, $4)
            ON CONFLICT (product_id, size) DO UPDATE SET
              sku = EXCLUDED.sku,
-             stock_quantity = EXCLUDED.stock_quantity,
-             rental_stock_quantity = EXCLUDED.rental_stock_quantity`,
-          [id, v.sku.trim(), v.size.trim(), Number(v.stockQuantity) || 0, Number(v.rentalStockQuantity) || 0]
+             stock_quantity = EXCLUDED.stock_quantity`,
+          [id, v.sku.trim(), v.size.trim(), Number(v.stockQuantity) || 0]
         );
       }
     }

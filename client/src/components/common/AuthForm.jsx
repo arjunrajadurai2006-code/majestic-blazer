@@ -2,13 +2,18 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, UserCheck, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
 import { useToast } from '../../context/ToastContext';
+import { getPendingGuestAction, executePendingGuestAction } from '../../services/guestAction';
 import { api } from '../../services/api';
 import Logo from './Logo';
 import styles from './AuthForm.module.css';
 
 export default function AuthForm({ mode = 'login' }) {
   const { login, register, demoCustomerLogin, adminLogin, demoAdminLogin } = useAuth();
+  const { addToCart } = useCart();
+  const { loadWishlist } = useWishlist();
   const { success, error: toastError } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,7 +36,9 @@ export default function AuthForm({ mode = 'login' }) {
   const [error, setError] = useState('');
   const [actionSuccess, setActionSuccess] = useState('');
   const [busy, setBusy] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
   const [demoMode, setDemoMode] = useState(true);
+  const [brandTagline, setBrandTagline] = useState('STYLE THAT SPEAKS');
 
   // Forgot password modal
   const [showForgot, setShowForgot] = useState(false);
@@ -50,19 +57,46 @@ export default function AuthForm({ mode = 'login' }) {
       .catch(() => {
         // Graceful fallback to true
       });
+
+    api('/settings', { auth: false })
+      .then((res) => {
+        if (res.data?.brand_tagline) {
+          setBrandTagline(res.data.brand_tagline.toUpperCase());
+        }
+      })
+      .catch(() => {});
   }, []);
 
   // Clear errors when switching roles or modes
   useEffect(() => {
-    setError('');
+    if (cooldown <= 0) {
+      setError('');
+    }
     setActionSuccess('');
     setEmail('');
     setPassword('');
   }, [activeRole, mode]);
 
+  // Rate-limit cooldown timer
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => {
+      setCooldown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setError(''); // Restore form state on cooldown expiry
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
+
   // Handle Customer & Admin Submission
   const onSubmit = async (event) => {
     event.preventDefault();
+    if (cooldown > 0) return;
     setError('');
     setActionSuccess('');
 
@@ -97,9 +131,20 @@ export default function AuthForm({ mode = 'login' }) {
     try {
       if (mode === 'register') {
         // Customer Registration
-        await register({ fullName: fullName.trim(), phone: phone.trim(), email: trimmedEmail, password });
+        const authenticatedUser = await register({ fullName: fullName.trim(), phone: phone.trim(), email: trimmedEmail, password });
         success('Account created successfully. Welcome to Majestic Blazer.');
-        navigate(location.state?.from || '/', { replace: true });
+        const pending = getPendingGuestAction();
+        const returnTo = location.state?.from || pending?.returnUrl || '/';
+        const result = await executePendingGuestAction({
+          api,
+          user: authenticatedUser,
+          addToCart,
+          loadWishlist,
+          success,
+          toastError,
+        });
+        const destination = (result?.action === 'buyNow' ? '/checkout' : null) || returnTo;
+        navigate(destination, { replace: true });
       } else if (activeRole === 'admin') {
         // Administrator Login
         const data = await adminLogin({ email: trimmedEmail, password });
@@ -114,33 +159,69 @@ export default function AuthForm({ mode = 'login' }) {
         }, 350);
       } else {
         // Customer Login
-        await login({ email: trimmedEmail, password });
-        navigate(location.state?.from || '/', { replace: true });
+        const authenticatedUser = await login({ email: trimmedEmail, password });
+        const pending = getPendingGuestAction();
+        const returnTo = location.state?.from || pending?.returnUrl || '/';
+        const result = await executePendingGuestAction({
+          api,
+          user: authenticatedUser,
+          addToCart,
+          loadWishlist,
+          success,
+          toastError,
+        });
+        const destination = (result?.action === 'buyNow' ? '/checkout' : null) || returnTo;
+        navigate(destination, { replace: true });
       }
     } catch (err) {
-      setError(err.details?.[0]?.message || err.message || 'Authentication failed. Please verify your credentials.');
+      if (err.status === 429) {
+        const waitSec = Math.max(1, Number(err.retryAfter) || 60);
+        setCooldown(waitSec);
+        setError(`Too many attempts. For security, please wait ${waitSec} seconds before trying again.`);
+      } else {
+        setError(err.details?.[0]?.message || err.message || 'Authentication failed. Please verify your credentials.');
+      }
       setBusy(false);
     }
   };
 
   // 1-Click Customer Demo Login
   const handleContinueAsDemoCustomer = async () => {
+    if (cooldown > 0) return;
     setError('');
     setActionSuccess('');
     setBusy(true);
 
     try {
-      await demoCustomerLogin();
+      const authenticatedUser = await demoCustomerLogin();
       success('Welcome to Majestic Blazer. Demo Customer session started.');
-      navigate(location.state?.from || '/', { replace: true });
+      const pending = getPendingGuestAction();
+      const returnTo = location.state?.from || pending?.returnUrl || '/';
+      const result = await executePendingGuestAction({
+        api,
+        user: authenticatedUser,
+        addToCart,
+        loadWishlist,
+        success,
+        toastError,
+      });
+      const destination = (result?.action === 'buyNow' ? '/checkout' : null) || returnTo;
+      navigate(destination, { replace: true });
     } catch (err) {
-      setError(err.message || 'Unable to start demo customer session.');
+      if (err.status === 429) {
+        const waitSec = Math.max(1, Number(err.retryAfter) || 60);
+        setCooldown(waitSec);
+        setError(`Too many attempts. For security, please wait ${waitSec} seconds before trying again.`);
+      } else {
+        setError(err.message || 'Unable to start demo customer session.');
+      }
       setBusy(false);
     }
   };
 
   // 1-Click Admin Demo Login
   const handleEnterAdminDemo = async () => {
+    if (cooldown > 0) return;
     setError('');
     setActionSuccess('');
     setBusy(true);
@@ -157,7 +238,13 @@ export default function AuthForm({ mode = 'login' }) {
         window.location.href = `${adminUrl.replace(/\/$/, '')}/?token=${encodeURIComponent(data.token)}`;
       }, 350);
     } catch (err) {
-      setError(err.message || 'Unable to access demo administrator portal.');
+      if (err.status === 429) {
+        const waitSec = Math.max(1, Number(err.retryAfter) || 60);
+        setCooldown(waitSec);
+        setError(`Too many attempts. For security, please wait ${waitSec} seconds before trying again.`);
+      } else {
+        setError(err.message || 'Unable to access demo administrator portal.');
+      }
       setBusy(false);
     }
   };
@@ -165,7 +252,7 @@ export default function AuthForm({ mode = 'login' }) {
   // Forgot password submission
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
-    if (!forgotEmail.trim()) return;
+    if (cooldown > 0 || !forgotEmail.trim()) return;
     setForgotBusy(true);
     try {
       const res = await api('/auth/forgot-password', {
@@ -176,7 +263,13 @@ export default function AuthForm({ mode = 'login' }) {
       setForgotMsg(res.message || 'If an account exists, password reset instructions have been generated.');
       success('Password reset initiated.');
     } catch (err) {
-      toastError(err.message || 'Unable to process reset request.');
+      if (err.status === 429) {
+        const waitSec = Math.max(1, Number(err.retryAfter) || 60);
+        setCooldown(waitSec);
+        toastError(`Too many attempts. For security, please wait ${waitSec} seconds before trying again.`);
+      } else {
+        toastError(err.message || 'Unable to process reset request.');
+      }
     } finally {
       setForgotBusy(false);
     }
@@ -188,7 +281,7 @@ export default function AuthForm({ mode = 'login' }) {
         {/* Brand Header */}
         <div className={styles.brandHeader}>
           <Logo height={42} variant="bare" />
-          <span className={styles.tagline}>STYLE THAT SPEAKS</span>
+          <span className={styles.tagline}>{brandTagline}</span>
         </div>
 
         {/* Unified Role Segmented Control (Only on Login mode) */}
@@ -202,7 +295,7 @@ export default function AuthForm({ mode = 'login' }) {
               onClick={() => setActiveRole('customer')}
             >
               <span className={styles.segmentTitle}>CUSTOMER</span>
-              <span className={styles.segmentDesc}>Shopping &amp; Rentals</span>
+              <span className={styles.segmentDesc}>Bespoke Menswear</span>
             </button>
             <button
               type="button"
@@ -228,10 +321,10 @@ export default function AuthForm({ mode = 'login' }) {
           </h1>
           <p className={styles.subtitle}>
             {mode === 'register'
-              ? 'Join Majestic Blazer to manage bespoke orders and reserve rentals.'
+              ? 'Join Majestic Blazer to manage bespoke orders and saved pieces.'
               : activeRole === 'admin'
                 ? 'Atelier Operations Console • Secure Management Gateway'
-                : 'Sign in to access your orders, active rentals and saved preferences.'}
+                : 'Sign in to access your orders, saved pieces and preferences.'}
           </p>
         </div>
 
@@ -247,7 +340,11 @@ export default function AuthForm({ mode = 'login' }) {
         {error && (
           <div className={styles.errorBanner} role="alert">
             <AlertCircle size={16} className={styles.bannerIcon} />
-            <span>{error}</span>
+            <span>
+              {cooldown > 0
+                ? `Too many attempts. For security, please wait ${cooldown} seconds before trying again.`
+                : error}
+            </span>
           </div>
         )}
 
@@ -264,6 +361,7 @@ export default function AuthForm({ mode = 'login' }) {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   autoComplete="name"
+                  disabled={busy || cooldown > 0}
                   required
                 />
               </label>
@@ -276,6 +374,7 @@ export default function AuthForm({ mode = 'login' }) {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   autoComplete="tel"
+                  disabled={busy || cooldown > 0}
                 />
               </label>
             </>
@@ -290,6 +389,7 @@ export default function AuthForm({ mode = 'login' }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
+              disabled={busy || cooldown > 0}
               required
             />
           </label>
@@ -307,6 +407,7 @@ export default function AuthForm({ mode = 'login' }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+              disabled={busy || cooldown > 0}
               required
             />
           </label>
@@ -317,6 +418,7 @@ export default function AuthForm({ mode = 'login' }) {
               <button
                 type="button"
                 className={styles.forgotBtn}
+                disabled={busy || cooldown > 0}
                 onClick={() => {
                   setForgotEmail(email);
                   setForgotMsg('');
@@ -329,8 +431,10 @@ export default function AuthForm({ mode = 'login' }) {
           )}
 
           {/* Primary Action Button */}
-          <button type="submit" disabled={busy} className={styles.submitBtn}>
-            {busy ? (
+          <button type="submit" disabled={busy || cooldown > 0} className={styles.submitBtn}>
+            {cooldown > 0 ? (
+              <span>PLEASE WAIT ({cooldown}s)</span>
+            ) : busy ? (
               <span>Authenticating...</span>
             ) : mode === 'register' ? (
               <span>JOIN MAJESTIC BLAZER</span>
@@ -347,24 +451,24 @@ export default function AuthForm({ mode = 'login' }) {
               {activeRole === 'customer' ? (
                 <button
                   type="button"
-                  disabled={busy}
+                  disabled={busy || cooldown > 0}
                   className={styles.demoActionBtn}
                   onClick={handleContinueAsDemoCustomer}
                   title="Sign in instantly with a generated demo customer account"
                 >
                   <UserCheck size={14} />
-                  <span>Continue as Demo Customer</span>
+                  <span>{cooldown > 0 ? `Please wait (${cooldown}s)` : 'Continue as Demo Customer'}</span>
                 </button>
               ) : (
                 <button
                   type="button"
-                  disabled={busy}
+                  disabled={busy || cooldown > 0}
                   className={styles.demoActionBtn}
                   onClick={handleEnterAdminDemo}
                   title="Sign in to the Atelier Management Portal using secure backend admin verification"
                 >
                   <ShieldCheck size={14} />
-                  <span>Enter Admin Demo</span>
+                  <span>{cooldown > 0 ? `Please wait (${cooldown}s)` : 'Enter Admin Demo'}</span>
                 </button>
               )}
             </div>

@@ -13,9 +13,6 @@ export async function seedFullDemoData() {
     ['store_address', 'Sathy Road, Kurumbampalayam, Coimbatore - 641107', 'Flagship atelier address'],
     ['store_phone', '8903238882', 'Customer service phone number'],
     ['store_email', 'contact@majesticblazer.com', 'Store contact email'],
-    ['rental_late_fee_per_day', '500', 'Daily late fee for overdue rentals in INR'],
-    ['rental_min_days', '1', 'Minimum rental duration in days'],
-    ['rental_max_days', '14', 'Maximum rental duration in days'],
     ['tax_percentage', '0', 'GST percentage (0 for inclusive pricing)'],
     ['shipping_fee', '0', 'Complimentary white-glove shipping fee'],
   ];
@@ -164,8 +161,8 @@ export async function seedFullDemoData() {
     { front: '/assets/products/sovereign-charcoal-check-front.webp', detail: '/assets/products/sovereign-charcoal-check-detail.webp' },
     { front: '/assets/products/monarch-burgundy-bandhgala-front.webp', detail: '/assets/products/monarch-burgundy-bandhgala-detail.webp' },
     { front: '/assets/products/ascot-sand-tan-linen-front.webp', detail: '/assets/products/ascot-sand-tan-linen-detail.webp' },
-    { front: '/assets/rentals/emerald-velvet-tuxedo.webp', detail: '/assets/products/imperial-navy-velvet-detail.webp' },
-    { front: '/assets/rentals/midnight-blue-jacquard.webp', detail: '/assets/products/regal-black-tuxedo-detail.webp' },
+    { front: '/assets/products/regal-black-tuxedo-front.webp', detail: '/assets/products/regal-black-tuxedo-detail.webp' },
+    { front: '/assets/products/imperial-navy-velvet-front.webp', detail: '/assets/products/imperial-navy-velvet-detail.webp' },
   ];
 
   const productCatalogue = [
@@ -582,37 +579,29 @@ export async function seedFullDemoData() {
       // Default stock logic:
       // Include specific out-of-stock and low-stock examples for inventory management
       let stock = 6;
-      let rentalStock = 4;
 
       if (i === 1 && size === '36R') {
         stock = 0; // Out of stock example 1
-        rentalStock = 0;
       } else if (i === 4 && size === '44R') {
         stock = 0; // Out of stock example 2
-        rentalStock = 1; // Low rental stock
       } else if (i === 7 && size === '38R') {
         stock = 1; // Low stock retail
-        rentalStock = 1; // Low stock rental
       } else if (i === 12 && size === '40R') {
         stock = 1; // Low stock retail
-        rentalStock = 0; // Out of stock rental
       } else if (i === 18 && size === '42R') {
         stock = 2; // Low stock retail
-        rentalStock = 2;
       } else if (i === 25 && size === '36R') {
         stock = 0; // Out of stock retail
-        rentalStock = 0;
       }
 
       const vRes = await pool.query(
-        `INSERT INTO product_variants (product_id, sku, size, stock_quantity, rental_stock_quantity)
-         VALUES ($1, $2, $3, $4, $5)
+        `INSERT INTO product_variants (product_id, sku, size, stock_quantity)
+         VALUES ($1, $2, $3, $4)
          ON CONFLICT (product_id, size) DO UPDATE SET
            sku = EXCLUDED.sku,
-           stock_quantity = EXCLUDED.stock_quantity,
-           rental_stock_quantity = EXCLUDED.rental_stock_quantity
-         RETURNING id, product_id, sku, size, stock_quantity, rental_stock_quantity`,
-        [product.id, sku, size, stock, rentalStock]
+           stock_quantity = EXCLUDED.stock_quantity
+         RETURNING id, product_id, sku, size, stock_quantity`,
+        [product.id, sku, size, stock]
       );
       allVariants.push(vRes.rows[0]);
     }
@@ -646,13 +635,12 @@ export async function seedFullDemoData() {
   }
   console.log(`✓ ${couponDefs.length} Coupons verified`);
 
-  // 5. Clean up old orders, rentals, payments, invoices to cleanly reconstruct connected ledger
-  console.log('Reconstructing connected order, rental and payment ledger...');
+  // 5. Clean up old orders, payments, invoices to cleanly reconstruct connected ledger
+  console.log('Reconstructing connected order and payment ledger...');
   await pool.query('DELETE FROM payments');
   await pool.query('DELETE FROM invoices');
   await pool.query('DELETE FROM order_items');
   await pool.query('DELETE FROM orders');
-  await pool.query('DELETE FROM rental_bookings');
   await pool.query('DELETE FROM reviews');
 
   // 6. Orders (At least 30 sample orders spanning past 90 days)
@@ -784,157 +772,13 @@ export async function seedFullDemoData() {
   }
   console.log(`✓ ${createdOrders.length} Sample Orders and corresponding Payments & Invoices seeded across past 90 days`);
 
-  // 7. Rental Bookings (At least 15 sample rentals)
-  const rentalProducts = createdProducts.filter(p => Number(p.rent_price_per_day) > 0);
-  const rentalStatuses = [
-    'returned', 'returned', 'returned', 'returned',
-    'picked_up', 'picked_up',
-    'confirmed',
-    'overdue',
-    'requested'
-  ];
-
-  const createdRentals = [];
-  const rentalCount = 20; // 20 rental bookings
-
-  for (let i = 1; i <= rentalCount; i++) {
-    const customer = customerMap[(i * 2) % customerMap.length];
-    const product = rentalProducts[(i * 2) % rentalProducts.length];
-    const variant = allVariants.find(v => v.product_id === product.id) || allVariants[0];
-    const bookingNum = `MB-RNT-2026-${String(3100 + i).padStart(4, '0')}`;
-    const status = rentalStatuses[(i - 1) % rentalStatuses.length];
-
-    const rentalDays = 3 + (i % 4); // 3 to 6 days
-    const rentAmount = Number(product.rent_price_per_day) * rentalDays;
-    const depositAmount = Number(product.security_deposit) || 5000;
-
-    let startDate, endDate, returnedAt, returnCondition, refundStatus, refundedAmount, lateFee = 0, damageFee = 0;
-
-    if (status === 'returned') {
-      const daysAgo = 10 + i * 2;
-      startDate = new Date(Date.now() - (daysAgo + rentalDays) * 24 * 3600 * 1000).toISOString().split('T')[0];
-      endDate = new Date(Date.now() - daysAgo * 24 * 3600 * 1000).toISOString().split('T')[0];
-      returnedAt = new Date(Date.now() - (daysAgo - 0.5) * 24 * 3600 * 1000);
-      returnCondition = (i % 3 === 0) ? 'Minor fabric creasing — dry cleaned and restored' : 'Pristine atelier condition';
-      refundStatus = 'refunded';
-      refundedAmount = depositAmount;
-    } else if (status === 'picked_up') {
-      // Currently active rental with customer
-      startDate = new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString().split('T')[0];
-      endDate = new Date(Date.now() + 2 * 24 * 3600 * 1000).toISOString().split('T')[0];
-      returnedAt = null;
-      returnCondition = null;
-      refundStatus = 'pending';
-      refundedAmount = 0;
-    } else if (status === 'overdue') {
-      // Overdue unreturned rental
-      startDate = new Date(Date.now() - 8 * 24 * 3600 * 1000).toISOString().split('T')[0];
-      endDate = new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString().split('T')[0];
-      returnedAt = null;
-      returnCondition = null;
-      refundStatus = 'pending';
-      refundedAmount = 0;
-      lateFee = 1000; // 2 days late @ 500/day
-    } else if (status === 'confirmed') {
-      // Upcoming future booking
-      startDate = new Date(Date.now() + 5 * 24 * 3600 * 1000).toISOString().split('T')[0];
-      endDate = new Date(Date.now() + (5 + rentalDays) * 24 * 3600 * 1000).toISOString().split('T')[0];
-      returnedAt = null;
-      returnCondition = null;
-      refundStatus = 'pending';
-      refundedAmount = 0;
-    } else {
-      // Requested
-      startDate = new Date(Date.now() + 10 * 24 * 3600 * 1000).toISOString().split('T')[0];
-      endDate = new Date(Date.now() + (10 + rentalDays) * 24 * 3600 * 1000).toISOString().split('T')[0];
-      returnedAt = null;
-      returnCondition = null;
-      refundStatus = 'pending';
-      refundedAmount = 0;
-    }
-
-    const bookingDate = new Date(new Date(startDate).getTime() - 4 * 24 * 3600 * 1000);
-
-    const rRes = await pool.query(
-      `INSERT INTO rental_bookings (
-         booking_number, user_id, product_id, variant_id,
-         start_date, end_date, rental_days, rent_amount, deposit_amount,
-         late_fee, damage_fee, delivery_type, status,
-         returned_at, return_condition, deposit_refund_status,
-         deposit_refunded_amount, notes, created_at, updated_at
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'pickup', $12, $13, $14, $15, $16, $17, $18, $18)
-       RETURNING id, booking_number, rent_amount, deposit_amount, status`,
-      [
-        bookingNum,
-        customer.id,
-        product.id,
-        variant.id,
-        startDate,
-        endDate,
-        rentalDays,
-        rentAmount,
-        depositAmount,
-        lateFee,
-        damageFee,
-        status,
-        returnedAt,
-        returnCondition,
-        refundStatus,
-        refundedAmount,
-        (i % 3 === 0) ? 'Attending high-profile destination wedding gala.' : null,
-        bookingDate
-      ]
-    );
-
-    const rental = rRes.rows[0];
-    createdRentals.push(rental);
-
-    // Rental Payment
-    if (status !== 'requested') {
-      const pmtRef = `pay_MB_rent_${780000 + i}`;
-      const totalPaid = rentAmount + depositAmount;
-
-      await pool.query(
-        `INSERT INTO payments (
-           rental_booking_id, user_id, provider, provider_payment_id,
-           amount, currency, status, created_at
-         ) VALUES ($1, $2, 'razorpay', $3, $4, 'INR', 'paid', $5)`,
-        [rental.id, customer.id, pmtRef, totalPaid, bookingDate]
-      );
-
-      // Rental Invoice
-      const invNum = `INV-RNT-2026-${String(4100 + i).padStart(4, '0')}`;
-      await pool.query(
-        `INSERT INTO invoices (invoice_number, rental_booking_id, amount, pdf_path, invoice_data, issued_at)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
-        [
-          invNum,
-          rental.id,
-          rentAmount,
-          `/invoices/${invNum}.pdf`,
-          JSON.stringify({
-            invoiceNumber: invNum,
-            bookingNumber: rental.booking_number,
-            customerName: customer.name,
-            blazer: product.name,
-            rentalDays,
-            rentAmount,
-            depositAmount
-          }),
-          bookingDate
-        ]
-      );
-    }
-  }
-  console.log(`✓ ${createdRentals.length} Rental Bookings seeded with linked payments and tax invoices`);
-
-  // 8. Reviews (25+ realistic reviews with ratings)
+  // 7. Reviews (25+ realistic reviews with ratings)
   const reviewComments = [
     { rating: 5, title: 'Savile Row Craftsmanship', comment: 'The canvassing and lapel roll are breathtaking. Wore this for an international summit in Singapore and received non-stop accolades.' },
     { rating: 5, title: 'Impeccable Silhouette & Drape', comment: 'The waist suppression and soft Italian shoulders give a commanding presence without restricting movement. Truly majestic.' },
     { rating: 5, title: 'Masterpiece Velvet Quality', comment: 'The depth of color under banquet lighting is unmatched. The silk Bemberg lining ensures supreme comfort all evening.' },
     { rating: 4, title: 'Superb Fabric & Tailoring', comment: 'Very impressed with the pick stitching and horn buttons. Sizing was exact to the chart.' },
-    { rating: 5, title: 'Flawless Rental Experience', comment: 'Garment arrived in pristine condition inside a luxury cedar-infused garment bag. Will definitely rent again.' },
+    { rating: 5, title: 'Flawless Bespoke Experience', comment: 'Garment arrived in pristine condition inside a luxury cedar-infused garment bag. Will definitely purchase again.' },
     { rating: 4, title: 'High-Praise Wedding Bandhgala', comment: 'Turned heads throughout my reception. Excellent balance of classical Indian royalty and modern structured lines.' },
     { rating: 5, title: 'Unbeatable Fit & Finish', comment: 'Handcrafted precision is obvious from the moment you drape it over your shoulders. Pure sartorial excellence.' },
     { rating: 3, title: 'Slightly Snug on Shoulders', comment: 'Beautiful fabric and finish, but fits slightly slimmer than standard American cuts. Recommend sizing up.' }

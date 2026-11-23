@@ -78,8 +78,7 @@ export const listCustomers = async ({ search, page = 1, limit = 20 }) => {
   const queryParams = [...params, limit, offset];
   const { rows: items } = await pool.query(
     `SELECT id, full_name, email, phone, role, is_active, created_at,
-       (SELECT COUNT(*) FROM orders o WHERE o.user_id = users.id) AS orders_count,
-       (SELECT COUNT(*) FROM rental_bookings r WHERE r.user_id = users.id) AS rentals_count
+       (SELECT COUNT(*) FROM orders o WHERE o.user_id = users.id) AS orders_count
      FROM users
      WHERE ${whereSql}
      ORDER BY created_at DESC

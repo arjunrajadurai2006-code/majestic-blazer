@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { LogOut, AlertCircle, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useSettings } from '../context/SettingsContext';
 import logo from '../assets/majestic-blazer-logo.jpeg';
 import AdminHeader from './AdminHeader';
 import styles from './AdminLayout.module.css';
@@ -12,7 +13,6 @@ export const ADMIN_NAV = [
   { to: '/categories', label: 'Categories' },
   { to: '/inventory', label: 'Inventory' },
   { to: '/orders', label: 'Orders' },
-  { to: '/rental-bookings', label: 'Rental bookings' },
   { to: '/customers', label: 'Customers' },
   { to: '/payments', label: 'Payments' },
   { to: '/coupons', label: 'Coupons' },
@@ -25,7 +25,10 @@ export const ADMIN_NAV = [
 // Guards every admin route: redirects to /login unless a valid admin session exists.
 export default function AdminLayout() {
   const { admin, loading, logout } = useAuth();
+  const { settings } = useSettings();
+  const storeName = settings?.store_name || 'Majestic Blazer';
   const [sidebarSignOutModal, setSidebarSignOutModal] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const navigate = useNavigate();
@@ -51,38 +54,13 @@ export default function AdminLayout() {
 
   return (
     <div className={styles.shell}>
-      {/* Mobile Drawer Overlay */}
-      {mobileNavOpen && (
-        <div 
-          className={styles.sidebarOverlay} 
-          onClick={() => setMobileNavOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
-      <aside className={`${styles.sidebar} ${mobileNavOpen ? styles.sidebarOpen : ''}`}>
-        <div className={styles.sidebarHeader}>
-          <img src={logo} alt="Majestic Blazer" className={styles.logo} />
-          <button
-            type="button"
-            className={styles.closeDrawerBtn}
-            onClick={() => setMobileNavOpen(false)}
-            aria-label="Close navigation menu"
-          >
-            <X size={20} />
-          </button>
-        </div>
-
+      <aside className={styles.sidebar}>
+        <img src={logo} alt="Majestic Blazer" className={styles.logo} />
         <nav aria-label="Admin">
           <ul className={styles.nav}>
             {ADMIN_NAV.map((item) => (
               <li key={item.to}>
-                <NavLink 
-                  to={item.to} 
-                  end={item.end} 
-                  className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}
-                  onClick={() => setMobileNavOpen(false)}
-                >
+                <NavLink to={item.to} end={item.end} className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}>
                   {item.label}
                 </NavLink>
               </li>
@@ -92,7 +70,10 @@ export default function AdminLayout() {
         <button 
           type="button"
           className={styles.logout} 
-          onClick={() => setSidebarSignOutModal(true)}
+          onClick={() => {
+            setMobileMenuOpen(false);
+            setSidebarSignOutModal(true);
+          }}
           title="Sign out of Atelier Console"
         >
           <LogOut size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
@@ -101,7 +82,7 @@ export default function AdminLayout() {
       </aside>
 
       <div className={styles.mainWrapper}>
-        <AdminHeader onToggleMobileNav={() => setMobileNavOpen((prev) => !prev)} />
+        <AdminHeader />
         <main className={styles.content}>
           <Outlet />
         </main>

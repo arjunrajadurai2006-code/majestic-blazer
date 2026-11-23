@@ -39,7 +39,7 @@ export default function Contact() {
         <span className={styles.eyebrow}>ATELIER & BESPOKE APPOINTMENTS</span>
         <h1>Connect With Majestic Blazer</h1>
         <p className={styles.subtitle}>
-          Schedule a private fitting at our Coimbatore flagship boutique, inquire about wedding party rentals,
+          Schedule a private fitting at our Coimbatore flagship boutique, inquire about wedding party styling,
           or discuss custom tailoring with our master consultants.
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function Contact() {
             <div className={styles.infoRow}>
               <Phone size={22} className={styles.infoIcon} />
               <div>
-                <strong>Bespoke & Rental Hotline</strong>
+                <strong>Bespoke & Atelier Hotline</strong>
                 <a href={`tel:+91${BUSINESS.phone}`} className={styles.phoneLink}>
                   +91 {BUSINESS.phone}
                 </a>
@@ -163,7 +163,7 @@ export default function Contact() {
                       onChange={(e) => setSubject(e.target.value)}
                     >
                       <option value="Private Fitting Consultation">Private Fitting Consultation</option>
-                      <option value="Wedding & Partywear Rental Inquiry">Wedding & Partywear Rental Inquiry</option>
+                      <option value="Wedding & Partywear Styling Inquiry">Wedding & Partywear Styling Inquiry</option>
                       <option value="Corporate Bulk / Group Tailoring">Corporate Bulk / Group Tailoring</option>
                       <option value="Order & Delivery Tracking">Order & Delivery Tracking</option>
                       <option value="Other Sartorial Question">Other Sartorial Question</option>

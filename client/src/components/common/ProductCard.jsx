@@ -1,11 +1,16 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Heart, Eye, ArrowRight } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { savePendingGuestAction } from '../../services/guestAction';
 import styles from './ProductCard.module.css';
 
 export default function ProductCard({ product, onQuickView }) {
   const { isWishlisted, toggleWishlist } = useWishlist();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const wish = isWishlisted(product.id);
 
   const discountPercent = product.original_price && Number(product.original_price) > Number(product.sale_price)
@@ -15,6 +20,17 @@ export default function ProductCard({ product, onQuickView }) {
   const handleWishlistClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!user) {
+      savePendingGuestAction({
+        action: 'wishlist',
+        productId: product.id,
+        returnUrl: location.pathname + location.search,
+      });
+      navigate('/login', {
+        state: { from: location.pathname + location.search, preserved: { action: 'wishlist', productId: product.id } },
+      });
+      return;
+    }
     toggleWishlist(product);
   };
 
@@ -34,15 +50,10 @@ export default function ProductCard({ product, onQuickView }) {
           alt={product.name}
           className={styles.image}
           loading="lazy"
+          decoding="async"
         />
 
         <div className={styles.badges}>
-          {product.is_purchasable && product.is_rentable && (
-            <span className={`${styles.badge} ${styles.dualBadge}`}>BUY & RENT</span>
-          )}
-          {!product.is_purchasable && product.is_rentable && (
-            <span className={`${styles.badge} ${styles.rentBadge}`}>RENT ONLY</span>
-          )}
           {discountPercent > 0 && (
             <span className={`${styles.badge} ${styles.saleBadge}`}>{discountPercent}% OFF</span>
           )}
@@ -79,21 +90,12 @@ export default function ProductCard({ product, onQuickView }) {
         </h3>
 
         <div className={styles.pricing}>
-          {product.is_purchasable && product.sale_price && (
+          {product.sale_price && (
             <div className={styles.buyPrice}>
-              <span className={styles.priceLabel}>Buy:</span>
               <span className={styles.price}>₹{Number(product.sale_price).toLocaleString('en-IN')}</span>
               {discountPercent > 0 && (
                 <span className={styles.originalPrice}>₹{Number(product.original_price).toLocaleString('en-IN')}</span>
               )}
-            </div>
-          )}
-
-          {product.is_rentable && product.rent_price_per_day && (
-            <div className={styles.rentPrice}>
-              <span className={styles.priceLabel}>Rent from:</span>
-              <span className={styles.rentAmount}>₹{Number(product.rent_price_per_day).toLocaleString('en-IN')}</span>
-              <span className={styles.rentUnit}>/day</span>
             </div>
           )}
         </div>

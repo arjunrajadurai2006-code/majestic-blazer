@@ -8,7 +8,7 @@ import { api } from '../services/api';
 import { BUSINESS } from '../components/layout/Footer';
 import styles from './Home.module.css';
 
-const RENT_STEPS = [
+const TAILORING_STEPS = [
   {
     no: '01',
     title: 'Select Your Silhouette',
@@ -16,18 +16,18 @@ const RENT_STEPS = [
   },
   {
     no: '02',
-    title: 'Choose Dates & Size',
-    desc: 'Select your event dates (1 to 14 days). Real-time inventory verifies availability immediately.',
+    title: 'Precision Fitting & Sizing',
+    desc: 'Consult our detailed size guide or schedule a boutique fitting. Complimentary sleeve and waist adjustments are available.',
   },
   {
     no: '03',
-    title: 'Wear With Regal Poise',
-    desc: 'Collect from our Kurumbampalayam boutique or receive via insured courier. Professional dry-cleaning is on us.',
+    title: 'Hand-Canvassed Construction',
+    desc: 'Constructed with a floating horsehair canvas chest piece that gently molds to your physique for regal posture.',
   },
   {
     no: '04',
-    title: 'Simple Return & Deposit Refund',
-    desc: 'Bring or send the blazer back on the scheduled return date. Your security deposit is refunded promptly.',
+    title: 'Timeless Wardrobe Investment',
+    desc: 'Delivered in a breathable garment bag with cedar hanger. Crafted to maintain its structure and elegance for years.',
   },
 ];
 
@@ -44,8 +44,8 @@ const ADVANTAGES = [
   },
   {
     icon: Shield,
-    title: 'Transparent Deposit Protection',
-    desc: 'Clear rental terms and 100% refundable security deposits tracked seamlessly on your account portal.',
+    title: 'Complimentary Master Alterations',
+    desc: 'Every blazer purchase includes bespoke sleeve and waist contouring for an impeccable custom fit.',
   },
   {
     icon: MapPin,
@@ -56,9 +56,9 @@ const ADVANTAGES = [
 
 const TESTIMONIALS = [
   {
-    quote: 'The navy velvet blazer was the talk of my brother’s reception. You cannot tell it is rented — the drape and peak lapels scream bespoke luxury. Coimbatore finally has a world-class menswear destination.',
+    quote: 'The navy velvet blazer was the talk of my brother’s reception. The drape and peak lapels scream bespoke luxury. Coimbatore finally has a world-class menswear destination.',
     author: 'Karthik Subramanian',
-    occasion: 'Wedding Reception Rental',
+    occasion: 'Wedding Reception Purchase',
     city: 'Coimbatore',
     avatar: '/assets/testimonials/patron-karthik.webp',
   },
@@ -70,9 +70,9 @@ const TESTIMONIALS = [
     avatar: '/assets/testimonials/patron-arvind.webp',
   },
   {
-    quote: 'Rented an embroidered bandhgala blazer for a two-day destination sangeet. The booking was effortless, the fit was true to size, and my deposit was credited within 24 hours of return.',
+    quote: 'Selected an embroidered bandhgala blazer for a destination sangeet. The hand-canvassed construction was effortless to wear and the fit was true to size. Impeccable craftsmanship.',
     author: 'Vikram Menon',
-    occasion: 'Sangeet Ceremony Rental',
+    occasion: 'Sangeet Ceremony',
     city: 'Bangalore',
     avatar: '/assets/testimonials/patron-vikram.webp',
   },
@@ -80,19 +80,19 @@ const TESTIMONIALS = [
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [rentalSpotlights, setRentalSpotlights] = useState([]);
+  const [formalwearProducts, setFormalwearProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
 
   useEffect(() => {
     async function loadCatalog() {
       try {
-        const [featRes, rentRes] = await Promise.all([
+        const [featRes, formalRes] = await Promise.all([
           api.get('/products?featured=true&limit=4'),
-          api.get('/products?type=rent&limit=4'),
+          api.get('/products?category=tuxedos-black-tie&limit=4'),
         ]);
         setFeaturedProducts(featRes.data || []);
-        setRentalSpotlights(rentRes.data || []);
+        setFormalwearProducts(formalRes.data || []);
       } catch (err) {
         console.error('Failed to load home products', err);
       } finally {
@@ -119,7 +119,7 @@ export default function Home() {
 
           <p className={styles.heroSubtitle}>
             Command every room you walk into. Invest in a master-tailored blazer to own for life,
-            or rent an iconic statement piece for the celebration ahead.
+            handcrafted with superfine wool, silk, and plush Italian velvet.
           </p>
 
           <div className={styles.heroCtas}>
@@ -127,8 +127,8 @@ export default function Home() {
               <span>Shop Collection</span>
               <ArrowRight size={18} />
             </Button>
-            <Button to="/rent" variant="outline" className={styles.secondaryBtn}>
-              <span>Explore Rentals</span>
+            <Button to="/shop?category=tuxedos-black-tie" variant="outline" className={styles.secondaryBtn}>
+              <span>Evening & Tuxedos</span>
             </Button>
           </div>
         </div>
@@ -149,17 +149,17 @@ export default function Home() {
           <div className={styles.trustDivider} />
           <div className={styles.trustItem}>
             <CheckCircle2 size={18} className={styles.trustIcon} />
-            <span>100% Refundable Security Deposit</span>
+            <span>Complimentary Fitting & Alterations</span>
           </div>
         </div>
       </section>
 
-      {/* 2. Buy vs Rent Distinction Banner */}
+      {/* 2. Sartorial Excellence & Bespoke Services Banner */}
       <section className={styles.distinction}>
         <div className={`container ${styles.distinctionGrid}`}>
           <div className={styles.distinctionCard}>
             <div className={styles.distinctionMeta}>
-              <span className={styles.metaTag}>OWN IT</span>
+              <span className={styles.metaTag}>READY TO WEAR</span>
               <h2>Bespoke Tailoring to Keep</h2>
               <p>
                 Timeless blazers crafted with English worsted wool, peak lapels and horn buttons.
@@ -174,14 +174,14 @@ export default function Home() {
 
           <div className={`${styles.distinctionCard} ${styles.rentCard}`}>
             <div className={styles.distinctionMeta}>
-              <span className={`${styles.metaTag} ${styles.silverMetaTag}`}>BORROW IT</span>
-              <h2>Luxury Rentals for the Occasion</h2>
+              <span className={`${styles.metaTag} ${styles.silverMetaTag}`}>PRIVATE ATELIER</span>
+              <h2>Custom Fittings & Styling</h2>
               <p>
-                Wear opulence without commitment. Rent luxury tuxedos, royal velvets and brocade
-                bandhgalas from ₹1,299 per day with seamless date booking and instant deposit refund.
+                Visit our Coimbatore atelier for private consultations, custom measurements,
+                and master alterations ensuring a glove-like contour on every silhouette.
               </p>
-              <Button to="/rent" variant="outline" className={styles.distinctionBtn}>
-                <span>View Rental Collection</span>
+              <Button to="/contact" variant="outline" className={styles.distinctionBtn}>
+                <span>Schedule Consultation</span>
                 <ArrowRight size={16} />
               </Button>
             </div>
@@ -237,6 +237,8 @@ export default function Home() {
                 src="/assets/collections/wedding-partywear.webp"
                 alt="Wedding and Partywear Blazers"
                 className={styles.categoryImage}
+                loading="lazy"
+                decoding="async"
               />
               <div className={styles.categoryOverlay}>
                 <span className={styles.catLabel}>Sangeet & Receptions</span>
@@ -250,6 +252,8 @@ export default function Home() {
                 src="/assets/collections/tuxedos-black-tie.webp"
                 alt="Tuxedos and Black Tie"
                 className={styles.categoryImage}
+                loading="lazy"
+                decoding="async"
               />
               <div className={styles.categoryOverlay}>
                 <span className={styles.catLabel}>Galas & Red Carpet</span>
@@ -263,6 +267,8 @@ export default function Home() {
                 src="/assets/collections/formal-blazers.webp"
                 alt="Formal Corporate Blazers"
                 className={styles.categoryImage}
+                loading="lazy"
+                decoding="async"
               />
               <div className={styles.categoryOverlay}>
                 <span className={styles.catLabel}>Boardrooms & Executive</span>
@@ -276,6 +282,8 @@ export default function Home() {
                 src="/assets/collections/casual-smart.webp"
                 alt="Casual Smart Blazers"
                 className={styles.categoryImage}
+                loading="lazy"
+                decoding="async"
               />
               <div className={styles.categoryOverlay}>
                 <span className={styles.catLabel}>Leisure & Weekends</span>
@@ -287,20 +295,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. How Renting Works */}
+      {/* 5. The Majestic Tailoring Journey */}
       <section className={styles.howItWorks}>
         <div className="container">
           <div className={styles.howHeader}>
-            <span className={styles.sectionEyebrow}>SEAMLESS OCCASION WEAR</span>
-            <h2>How Blazer Renting Works</h2>
+            <span className={styles.sectionEyebrow}>SARTORIAL DISTINCTION</span>
+            <h2>The Majestic Tailoring Journey</h2>
             <p className={styles.howSubtitle}>
-              Experience world-class menswear without the full retail commitment.
-              Four straightforward steps to an unforgettable evening.
+              Experience world-class menswear crafted for life's most memorable moments.
+              Four hallmarks of our heirloom garments.
             </p>
           </div>
 
           <div className={styles.stepsGrid}>
-            {RENT_STEPS.map((step) => (
+            {TAILORING_STEPS.map((step) => (
               <div key={step.no} className={styles.stepCard}>
                 <span className={styles.stepNo}>{step.no}</span>
                 <h3>{step.title}</h3>
@@ -310,29 +318,29 @@ export default function Home() {
           </div>
 
           <div className={styles.howAction}>
-            <Button to="/rent">
-              <span>Browse All Rentable Blazers</span>
+            <Button to="/shop">
+              <span>Explore All Blazers</span>
               <ArrowRight size={18} />
             </Button>
           </div>
         </div>
       </section>
 
-      {/* 6. Rental Spotlight Grid */}
+      {/* 6. Seasonal Formalwear & Tuxedos Showcase */}
       <section className={`container ${styles.section}`}>
         <div className={styles.sectionHeader}>
           <div>
-            <span className={styles.sectionEyebrow}>MOST RENTED THIS MONTH</span>
-            <h2>Trending Occasion Rentals</h2>
+            <span className={styles.sectionEyebrow}>BLACK TIE & EVENING EXCELLENCE</span>
+            <h2>Seasonal Formalwear & Tuxedos</h2>
           </div>
-          <Link to="/rent" className={styles.sectionLink}>
-            <span>View All Rentals</span>
+          <Link to="/shop?category=tuxedos-black-tie" className={styles.sectionLink}>
+            <span>View All Formalwear</span>
             <ArrowRight size={16} />
           </Link>
         </div>
 
         <div className={styles.productGrid}>
-          {rentalSpotlights.map((p) => (
+          {formalwearProducts.map((p) => (
             <ProductCard
               key={p.id}
               product={p}
@@ -383,7 +391,15 @@ export default function Home() {
               <p className={styles.quote}>"{t.quote}"</p>
               <footer className={styles.testAuthor}>
                 {t.avatar && (
-                  <img src={t.avatar} alt={t.author} className={styles.testAvatar} />
+                  <img
+                    src={t.avatar}
+                    alt={t.author}
+                    className={styles.testAvatar}
+                    loading="lazy"
+                    decoding="async"
+                    width="64"
+                    height="64"
+                  />
                 )}
                 <div className={styles.testAuthorInfo}>
                   <strong>{t.author}</strong>
@@ -403,6 +419,10 @@ export default function Home() {
               src="/assets/brand/flagship-atelier.webp"
               alt="Majestic Blazer Coimbatore Boutique and Atelier"
               className={styles.boutiqueImage}
+              loading="lazy"
+              decoding="async"
+              width="800"
+              height="533"
             />
           </div>
           <div className={styles.boutiqueInfo}>
@@ -410,7 +430,7 @@ export default function Home() {
             <h2>Visit Our Coimbatore Boutique</h2>
             <p>
               Experience private fitting rooms, tactile fabric swatches, and one-on-one styling with
-              our master consultants. Try any blazer before purchasing or scheduling your rental.
+              our master consultants. Try any blazer and consult our master tailors before purchasing.
             </p>
             <address className={styles.boutiqueAddress}>
               <p><strong>Address:</strong> {BUSINESS.address}</p>

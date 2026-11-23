@@ -61,7 +61,7 @@ export default function Wishlist() {
         {wishlistItems.map((item) => (
           <article key={item.product_id || item.id} className={styles.card}>
             <Link to={`/products/${item.slug}`} className={styles.imgWrap}>
-              <img src={item.image_url} alt={item.name} className={styles.img} />
+              <img src={item.image_url} alt={item.name} className={styles.img} loading="lazy" decoding="async" width="300" height="400" />
             </Link>
 
             <div className={styles.body}>
@@ -70,13 +70,8 @@ export default function Wishlist() {
               </h3>
 
               <div className={styles.prices}>
-                {item.is_purchasable && item.sale_price && (
-                  <span>Buy: <strong>₹{Number(item.sale_price).toLocaleString('en-IN')}</strong></span>
-                )}
-                {item.is_rentable && item.rent_price_per_day && (
-                  <span className={styles.rentPrice}>
-                    Rent: <strong>₹{Number(item.rent_price_per_day).toLocaleString('en-IN')}/day</strong>
-                  </span>
+                {item.sale_price && (
+                  <span><strong>₹{Number(item.sale_price).toLocaleString('en-IN')}</strong></span>
                 )}
               </div>
 

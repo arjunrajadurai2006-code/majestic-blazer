@@ -26,7 +26,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} id="site-footer">
       <div className={`container ${styles.grid}`}>
         <div className={styles.brand}>
           <Logo height={56} variant="bare" />
@@ -51,12 +51,12 @@ export default function Footer() {
         </div>
 
         <div className={styles.col}>
-          <h3>Blazer Rentals</h3>
+          <h3>Bespoke & Services</h3>
           <ul>
-            <li><Link to="/rent">Browse Rental Blazers</Link></li>
-            <li><Link to="/rental-bookings">My Rental Bookings</Link></li>
-            <li><Link to="/terms-and-conditions#rental-policy">Rental Terms & Deposit Policy</Link></li>
             <li><Link to="/contact">Private Fitting Appointments</Link></li>
+            <li><Link to="/contact">Bespoke Tailoring Consultations</Link></li>
+            <li><Link to="/terms-and-conditions">Garment Care & Alterations</Link></li>
+            <li><Link to="/terms-and-conditions">Delivery & Returns Policy</Link></li>
           </ul>
         </div>
 
@@ -74,7 +74,7 @@ export default function Footer() {
 
         <div className={styles.newsletter}>
           <h3>The Private Gazette</h3>
-          <p>Receive exclusive access to new fabric drops, trunk shows and seasonal rental collections.</p>
+          <p>Receive exclusive access to new fabric drops, trunk shows, and seasonal luxury blazer collections.</p>
           <form onSubmit={handleSubscribe} className={styles.newsForm}>
             <input
               type="email"

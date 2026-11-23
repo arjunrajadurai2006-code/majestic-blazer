@@ -10,9 +10,6 @@ async function seed() {
     ['store_address', 'Sathy Road, Kurumbampalayam, Coimbatore - 641107', 'Physical boutique address'],
     ['store_phone', '8903238882', 'Customer service phone number'],
     ['store_email', 'contact@majesticblazer.com', 'Store contact email'],
-    ['rental_late_fee_per_day', '400', 'Daily late fee for overdue rentals in INR'],
-    ['rental_min_days', '1', 'Minimum rental duration in days'],
-    ['rental_max_days', '14', 'Maximum rental duration in days'],
     ['tax_percentage', '0', 'Configurable tax percentage (0 by default until business specifies GST)'],
     ['shipping_fee', '0', 'Standard shipping fee in INR (0 for complimentary delivery)'],
   ];
@@ -241,9 +238,8 @@ async function seed() {
     const prodRes = await pool.query(
       `INSERT INTO products (
         category_id, name, slug, description, color, material, fit, care_instructions,
-        is_purchasable, is_rentable, is_featured, sale_price, original_price,
-        rent_price_per_day, security_deposit, is_active
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, true)
+        is_purchasable, is_featured, sale_price, original_price, is_active
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true)
       ON CONFLICT (slug) DO UPDATE SET
         category_id = EXCLUDED.category_id,
         name = EXCLUDED.name,
@@ -253,12 +249,9 @@ async function seed() {
         fit = EXCLUDED.fit,
         care_instructions = EXCLUDED.care_instructions,
         is_purchasable = EXCLUDED.is_purchasable,
-        is_rentable = EXCLUDED.is_rentable,
         is_featured = EXCLUDED.is_featured,
         sale_price = EXCLUDED.sale_price,
-        original_price = EXCLUDED.original_price,
-        rent_price_per_day = EXCLUDED.rent_price_per_day,
-        security_deposit = EXCLUDED.security_deposit
+        original_price = EXCLUDED.original_price
       RETURNING id`,
       [
         categoryId,
@@ -270,12 +263,9 @@ async function seed() {
         p.fit,
         p.careInstructions,
         p.isPurchasable,
-        p.isRentable,
         p.isFeatured,
         p.salePrice,
         p.originalPrice,
-        p.rentPricePerDay,
-        p.securityDeposit,
       ]
     );
     const productId = prodRes.rows[0].id;
@@ -293,13 +283,12 @@ async function seed() {
 
     for (const v of p.variants) {
       await pool.query(
-        `INSERT INTO product_variants (product_id, sku, size, stock_quantity, rental_stock_quantity)
-         VALUES ($1, $2, $3, $4, $5)
+        `INSERT INTO product_variants (product_id, sku, size, stock_quantity)
+         VALUES ($1, $2, $3, $4)
          ON CONFLICT (product_id, size) DO UPDATE SET
            sku = EXCLUDED.sku,
-           stock_quantity = EXCLUDED.stock_quantity,
-           rental_stock_quantity = EXCLUDED.rental_stock_quantity`,
-        [productId, v.sku, v.size, v.stock, v.rentalStock]
+           stock_quantity = EXCLUDED.stock_quantity`,
+        [productId, v.sku, v.size, v.stock]
       );
     }
   }

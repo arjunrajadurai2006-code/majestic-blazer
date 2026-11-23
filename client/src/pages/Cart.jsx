@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, ArrowRight, Shield, Calendar, Tag, Check, ShoppingBag } from 'lucide-react';
+import { Trash2, ArrowRight, Shield, Tag, Check, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import styles from './Cart.module.css';
@@ -48,18 +48,16 @@ export default function Cart() {
         <div className={styles.emptyCard}>
           <ShoppingBag size={48} className={styles.emptyIcon} />
           <h2>Your Sartorial Bag is Empty</h2>
-          <p>Explore our master-tailored blazers for purchase or reserve an iconic piece for your next event.</p>
+          <p>Explore our master-tailored blazers for purchase with complimentary bespoke alterations.</p>
           <div className={styles.emptyBtns}>
             <Link to="/shop" className={styles.exploreBtn}>Shop Blazers</Link>
-            <Link to="/rent" className={styles.rentBtn}>Browse Rentals</Link>
           </div>
         </div>
       </div>
     );
   }
 
-  const buyItems = items.filter((i) => i.type === 'buy');
-  const rentalItems = items.filter((i) => i.type === 'rental');
+  const buyItems = items;
 
   return (
     <div className={`container ${styles.page}`}>
@@ -78,7 +76,7 @@ export default function Cart() {
               <div className={styles.itemsGroup}>
                 {buyItems.map((item) => (
                   <div key={item.key} className={styles.itemRow}>
-                    <img src={item.imageUrl} alt={item.name} className={styles.itemImg} />
+                    <img src={item.imageUrl} alt={item.name} className={styles.itemImg} loading="lazy" decoding="async" width="80" height="100" />
                     <div className={styles.itemDetails}>
                       <Link to={`/products/${item.slug}`} className={styles.itemName}>{item.name}</Link>
                       <div className={styles.itemMeta}>
@@ -125,68 +123,12 @@ export default function Cart() {
               </div>
             </div>
           )}
-
-          {/* Rental Items Section */}
-          {rentalItems.length > 0 && (
-            <div className={styles.sectionBlock}>
-              <h2 className={`${styles.sectionTitle} ${styles.rentSectionTitle}`}>
-                Occasion Blazer Rentals ({rentalItems.length})
-              </h2>
-              <div className={styles.itemsGroup}>
-                {rentalItems.map((item) => (
-                  <div key={item.key} className={`${styles.itemRow} ${styles.rentalRow}`}>
-                    <img src={item.imageUrl} alt={item.name} className={styles.itemImg} />
-                    <div className={styles.itemDetails}>
-                      <span className={styles.rentBadge}>RENTAL RESERVATION</span>
-                      <Link to={`/products/${item.slug}`} className={styles.itemName}>{item.name}</Link>
-                      <div className={styles.itemMeta}>
-                        <span>Size: <strong>{item.size}</strong></span>
-                        {item.color && <span>Color: {item.color}</span>}
-                      </div>
-
-                      <div className={styles.rentalSchedule}>
-                        <Calendar size={14} className={styles.calIcon} />
-                        <span>
-                          {new Date(item.startDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })} –{' '}
-                          {new Date(item.endDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })} ({item.rentalDays} Days)
-                        </span>
-                      </div>
-
-                      <div className={styles.rentalFinancials}>
-                        <span>Rental Charge: <strong>₹{item.rentAmount.toLocaleString('en-IN')}</strong></span>
-                        <span className={styles.depositNotice}>
-                          <Shield size={12} />
-                          <span>100% Refundable Deposit: ₹{item.depositAmount.toLocaleString('en-IN')}</span>
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className={styles.rentalTotalCol}>
-                      <span className={styles.rentalTotalLabel}>Due Today:</span>
-                      <span className={styles.lineTotal}>
-                        ₹{(item.rentAmount + item.depositAmount).toLocaleString('en-IN')}
-                      </span>
-                    </div>
-
-                    <button
-                      type="button"
-                      className={styles.removeBtn}
-                      onClick={() => removeFromCart(item.key)}
-                      aria-label="Remove rental"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Right: Summary & Checkout */}
         <aside className={styles.summaryWrap}>
           <div className={styles.summaryCard}>
-            <h3>Order & Rental Summary</h3>
+            <h3>Order Summary</h3>
 
             {/* Coupon Box */}
             <div className={styles.couponBox}>
@@ -221,19 +163,10 @@ export default function Cart() {
 
             {/* Line items */}
             <div className={styles.summaryRows}>
-              {buySubtotal > 0 && (
-                <div className={styles.summaryRow}>
-                  <span>Purchase Subtotal</span>
-                  <span>₹{buySubtotal.toLocaleString('en-IN')}</span>
-                </div>
-              )}
-
-              {rentSubtotal > 0 && (
-                <div className={styles.summaryRow}>
-                  <span>Rental Charges</span>
-                  <span>₹{rentSubtotal.toLocaleString('en-IN')}</span>
-                </div>
-              )}
+              <div className={styles.summaryRow}>
+                <span>Purchase Subtotal</span>
+                <span>₹{buySubtotal.toLocaleString('en-IN')}</span>
+              </div>
 
               {discount > 0 && (
                 <div className={`${styles.summaryRow} ${styles.discountRow}`}>
@@ -246,16 +179,6 @@ export default function Cart() {
                 <span>Insured Courier</span>
                 <span className={styles.freeDelivery}>Complimentary</span>
               </div>
-
-              {depositSubtotal > 0 && (
-                <div className={`${styles.summaryRow} ${styles.depositRow}`}>
-                  <div>
-                    <span>Refundable Security Deposit</span>
-                    <span className={styles.depositSubtext}>* 100% credited back upon return</span>
-                  </div>
-                  <span>₹{depositSubtotal.toLocaleString('en-IN')}</span>
-                </div>
-              )}
 
               <div className={styles.totalDivider} />
 

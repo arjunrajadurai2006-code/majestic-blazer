@@ -13,11 +13,9 @@ export function generateInvoicePdf(invoiceData) {
       const {
         invoiceNumber,
         issuedAt,
-        type = 'purchase', // 'purchase' | 'rental'
         orderOrBookingNumber,
         customer,
         items = [],
-        rentalDetails,
         financials = {},
         payment = {},
       } = invoiceData;
@@ -55,7 +53,7 @@ export function generateInvoicePdf(invoiceData) {
 
       y += 20;
       doc.fillColor('#777777').font('Helvetica').fontSize(8);
-      doc.text(type === 'rental' ? 'RENTAL BOOKING REF' : 'ORDER REFERENCE', col1, y);
+      doc.text('ORDER REFERENCE', col1, y);
       doc.text('PAYMENT STATUS', col2, y);
 
       y += 12;
@@ -74,18 +72,8 @@ export function generateInvoicePdf(invoiceData) {
         doc.text(`Address: ${customer.address}`, 52, y + 48, { width: 490 });
       }
 
-      // Rental banner if applicable
-      y += 75;
-      if (type === 'rental' && rentalDetails) {
-        doc.rect(40, y, 515, 30).fill('#EFEFEF');
-        doc.fillColor('#111111').font('Helvetica-Bold').fontSize(9);
-        const startStr = new Date(rentalDetails.startDate).toLocaleDateString('en-IN');
-        const endStr = new Date(rentalDetails.endDate).toLocaleDateString('en-IN');
-        doc.text(`Rental Duration: ${rentalDetails.rentalDays} Day(s)   |   Start: ${startStr}   |   Return: ${endStr}`, 52, y + 10);
-        y += 40;
-      }
-
       // Table Header
+      y += 75;
       doc.rect(40, y, 515, 22).fill('#151515');
       doc.fillColor('#FFFFFF').font('Helvetica-Bold').fontSize(8.5);
       doc.text('ITEM DESCRIPTION', 50, y + 7);
@@ -127,14 +115,9 @@ export function generateInvoicePdf(invoiceData) {
         y += 16;
       };
 
-      if (type === 'rental') {
-        printRow('Rental Charges:', `₹${Number(financials.rentAmount || 0).toLocaleString('en-IN')}`);
-        printRow('Refundable Deposit:', `₹${Number(financials.depositAmount || 0).toLocaleString('en-IN')}`);
-      } else {
-        printRow('Subtotal:', `₹${Number(financials.subtotal || 0).toLocaleString('en-IN')}`);
-        if (Number(financials.discount || 0) > 0) {
-          printRow('Discount:', `-₹${Number(financials.discount).toLocaleString('en-IN')}`, false, '#b99a58');
-        }
+      printRow('Subtotal:', `₹${Number(financials.subtotal || 0).toLocaleString('en-IN')}`);
+      if (Number(financials.discount || 0) > 0) {
+        printRow('Discount:', `-₹${Number(financials.discount).toLocaleString('en-IN')}`, false, '#b99a58');
       }
 
       if (Number(financials.tax || 0) > 0) {
@@ -149,13 +132,6 @@ export function generateInvoicePdf(invoiceData) {
       doc.rect(sumX, y, 205, 1).fill('#252525');
       y += 8;
       printRow('TOTAL PAYABLE:', `₹${Number(financials.total || 0).toLocaleString('en-IN')}`, true, '#080808');
-
-      // Rental deposit note
-      if (type === 'rental' && financials.depositAmount > 0) {
-        y += 10;
-        doc.fillColor('#555555').font('Helvetica-Oblique').fontSize(7.5);
-        doc.text('* Security deposit is 100% refundable upon return of the blazer in undamaged condition in accordance with store rental policy.', 40, y, { width: 515 });
-      }
 
       // Footer
       doc.rect(40, 750, 515, 1).fill('#C0C0C0');

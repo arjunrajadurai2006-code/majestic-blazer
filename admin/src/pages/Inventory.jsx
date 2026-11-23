@@ -44,8 +44,7 @@ export default function Inventory() {
   const startEdit = (item) => {
     setUpdatingId(item.id);
     setEditValues({
-      stockQuantity: item.stock_quantity,
-      rentalStockQuantity: item.rental_stock_quantity
+      stockQuantity: item.stock_quantity
     });
   };
 
@@ -59,8 +58,7 @@ export default function Inventory() {
       setError('');
       setSuccess('');
       await api.patch(`/inventory/${id}`, {
-        stockQuantity: Number(editValues.stockQuantity),
-        rentalStockQuantity: Number(editValues.rentalStockQuantity)
+        stockQuantity: Number(editValues.stockQuantity)
       });
       setSuccess('Inventory stock updated successfully');
       setUpdatingId(null);
@@ -75,7 +73,7 @@ export default function Inventory() {
       <div className={styles.pageHeader}>
         <div>
           <h1>Inventory & Stock Control</h1>
-          <p className={styles.subtitle}>Track physical garments across retail sales and rental wardrobe</p>
+          <p className={styles.subtitle}>Track physical garments and active checkout reservations</p>
         </div>
         <div className={styles.headerActions}>
           <button className={styles.btnSecondary} onClick={loadInventory}>
@@ -120,8 +118,9 @@ export default function Inventory() {
               <th>Garment & Collection</th>
               <th>SKU</th>
               <th>Chest Size</th>
-              <th>Retail Stock</th>
-              <th>Rental Stock</th>
+              <th>Physical Stock</th>
+              <th>Reserved</th>
+              <th>Available Stock</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -130,8 +129,11 @@ export default function Inventory() {
             {items.length > 0 ? (
               items.map(item => {
                 const isEditing = updatingId === item.id;
-                const isRetailLow = item.stock_quantity <= 2 && item.is_purchasable;
-                const isRentalLow = item.rental_stock_quantity <= 1 && item.is_rentable;
+                const reservedCount = Number(item.reserved_quantity || 0);
+                const availableCount = item.available_quantity != null
+                  ? Number(item.available_quantity)
+                  : Math.max(0, Number(item.stock_quantity) - reservedCount);
+                const isRetailLow = availableCount <= 2 && item.is_purchasable;
 
                 return (
                   <tr key={item.id}>
@@ -158,38 +160,43 @@ export default function Inventory() {
                     </td>
                     <td>
                       {isEditing ? (
-                        <input
-                          type="number"
-                          min="0"
-                          style={{ width: '70px', padding: '4px 6px' }}
-                          className={styles.input}
-                          value={editValues.stockQuantity}
-                          onChange={(e) => setEditValues({ ...editValues, stockQuantity: e.target.value })}
-                        />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          <input
+                            type="number"
+                            min="0"
+                            style={{ width: '75px', padding: '4px 6px' }}
+                            className={styles.input}
+                            value={editValues.stockQuantity}
+                            onChange={(e) => setEditValues({ ...editValues, stockQuantity: e.target.value })}
+                          />
+                          {reservedCount > 0 && (
+                            <span style={{ fontSize: '0.7rem', color: '#b99a58', whiteSpace: 'nowrap' }}>
+                              Min: {reservedCount} (Hold)
+                            </span>
+                          )}
+                        </div>
                       ) : (
-                        <span style={{ fontWeight: 600, color: isRetailLow ? '#ff4757' : '#fff' }}>
+                        <span style={{ fontWeight: 600, color: '#111111' }}>
                           {item.stock_quantity} units
                         </span>
                       )}
                     </td>
                     <td>
-                      {isEditing ? (
-                        <input
-                          type="number"
-                          min="0"
-                          style={{ width: '70px', padding: '4px 6px' }}
-                          className={styles.input}
-                          value={editValues.rentalStockQuantity}
-                          onChange={(e) => setEditValues({ ...editValues, rentalStockQuantity: e.target.value })}
-                        />
-                      ) : (
-                        <span style={{ fontWeight: 600, color: isRentalLow ? '#ffab00' : '#b99a58' }}>
-                          {item.rental_stock_quantity} units
+                      {reservedCount > 0 ? (
+                        <span className={`${styles.badge} ${styles.badgeWarning}`} title={`${reservedCount} units actively reserved by customer checkout sessions`}>
+                          {reservedCount} held
                         </span>
+                      ) : (
+                        <span style={{ color: '#888888', fontSize: '0.85rem' }}>0</span>
                       )}
                     </td>
                     <td>
-                      {isRetailLow || isRentalLow ? (
+                      <span style={{ fontWeight: 700, color: isRetailLow ? '#ff4757' : availableCount > 0 ? '#2ed573' : '#888888' }}>
+                        {availableCount} units
+                      </span>
+                    </td>
+                    <td>
+                      {isRetailLow ? (
                         <span className={`${styles.badge} ${styles.badgeWarning}`}>
                           <AlertTriangle size={12} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
                           Low Stock
@@ -222,7 +229,7 @@ export default function Inventory() {
               })
             ) : (
               <tr>
-                <td colSpan="7" className={styles.emptyState}>
+                <td colSpan="9" className={styles.emptyState}>
                   {loading ? 'Fetching stock counts...' : 'No inventory items match query.'}
                 </td>
               </tr>

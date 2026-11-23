@@ -47,13 +47,7 @@ export async function downloadInvoicePdf({ identifier, orderNumber, invoiceType 
   }
 
   const refName = orderNumber || identifier;
-  const isRental = Boolean(
-    invoiceType === 'rental' ||
-    (orderNumber && String(orderNumber).startsWith('RNT')) ||
-    (identifier && String(identifier).includes('RNT'))
-  );
-  const prefix = isRental ? 'Majestic-Blazer-Rental-Invoice' : 'Majestic-Blazer-Invoice';
-  const fileName = `${prefix}-${refName}.pdf`;
+  const fileName = `Majestic-Blazer-Invoice-${refName}.pdf`;
 
   // Create downloadable anchor and trigger download
   const blobUrl = window.URL.createObjectURL(blob);

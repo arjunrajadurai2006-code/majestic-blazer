@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Shield, CheckCircle2, Truck, MapPin, CreditCard, ArrowRight } from 'lucide-react';
+import { Shield, CheckCircle2, Truck, MapPin, CreditCard, ArrowRight, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
@@ -28,11 +28,118 @@ export default function Checkout() {
   const [pincode, setPincode] = useState('641107');
   const [orderNotes, setOrderNotes] = useState('');
 
+  // Indian PIN-code lookup state
+  const [pincodeLoading, setPincodeLoading] = useState(false);
+  const [pincodeStatus, setPincodeStatus] = useState(null); // { type: 'success' | 'error' | 'info', text: string }
+  const lookupAbortControllerRef = useRef(null);
+  const activeLookupPinRef = useRef('');
+
+  // Cancel any pending PIN lookup on unmount
+  useEffect(() => {
+    return () => {
+      if (lookupAbortControllerRef.current) {
+        lookupAbortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
+  const performPincodeLookup = async (pin) => {
+    if (lookupAbortControllerRef.current) {
+      lookupAbortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    lookupAbortControllerRef.current = controller;
+    activeLookupPinRef.current = pin;
+
+    setPincodeLoading(true);
+    setPincodeStatus(null);
+
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 5000);
+
+    try {
+      const response = await fetch(`https://api.postalpincode.in/pincode/${pin}`, {
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (activeLookupPinRef.current !== pin) return;
+
+      if (!response.ok) {
+        throw new Error(`Postal API returned ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (activeLookupPinRef.current !== pin) return;
+
+      const result = Array.isArray(data) ? data[0] : null;
+
+      if (
+        result &&
+        result.Status === 'Success' &&
+        Array.isArray(result.PostOffice) &&
+        result.PostOffice.length > 0
+      ) {
+        const primaryPo = result.PostOffice[0];
+        const detectedCity = primaryPo.District || primaryPo.Division || primaryPo.Name || '';
+        const detectedState = primaryPo.State || '';
+
+        if (detectedCity) setCity(detectedCity);
+        if (detectedState) setState(detectedState);
+
+        setPincodeStatus({
+          type: 'success',
+          text: `Autofilled: ${detectedCity}${detectedState ? `, ${detectedState}` : ''}`,
+        });
+      } else {
+        setPincodeStatus({
+          type: 'error',
+          text: 'Postal PIN not found in directory. You can enter City and State manually.',
+        });
+      }
+    } catch (err) {
+      if (err.name === 'AbortError' && activeLookupPinRef.current !== pin) {
+        return;
+      }
+      if (activeLookupPinRef.current !== pin) return;
+      setPincodeStatus({
+        type: 'info',
+        text: 'PIN lookup service unavailable. Please enter City and State manually.',
+      });
+    } finally {
+      if (activeLookupPinRef.current === pin) {
+        setPincodeLoading(false);
+      }
+    }
+  };
+
+  const handlePincodeChange = (e) => {
+    const rawVal = e.target.value.replace(/\D/g, '').slice(0, 6);
+    setPincode(rawVal);
+
+    if (lookupAbortControllerRef.current) {
+      lookupAbortControllerRef.current.abort();
+      lookupAbortControllerRef.current = null;
+    }
+    activeLookupPinRef.current = rawVal;
+
+    if (rawVal.length < 6) {
+      setPincodeLoading(false);
+      setPincodeStatus(null);
+      return;
+    }
+
+    if (rawVal.length === 6) {
+      performPincodeLookup(rawVal);
+    }
+  };
+
   // Payment
   const [paymentMethod, setPaymentMethod] = useState('razorpay'); // 'razorpay' | 'cod'
   const [isProcessing, setIsProcessing] = useState(false);
   const [confirmedOrders, setConfirmedOrders] = useState([]);
-  const [confirmedRentals, setConfirmedRentals] = useState([]);
 
   // Dynamic Back navigation handling
   useBackNavigation({
@@ -62,8 +169,7 @@ export default function Checkout() {
     );
   }
 
-  const buyItems = items.filter((i) => i.type === 'buy');
-  const rentalItems = items.filter((i) => i.type === 'rental');
+  const buyItems = items;
 
   const handleContinueToPayment = () => {
     if (deliveryType === 'delivery') {
@@ -91,7 +197,102 @@ export default function Checkout() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Helper to load official Razorpay Checkout SDK
+  const loadRazorpaySdk = () => {
+    return new Promise((resolve) => {
+      if (typeof window !== 'undefined' && window.Razorpay) {
+        return resolve(true);
+      }
+      const existing = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+      if (existing) {
+        existing.addEventListener('load', () => resolve(true));
+        existing.addEventListener('error', () => resolve(false));
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const processOnlinePayment = async ({ orderId, userDetails }) => {
+    const payOrderRes = await api.post('/payments/create-order', {
+      orderId: orderId || null,
+    });
+    const orderData = payOrderRes.data;
+
+    // Offline / Dev Mock Mode (when keys not configured or ALLOW_PAYMENT_MOCK=true)
+    if (orderData.mock) {
+      await api.post('/payments/verify', {
+        orderId: orderId || null,
+        razorpayOrderId: orderData.id,
+        razorpayPaymentId: `pay_mock_${Date.now()}`,
+        razorpaySignature: 'simulated_signature_secure',
+        provider: 'manual',
+      });
+      return true;
+    }
+
+    // Official Razorpay Checkout Modal
+    const isLoaded = await loadRazorpaySdk();
+    if (!isLoaded || !window.Razorpay) {
+      throw new Error('Razorpay SDK failed to load. Please verify your connection and try again.');
+    }
+
+    return new Promise((resolve, reject) => {
+      const options = {
+        key: orderData.key,
+        amount: orderData.amount, // in paise
+        currency: orderData.currency || 'INR',
+        name: 'MAJESTIC BLAZER',
+        description: 'Luxury Bespoke Menswear',
+        image: '/favicon.ico',
+        order_id: orderData.id,
+        prefill: {
+          name: orderData.customer?.name || userDetails?.fullName || userDetails?.name || '',
+          email: orderData.customer?.email || userDetails?.email || '',
+          contact: orderData.customer?.phone || userDetails?.phone || '',
+        },
+        notes: {
+          order_id: orderId || '',
+        },
+        theme: {
+          color: '#B38E46',
+        },
+        handler: async (response) => {
+          try {
+            await api.post('/payments/verify', {
+              orderId: orderId || null,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+              provider: 'razorpay',
+            });
+            resolve(true);
+          } catch (err) {
+            reject(err);
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            reject(new Error('Payment cancelled. Your items remain saved in your bag.'));
+          },
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', (response) => {
+        reject(new Error(response.error?.description || 'Payment transaction failed'));
+      });
+      rzp.open();
+    });
+  };
+
   const handlePlaceOrder = async () => {
+    if (isProcessing) return;
     setIsProcessing(true);
     try {
       let finalAddressId = selectedAddressId && selectedAddressId !== 'new' ? selectedAddressId : null;
@@ -110,68 +311,41 @@ export default function Checkout() {
       }
 
       const orderResults = [];
-      const rentalResults = [];
 
-      // 1. Process purchase order if buy items exist
+      // Process purchase order
       if (buyItems.length > 0) {
         const orderPayload = {
           items: buyItems.map((i) => ({ variantId: i.variantId, quantity: i.quantity })),
           addressId: deliveryType === 'delivery' ? finalAddressId : null,
           deliveryType,
-          discount: rentalItems.length === 0 ? discount : 0, // apply discount to order
+          discount,
           shipping: 0,
           notes: orderNotes || null,
         };
         const orderRes = await api.post('/orders', orderPayload);
         orderResults.push(orderRes.data);
 
-        // Record payment for order
-        await api.post('/payments/verify', {
-          orderId: orderRes.data.id,
-          razorpayOrderId: `mb_pay_${Date.now()}`,
-          razorpayPaymentId: `pay_${Date.now()}`,
-          razorpaySignature: 'simulated_signature_secure',
-          amount: orderRes.data.total,
-          provider: paymentMethod === 'razorpay' ? 'razorpay' : 'manual',
-        });
-      }
-
-      // 2. Process rental bookings if rental items exist
-      if (rentalItems.length > 0) {
-        for (const r of rentalItems) {
-          const rentalPayload = {
-            productId: r.productId,
-            variantId: r.variantId,
-            startDate: r.startDate,
-            endDate: r.endDate,
-            deliveryType,
-            shippingAddress: deliveryType === 'delivery'
-              ? (addresses.find((a) => a.id === finalAddressId) ? `${addresses.find((a) => a.id === finalAddressId).line1}, ${city} - ${pincode}` : `${line1}, ${city} - ${pincode}`)
-              : 'Store Pickup (Kurumbampalayam, Coimbatore)',
-            notes: orderNotes || null,
-          };
-          const rentRes = await api.post('/rentals', rentalPayload);
-          rentalResults.push(rentRes.data);
-
-          // Record payment for rental booking
+        if (paymentMethod === 'razorpay') {
+          await processOnlinePayment({
+            orderId: orderRes.data.id,
+            userDetails: user,
+          });
+        } else {
+          // Cash on Delivery
           await api.post('/payments/verify', {
-            rentalBookingId: rentRes.data.id,
-            razorpayOrderId: `mb_rentpay_${Date.now()}`,
-            razorpayPaymentId: `pay_rnt_${Date.now()}`,
-            razorpaySignature: 'simulated_signature_secure',
-            amount: Number(r.rentAmount) + Number(r.depositAmount),
-            provider: paymentMethod === 'razorpay' ? 'razorpay' : 'manual',
+            orderId: orderRes.data.id,
+            provider: 'cod',
           });
         }
       }
 
       setConfirmedOrders(orderResults);
-      setConfirmedRentals(rentalResults);
       clearCart();
       setStep(3); // confirmation step
-      success('Order & rental reservations placed successfully!');
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      success('Order placed successfully!');
     } catch (err) {
-      toastError(err.message || 'Payment or order processing failed. Please try again.');
+      toastError(err.response?.data?.message || err.message || 'Payment or order processing failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -366,7 +540,15 @@ export default function Checkout() {
                       </div>
 
                       <div className={styles.formRow}>
-                        <label htmlFor="checkout-pincode">Pincode</label>
+                        <div className={styles.pincodeLabelRow}>
+                          <label htmlFor="checkout-pincode">Pincode</label>
+                          {pincodeLoading && (
+                            <span className={styles.pincodeSpinner} title="Looking up postal directory...">
+                              <span className={styles.spinnerDot} />
+                              Detecting...
+                            </span>
+                          )}
+                        </div>
                         <input
                           id="checkout-pincode"
                           type="text"
@@ -377,12 +559,31 @@ export default function Checkout() {
                           autoComplete="shipping postal-code"
                           placeholder="6-digit pincode"
                           value={pincode}
-                          onChange={(e) => setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                          onChange={handlePincodeChange}
                           required
                           className={styles.inputField}
                         />
                       </div>
                     </div>
+
+                    {pincodeStatus && (
+                      <div
+                        className={`${styles.pincodeStatusBanner} ${
+                          pincodeStatus.type === 'success'
+                            ? styles.statusSuccess
+                            : pincodeStatus.type === 'error'
+                            ? styles.statusError
+                            : styles.statusInfo
+                        }`}
+                        role="status"
+                        aria-live="polite"
+                      >
+                        {pincodeStatus.type === 'success' && <CheckCircle2 size={14} />}
+                        {pincodeStatus.type === 'error' && <AlertCircle size={14} />}
+                        {pincodeStatus.type === 'info' && <MapPin size={14} />}
+                        <span>{pincodeStatus.text}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -434,12 +635,12 @@ export default function Checkout() {
               <div className={styles.miniList}>
                 {items.map((i) => (
                   <div key={i.key} className={styles.miniItem}>
-                    <img src={i.imageUrl} alt={i.name} className={styles.miniImg} />
+                    <img src={i.imageUrl} alt={i.name} className={styles.miniImg} loading="lazy" decoding="async" width="50" height="64" />
                     <div>
                       <strong>{i.name}</strong>
-                      <span>Size: {i.size} • {i.type === 'rental' ? `${i.rentalDays} Days Rental` : `Qty: ${i.quantity}`}</span>
+                      <span>Size: {i.size} • Qty: {i.quantity}</span>
                       <span className={styles.miniPrice}>
-                        ₹{((i.type === 'rental' ? i.rentAmount + i.depositAmount : i.price * i.quantity)).toLocaleString('en-IN')}
+                        ₹{(i.price * i.quantity).toLocaleString('en-IN')}
                       </span>
                     </div>
                   </div>
@@ -496,18 +697,10 @@ export default function Checkout() {
             <div className={styles.reviewBlock}>
               <h3>Review Your Order Breakdown</h3>
               <div className={styles.reviewTable}>
-                {buySubtotal > 0 && (
-                  <div className={styles.reviewRow}>
-                    <span>Purchase Items Subtotal:</span>
-                    <strong>₹{buySubtotal.toLocaleString('en-IN')}</strong>
-                  </div>
-                )}
-                {rentSubtotal > 0 && (
-                  <div className={styles.reviewRow}>
-                    <span>Rental Charges:</span>
-                    <strong>₹{rentSubtotal.toLocaleString('en-IN')}</strong>
-                  </div>
-                )}
+                <div className={styles.reviewRow}>
+                  <span>Purchase Items Subtotal:</span>
+                  <strong>₹{buySubtotal.toLocaleString('en-IN')}</strong>
+                </div>
                 {discount > 0 && (
                   <div className={`${styles.reviewRow} ${styles.goldRow}`}>
                     <span>Promotional Discount:</span>
@@ -518,15 +711,6 @@ export default function Checkout() {
                   <span>Delivery / Courier:</span>
                   <strong className={styles.freeText}>Complimentary</strong>
                 </div>
-                {depositSubtotal > 0 && (
-                  <div className={`${styles.reviewRow} ${styles.depositRow}`}>
-                    <div>
-                      <span>Refundable Security Deposit:</span>
-                      <small>100% credited back upon return inspection</small>
-                    </div>
-                    <strong>₹{depositSubtotal.toLocaleString('en-IN')}</strong>
-                  </div>
-                )}
                 <div className={styles.reviewTotalRow}>
                   <span>Total Payable Today:</span>
                   <span className={styles.totalBig}>₹{totalPayable.toLocaleString('en-IN')}</span>
@@ -564,7 +748,7 @@ export default function Checkout() {
             <div className={styles.confirmIconRing}>
               <CheckCircle2 size={40} className={styles.confirmCheckIcon} />
             </div>
-            <h1 className={styles.confirmTitle}>Order & Reservation Confirmed</h1>
+            <h1 className={styles.confirmTitle}>Order Confirmed</h1>
             <p className={styles.confirmLead}>
               Thank you, {user?.fullName || 'valued patron'}. Your request has been recorded with
               the Majestic Blazer tailoring house.
@@ -615,65 +799,10 @@ export default function Checkout() {
                 </div>
               </div>
             ))}
-
-            {/* Rental Reservations Section (Rendered only when rental bookings exist) */}
-            {confirmedRentals.map((r) => (
-              <div key={r.id} className={`${styles.orderSuccessCard} ${styles.rentalSuccessCard}`}>
-                <div className={styles.orderSuccessCardHeader}>
-                  <div className={styles.orderBadgeGroup}>
-                    <span className={`${styles.orderTypeBadge} ${styles.rentalBadge}`}>RENTAL RESERVATION</span>
-                    <span className={styles.orderStatusBadge}>CONFIRMED</span>
-                  </div>
-                  <span className={styles.orderDateStamp}>
-                    {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
-                  </span>
-                </div>
-
-                <div className={styles.orderMetricsGrid}>
-                  <div className={styles.metricBlock}>
-                    <span className={styles.metricLabel}>Rental Booking Number</span>
-                    <strong className={styles.orderNumberText}>{r.booking_number}</strong>
-                  </div>
-
-                  <div className={styles.metricBlock}>
-                    <span className={styles.metricLabel}>Rental Window & Fitting</span>
-                    <strong className={styles.rentalDatesText}>
-                      {new Date(r.start_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} — {new Date(r.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </strong>
-                    <span className={styles.rentalDurationTag}>{r.rental_days} Day Fitting & Event Window</span>
-                  </div>
-
-                  <div className={styles.metricBlock}>
-                    <span className={styles.metricLabel}>Refundable Security Deposit</span>
-                    <strong className={styles.depositAmountText}>₹{Number(r.deposit_amount).toLocaleString('en-IN')}</strong>
-                    <span className={styles.depositNoteText}>100% credited back upon return inspection</span>
-                  </div>
-                </div>
-
-                <div className={styles.orderCardFooter}>
-                  <div className={styles.cardAssurance}>
-                    <Shield size={15} />
-                    <span>Garment bag and professional dry cleaning included with rental</span>
-                  </div>
-                  <DownloadInvoiceButton
-                    invoiceIdentifier={r.invoice_number || r.booking_number || r.id}
-                    orderNumber={r.booking_number}
-                    invoiceType="rental"
-                    label="Download Rental Invoice (PDF)"
-                    variant="primary"
-                    size="md"
-                    className={styles.cardDownloadBtn}
-                  />
-                </div>
-              </div>
-            ))}
           </div>
 
           <div className={styles.confirmNavActions}>
             <Link to="/orders" className={styles.navActionOutline}>View My Orders</Link>
-            {confirmedRentals.length > 0 && (
-              <Link to="/rental-bookings" className={styles.navActionOutline}>View Rental Bookings</Link>
-            )}
             <Link to="/shop" className={styles.navActionPrimary}>Continue Shopping</Link>
           </div>
         </div>

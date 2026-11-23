@@ -2,13 +2,15 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   ChevronDown, ExternalLink, LogOut, Settings, LayoutDashboard, 
-  Calendar, Shield, AlertCircle, Menu
+  Calendar, Shield, AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useSettings } from '../context/SettingsContext';
 import styles from './AdminHeader.module.css';
 
 export default function AdminHeader({ onToggleMobileNav }) {
   const { admin, logout } = useAuth();
+  const { settings } = useSettings();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -46,7 +48,7 @@ export default function AdminHeader({ onToggleMobileNav }) {
     try {
       setSigningOut(true);
       await logout();
-      navigate('/login', { 
+      navigate('/login', {
         replace: true,
         state: { message: 'You have been signed out of the Atelier Portal.' }
       });
@@ -60,34 +62,25 @@ export default function AdminHeader({ onToggleMobileNav }) {
 
   const initials = admin?.fullName
     ? admin.fullName
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .slice(0, 2)
-        .toUpperCase()
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase()
     : 'AD';
 
-  const storefrontUrl = typeof window !== 'undefined' && 
+  const storefrontUrl = typeof window !== 'undefined' &&
     (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'http://localhost:5173'
-      : '/';
+    ? 'http://localhost:5173'
+    : '/';
 
   return (
     <>
       <header className={styles.header}>
         <div className={styles.leftSection}>
-          <button
-            type="button"
-            className={styles.hamburgerBtn}
-            onClick={onToggleMobileNav}
-            aria-label="Toggle navigation menu"
-          >
-            <Menu size={20} />
-          </button>
           <div className={styles.atelierBadge}>
             <span className={styles.pulseDot} />
-            <span className={styles.badgeFullText}>Sathy Road Atelier &bull; Admin Console</span>
-            <span className={styles.badgeShortText}>Atelier Console</span>
+            <span>Sathy Road Atelier &bull; Admin Console</span>
           </div>
         </div>
 
@@ -150,16 +143,6 @@ export default function AdminHeader({ onToggleMobileNav }) {
                   <span>Store & Tax Policies</span>
                 </Link>
 
-                <Link
-                  to="/rental-bookings"
-                  className={styles.menuItem}
-                  onClick={() => setDropdownOpen(false)}
-                  role="menuitem"
-                >
-                  <Calendar size={15} />
-                  <span>Rental Schedules</span>
-                </Link>
-
                 <div className={styles.menuDivider} />
 
                 <button
@@ -179,11 +162,11 @@ export default function AdminHeader({ onToggleMobileNav }) {
 
       {/* Confirmation Modal */}
       {confirmModalOpen && (
-        <div 
+        <div
           className={styles.modalOverlay}
           onClick={() => !signingOut && setConfirmModalOpen(false)}
         >
-          <div 
+          <div
             className={styles.modalCard}
             onClick={(e) => e.stopPropagation()}
             role="dialog"

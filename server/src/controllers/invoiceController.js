@@ -1,6 +1,5 @@
 import { pool } from '../config/db.js';
 import * as Order from '../models/orderModel.js';
-import * as Rental from '../models/rentalModel.js';
 import { generateInvoicePdf } from '../utils/pdfInvoice.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
@@ -9,19 +8,32 @@ export const getByNumberOrId = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const isNumeric = /^\d+$/.test(id);
   const sql = isNumeric
-    ? `SELECT * FROM invoices 
-       WHERE id = $1 OR order_id = $1 OR rental_booking_id = $1 
-       ORDER BY (CASE WHEN id = $1 THEN 0 ELSE 1 END), id DESC 
-       LIMIT 1`
-    : `SELECT i.* FROM invoices i
+    ? `SELECT i.*, 
+              o.user_id,
+              o.order_number
+       FROM invoices i
        LEFT JOIN orders o ON o.id = i.order_id
-       LEFT JOIN rental_bookings rb ON rb.id = i.rental_booking_id
-       WHERE i.invoice_number = $1 OR o.order_number = $1 OR rb.booking_number = $1
+       WHERE i.id = $1 OR i.order_id = $1
+       ORDER BY (CASE WHEN i.id = $1 THEN 0 ELSE 1 END), i.id DESC 
+       LIMIT 1`
+    : `SELECT i.*, 
+              o.user_id,
+              o.order_number
+       FROM invoices i
+       LEFT JOIN orders o ON o.id = i.order_id
+       WHERE i.invoice_number = $1 OR o.order_number = $1
        ORDER BY (CASE WHEN i.invoice_number = $1 THEN 0 ELSE 1 END), i.id DESC 
        LIMIT 1`;
   const { rows } = await pool.query(sql, [id]);
   const invoice = rows[0];
   if (!invoice) throw new AppError('Invoice not found', 404);
+
+  const isOwner = Number(invoice.user_id) === Number(req.user?.id);
+  const isAdmin = req.user?.role === 'admin';
+  if (!isAdmin && !isOwner) {
+    throw new AppError('You do not have permission to access this invoice', 403);
+  }
+
   res.json({ success: true, data: invoice });
 });
 
@@ -29,25 +41,40 @@ export const downloadPdf = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const isNumeric = /^\d+$/.test(id);
   const sql = isNumeric
-    ? `SELECT * FROM invoices 
-       WHERE id = $1 OR order_id = $1 OR rental_booking_id = $1 
-       ORDER BY (CASE WHEN id = $1 THEN 0 ELSE 1 END), id DESC 
-       LIMIT 1`
-    : `SELECT i.* FROM invoices i
+    ? `SELECT i.*, 
+              o.user_id,
+              o.order_number
+       FROM invoices i
        LEFT JOIN orders o ON o.id = i.order_id
-       LEFT JOIN rental_bookings rb ON rb.id = i.rental_booking_id
-       WHERE i.invoice_number = $1 OR o.order_number = $1 OR rb.booking_number = $1
+       WHERE i.id = $1 OR i.order_id = $1
+       ORDER BY (CASE WHEN i.id = $1 THEN 0 ELSE 1 END), i.id DESC 
+       LIMIT 1`
+    : `SELECT i.*, 
+              o.user_id,
+              o.order_number
+       FROM invoices i
+       LEFT JOIN orders o ON o.id = i.order_id
+       WHERE i.invoice_number = $1 OR o.order_number = $1
        ORDER BY (CASE WHEN i.invoice_number = $1 THEN 0 ELSE 1 END), i.id DESC 
        LIMIT 1`;
   const { rows } = await pool.query(sql, [id]);
   const invoice = rows[0];
   if (!invoice) throw new AppError('Invoice not found', 404);
 
+  const isOwner = Number(invoice.user_id) === Number(req.user?.id);
+  const isAdmin = req.user?.role === 'admin';
+  if (!isAdmin && !isOwner) {
+    throw new AppError('You do not have permission to access this invoice', 403);
+  }
+
   let invoicePayload;
 
   if (invoice.order_id) {
-    const order = await Order.getById(invoice.order_id);
+    const order = await Order.getById(invoice.order_id, isAdmin ? null : req.user.id);
     if (!order) throw new AppError('Associated order not found', 404);
+    if (!isAdmin && Number(order.user_id) !== Number(req.user.id)) {
+      throw new AppError('You do not have permission to access this invoice', 403);
+    }
     invoicePayload = {
       invoiceNumber: invoice.invoice_number,
       issuedAt: invoice.issued_at,
@@ -77,53 +104,36 @@ export const downloadPdf = asyncHandler(async (req, res) => {
         status: order.status === 'cancelled' ? 'cancelled' : 'paid',
       },
     };
-  } else if (invoice.rental_booking_id) {
-    const rental = await Rental.getById(invoice.rental_booking_id);
-    if (!rental) throw new AppError('Associated rental not found', 404);
+  } else {
+    // Legacy invoice record without direct order_id pointer
     invoicePayload = {
       invoiceNumber: invoice.invoice_number,
       issuedAt: invoice.issued_at,
-      type: 'rental',
-      orderOrBookingNumber: rental.booking_number,
+      type: 'purchase',
+      orderOrBookingNumber: invoice.invoice_number,
       customer: {
-        name: rental.customer_name,
-        email: rental.customer_email,
-        phone: rental.customer_phone,
-        address: rental.shipping_address || 'Store Collection (Kurumbampalayam, Coimbatore)',
+        name: 'Patron',
+        email: '',
+        phone: '',
+        address: 'Atelier Archive',
       },
-      items: [
-        {
-          name: `${rental.product_name} (${rental.color || 'Tailored'})`,
-          size: rental.size,
-          sku: rental.sku,
-          quantity: 1,
-          unitPrice: rental.rent_amount,
-        },
-      ],
-      rentalDetails: {
-        rentalDays: rental.rental_days,
-        startDate: rental.start_date,
-        endDate: rental.end_date,
-      },
+      items: [],
       financials: {
-        rentAmount: rental.rent_amount,
-        depositAmount: rental.deposit_amount,
-        total: Number(rental.rent_amount) + Number(rental.deposit_amount),
+        subtotal: invoice.amount || 0,
+        discount: 0,
+        tax: 0,
+        shipping: 0,
+        total: invoice.amount || 0,
       },
       payment: {
-        status: rental.status === 'cancelled' ? 'cancelled' : 'paid',
+        status: 'paid',
       },
     };
-  } else {
-    throw new AppError('Invoice has no associated order or booking', 400);
   }
 
   const pdfBuffer = await generateInvoicePdf(invoicePayload);
   const refNumber = invoicePayload?.orderOrBookingNumber || invoice.invoice_number;
-  const isRental = invoicePayload?.type === 'rental' || Boolean(invoice.rental_booking_id);
-  const filename = isRental
-    ? `Majestic-Blazer-Rental-Invoice-${refNumber}.pdf`
-    : `Majestic-Blazer-Invoice-${refNumber}.pdf`;
+  const filename = `Majestic-Blazer-Invoice-${refNumber}.pdf`;
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
   res.send(pdfBuffer);
@@ -136,13 +146,11 @@ export const list = asyncHandler(async (req, res) => {
   const total = Number(countRes.rows[0]?.total || 0);
 
   const { rows: items } = await pool.query(
-    `SELECT i.*, o.order_number, rb.booking_number,
-       COALESCE(u1.full_name, u2.full_name) AS customer_name
+    `SELECT i.*, o.order_number,
+       u.full_name AS customer_name
      FROM invoices i
      LEFT JOIN orders o ON o.id = i.order_id
-     LEFT JOIN rental_bookings rb ON rb.id = i.rental_booking_id
-     LEFT JOIN users u1 ON u1.id = o.user_id
-     LEFT JOIN users u2 ON u2.id = rb.user_id
+     LEFT JOIN users u ON u.id = o.user_id
      ORDER BY i.issued_at DESC
      LIMIT $1 OFFSET $2`,
     [Number(limit), offset]

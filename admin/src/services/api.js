@@ -26,15 +26,26 @@ function resolveApiBase() {
   return base;
 }
 
-export const API_BASE = resolveApiBase();
-export const getApiUrl = (path) => `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
-
 const TOKEN_KEY = 'mb_admin_token';
 
 export const tokenStore = {
   get: () => localStorage.getItem(TOKEN_KEY),
   set: (token) => localStorage.setItem(TOKEN_KEY, token),
   clear: () => localStorage.removeItem(TOKEN_KEY),
+};
+
+export const API_BASE = resolveApiBase();
+export const getApiUrl = (path) => {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const base = `${API_BASE}${cleanPath}`;
+  if (cleanPath.startsWith('/invoices/') && cleanPath.endsWith('/pdf')) {
+    const token = tokenStore.get();
+    if (token && !base.includes('token=')) {
+      const sep = base.includes('?') ? '&' : '?';
+      return `${base}${sep}token=${encodeURIComponent(token)}`;
+    }
+  }
+  return base;
 };
 
 export async function api(path, { method = 'GET', body, auth = true } = {}) {

@@ -18,7 +18,7 @@ export default function PrivacyPolicy() {
         <section>
           <h2>2. Information We Collect</h2>
           <p>
-            When you purchase, rent a blazer, or register an account, we collect:
+            When you purchase a blazer or register an account, we collect:
           </p>
           <ul>
             <li>Full Name, contact telephone number, and email address</li>

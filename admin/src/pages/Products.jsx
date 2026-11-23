@@ -33,14 +33,11 @@ export default function Products() {
     careInstructions: 'Dry clean only. Store on wooden hanger.',
     salePrice: 14999,
     originalPrice: 18999,
-    rentPricePerDay: 1999,
-    securityDeposit: 5000,
     isPurchasable: true,
-    isRentable: true,
     isFeatured: false,
     isActive: true,
     imageUrls: '',
-    variants: DEFAULT_SIZES.map(s => ({ size: s, sku: '', stockQuantity: 3, rentalStockQuantity: 2 }))
+    variants: DEFAULT_SIZES.map(s => ({ size: s, sku: '', stockQuantity: 3 }))
   });
 
   const loadData = async () => {
@@ -77,14 +74,11 @@ export default function Products() {
       careInstructions: 'Dry clean only. Store on wooden hanger.',
       salePrice: 14999,
       originalPrice: 18999,
-      rentPricePerDay: 1999,
-      securityDeposit: 5000,
       isPurchasable: true,
-      isRentable: true,
       isFeatured: false,
       isActive: true,
       imageUrls: '/assets/products/imperial-navy-velvet-front.webp',
-      variants: DEFAULT_SIZES.map(s => ({ size: s, sku: `MB-${s}`, stockQuantity: 3, rentalStockQuantity: 2 }))
+      variants: DEFAULT_SIZES.map(s => ({ size: s, sku: `MB-${s}`, stockQuantity: 3 }))
     });
     setIsModalOpen(true);
   };
@@ -113,18 +107,14 @@ export default function Products() {
         careInstructions: full.care_instructions || '',
         salePrice: full.sale_price || '',
         originalPrice: full.original_price || '',
-        rentPricePerDay: full.rent_price_per_day || '',
-        securityDeposit: full.security_deposit || '',
         isPurchasable: Boolean(full.is_purchasable),
-        isRentable: Boolean(full.is_rentable),
         isFeatured: Boolean(full.is_featured),
         isActive: Boolean(full.is_active),
         imageUrls: imgUrls,
         variants: DEFAULT_SIZES.map(s => ({
           size: s,
           sku: vMap[s]?.sku || `MB-${full.slug}-${s}`,
-          stockQuantity: vMap[s]?.stock_quantity ?? 0,
-          rentalStockQuantity: vMap[s]?.rental_stock_quantity ?? 0
+          stockQuantity: vMap[s]?.stock_quantity ?? 0
         }))
       });
       setIsModalOpen(true);
@@ -208,18 +198,14 @@ export default function Products() {
         careInstructions: formData.careInstructions,
         salePrice: formData.salePrice ? Number(formData.salePrice) : null,
         originalPrice: formData.originalPrice ? Number(formData.originalPrice) : null,
-        rentPricePerDay: formData.rentPricePerDay ? Number(formData.rentPricePerDay) : null,
-        securityDeposit: formData.securityDeposit ? Number(formData.securityDeposit) : null,
         isPurchasable: Boolean(formData.isPurchasable),
-        isRentable: Boolean(formData.isRentable),
         isFeatured: Boolean(formData.isFeatured),
         isActive: Boolean(formData.isActive),
         images,
         variants: formData.variants.map(v => ({
           size: v.size,
           sku: v.sku || `${formData.slug}-${v.size}`,
-          stockQuantity: Number(v.stockQuantity) || 0,
-          rentalStockQuantity: Number(v.rentalStockQuantity) || 0
+          stockQuantity: Number(v.stockQuantity) || 0
         }))
       };
 
@@ -259,10 +245,7 @@ export default function Products() {
         slug: product.slug,
         isActive: !product.is_active,
         isPurchasable: product.is_purchasable,
-        isRentable: product.is_rentable,
-        salePrice: product.sale_price,
-        rentPricePerDay: product.rent_price_per_day,
-        securityDeposit: product.security_deposit
+        salePrice: product.sale_price
       });
       loadData();
     } catch (err) {
@@ -286,7 +269,7 @@ export default function Products() {
       <div className={styles.pageHeader}>
         <div>
           <h1>Blazer Catalog Management</h1>
-          <p className={styles.subtitle}>Direct sartorial inventory and rental availability control</p>
+          <p className={styles.subtitle}>Direct sartorial inventory and catalog control</p>
         </div>
         <div className={styles.headerActions}>
           <button className={styles.btnPrimary} onClick={openAddModal}>
@@ -330,9 +313,6 @@ export default function Products() {
               <th>Garment</th>
               <th>Category</th>
               <th>Purchase Price</th>
-              <th>Rental / Day</th>
-              <th>Deposit</th>
-              <th>Type</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -356,14 +336,6 @@ export default function Products() {
                   </td>
                   <td>{p.category_name}</td>
                   <td>{formatCurrency(p.sale_price)}</td>
-                  <td>{formatCurrency(p.rent_price_per_day)}</td>
-                  <td>{formatCurrency(p.security_deposit)}</td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '4px' }}>
-                      {p.is_purchasable && <span className={`${styles.badge} ${styles.badgeDefault}`}>Buy</span>}
-                      {p.is_rentable && <span className={`${styles.badge} ${styles.badgeInfo}`}>Rent</span>}
-                    </div>
-                  </td>
                   <td>
                     <button 
                       onClick={() => handleToggleActive(p)} 
@@ -517,28 +489,6 @@ export default function Products() {
                   />
                 </div>
 
-                <div className={styles.formGroup}>
-                  <label>Rental Rate / Day (₹)</label>
-                  <input
-                    type="number"
-                    min="0"
-                    className={styles.input}
-                    value={formData.rentPricePerDay}
-                    onChange={(e) => setFormData({ ...formData, rentPricePerDay: e.target.value })}
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label>Refundable Security Deposit (₹)</label>
-                  <input
-                    type="number"
-                    min="0"
-                    className={styles.input}
-                    value={formData.securityDeposit}
-                    onChange={(e) => setFormData({ ...formData, securityDeposit: e.target.value })}
-                  />
-                </div>
-
                 {/* Flags */}
                 <div className={`${styles.formGroup} ${styles.formFull}`} style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', padding: '0.5rem 0' }}>
                   <label className={styles.checkboxLabel}>
@@ -548,14 +498,6 @@ export default function Products() {
                       onChange={(e) => setFormData({ ...formData, isPurchasable: e.target.checked })}
                     />
                     Available for Direct Purchase
-                  </label>
-                  <label className={styles.checkboxLabel}>
-                    <input
-                      type="checkbox"
-                      checked={formData.isRentable}
-                      onChange={(e) => setFormData({ ...formData, isRentable: e.target.checked })}
-                    />
-                    Available for Rental
                   </label>
                   <label className={styles.checkboxLabel}>
                     <input
@@ -628,14 +570,13 @@ export default function Products() {
                 <div className={`${styles.formGroup} ${styles.formFull}`}>
                   <label style={{ marginBottom: '0.5rem', display: 'block' }}>Size Variants & Stock Units</label>
                   <div style={{ background: '#F7F7F7', padding: '0.75rem', borderRadius: '4px', border: '1px solid #E5E5E5' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 100px 100px', gap: '8px', marginBottom: '8px', fontSize: '0.75rem', color: '#666666', textTransform: 'uppercase' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 120px', gap: '8px', marginBottom: '8px', fontSize: '0.75rem', color: '#666666', textTransform: 'uppercase' }}>
                       <div>Size</div>
                       <div>SKU Code</div>
-                      <div>Retail Stock</div>
-                      <div>Rental Stock</div>
+                      <div>Stock Units</div>
                     </div>
                     {formData.variants.map((v, i) => (
-                      <div key={v.size} style={{ display: 'grid', gridTemplateColumns: '80px 1fr 100px 100px', gap: '8px', marginBottom: '6px' }}>
+                      <div key={v.size} style={{ display: 'grid', gridTemplateColumns: '80px 1fr 120px', gap: '8px', marginBottom: '6px' }}>
                         <div style={{ padding: '6px 8px', fontWeight: 600, color: '#111111' }}>{v.size}</div>
                         <input
                           type="text"
@@ -651,14 +592,6 @@ export default function Products() {
                           style={{ padding: '4px 8px' }}
                           value={v.stockQuantity}
                           onChange={(e) => handleVariantChange(i, 'stockQuantity', e.target.value)}
-                        />
-                        <input
-                          type="number"
-                          min="0"
-                          className={styles.input}
-                          style={{ padding: '4px 8px' }}
-                          value={v.rentalStockQuantity}
-                          onChange={(e) => handleVariantChange(i, 'rentalStockQuantity', e.target.value)}
                         />
                       </div>
                     ))}

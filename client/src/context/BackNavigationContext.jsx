@@ -31,8 +31,8 @@ export function getFallbackRoute(pathname) {
     return '/shop';
   }
 
-  // Order Details / History / Rental Bookings -> Profile or Home
-  if (pathname.startsWith('/orders') || pathname.startsWith('/rental-bookings')) {
+  // Order Details / History -> Profile
+  if (pathname.startsWith('/orders')) {
     return '/profile';
   }
 
@@ -41,8 +41,8 @@ export function getFallbackRoute(pathname) {
     return '/';
   }
 
-  // Product listings (Shop / Rent) -> Home
-  if (pathname === '/shop' || pathname === '/rent') {
+  // Product listing (Shop) -> Home
+  if (pathname === '/shop') {
     return '/';
   }
 

@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 import { env } from './config/env.js';
 import routes from './routes/index.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
+import { AppError } from './utils/AppError.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,49 +29,74 @@ app.use(
   })
 );
 
-// Robust CORS configuration with support for official domains and Vercel deployments
-const allowedOriginPatterns = [
+// Robust CORS configuration with explicit origin allowlist, production domain restrictions, and preflight handling
+const prodOriginPatterns = [
   /^https:\/\/majestic-blazer.*\.vercel\.app$/,
   /^https:\/\/.*\.majesticblazer\.com$/,
   /^https:\/\/majesticblazer\.com$/,
-  /^http:\/\/localhost:(5173|5174|3000|5000)$/,
-  /^http:\/\/127\.0\.0\.1:(5173|5174|3000|5000)$/,
 ];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
-      if (!origin) return callback(null, true);
+export const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
 
-      // In production, reject any origin that is not explicitly allowed
-      if (env.isProd) {
-        if (env.corsOrigins.includes(origin) || allowedOriginPatterns.some((pattern) => pattern.test(origin))) {
-          return callback(null, true);
-        }
-        return callback(new Error(`CORS policy: Origin ${origin} not allowed by CORS`), false);
+    // In production, reject any origin that is not explicitly allowed in production allowlist
+    if (env.isProd) {
+      // Localhost origins are strictly forbidden in production
+      const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+      if (isLocal) {
+        return callback(new AppError(`CORS policy: Origin ${origin} not allowed by CORS`, 403), false);
       }
 
-      // In non-production or development, allow localhost/patterns or configured origins
-      if (allowedOriginPatterns.some((pattern) => pattern.test(origin)) || env.corsOrigins.includes(origin) || env.corsOrigins.length === 0) {
+      const isAllowedProd =
+        env.corsOrigins.includes(origin) ||
+        prodOriginPatterns.some((pattern) => pattern.test(origin));
+
+      if (isAllowedProd) {
         return callback(null, true);
       }
+      return callback(new AppError(`CORS policy: Origin ${origin} not allowed by CORS`, 403), false);
+    }
 
-      return callback(new Error(`CORS policy: Origin ${origin} not allowed by CORS`), false);
-    },
-    credentials: true,
-  })
-);
+    // In non-production or development, allow explicit development origins, configured origins, or production patterns
+    const isAllowedDev =
+      env.devOrigins.includes(origin) ||
+      env.corsOrigins.includes(origin) ||
+      prodOriginPatterns.some((pattern) => pattern.test(origin));
+
+    if (isAllowedDev) {
+      return callback(null, true);
+    }
+
+    return callback(new AppError(`CORS policy: Origin ${origin} not allowed by CORS`, 403), false);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+  ],
+  exposedHeaders: ['Content-Disposition', 'Retry-After', 'RateLimit-Reset', 'RateLimit-Limit', 'RateLimit-Remaining'],
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 
 if (!env.isProd) app.use(morgan('dev'));
 
 // Rate Limiting to prevent DoS & brute-force attacks
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 500, // limit each IP to 500 requests per windowMs
+  max: 500, // limit each IP to 500 requests per windowMs in production and development
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many requests from this IP, please try again after 15 minutes' },
+  // Skip general rate limiting during automated test execution (NODE_ENV=test) to prevent IP exhaustion
+  skip: () => process.env.NODE_ENV === 'test' || env.isTest,
 });
 
 const authLimiter = rateLimit({
@@ -78,7 +104,15 @@ const authLimiter = rateLimit({
   max: 50, // limit login/register attempts
   standardHeaders: true,
   legacyHeaders: false,
-  message: { success: false, message: 'Too many authentication attempts, please try again after 15 minutes' },
+  message: (req) => {
+    const resetMs = req.rateLimit?.resetTime ? req.rateLimit.resetTime.getTime() - Date.now() : 15 * 60 * 1000;
+    const retryAfter = Math.max(1, Math.ceil(resetMs / 1000));
+    return {
+      success: false,
+      message: `Too many authentication attempts. Please wait ${retryAfter} seconds before trying again.`,
+      retryAfter,
+    };
+  },
 });
 
 app.use('/api', generalLimiter);
@@ -89,8 +123,8 @@ app.use('/api/auth/admin/login', authLimiter);
 // Serve uploaded product photography statically
 app.use('/uploads', express.static(uploadsDir));
 
-// Razorpay webhook signature verification needs the raw body: keep this BEFORE express.json().
-app.use('/api/payments/razorpay/webhook', express.raw({ type: 'application/json' }));
+// Razorpay webhook signature verification needs the raw unparsed body: keep this BEFORE express.json().
+app.use(['/api/payments/webhook', '/api/payments/razorpay/webhook'], express.raw({ type: '*/*' }));
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 

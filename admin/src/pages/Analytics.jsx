@@ -62,7 +62,7 @@ export default function Analytics() {
       <div className={styles.pageHeader}>
         <div>
           <h1>Analytics & Sartorial Intelligence</h1>
-          <p className={styles.subtitle}>Comprehensive financial performance, garment velocity and rental telemetry</p>
+          <p className={styles.subtitle}>Comprehensive financial performance, garment velocity and inventory intelligence</p>
         </div>
         <div className={styles.headerActions}>
           <div style={{ display: 'flex', gap: '4px', background: '#F7F7F7', padding: '3px', borderRadius: '4px', border: '1px solid #E5E5E5' }}>
@@ -103,11 +103,13 @@ export default function Analytics() {
 
         <div className={styles.kpiCard}>
           <div className={styles.kpiLabel}>
-            <span>Total Rental Revenue</span>
-            <Calendar size={16} color="#c0c0c0" />
+            <span>Average Order Value</span>
+            <Award size={16} color="#c0c0c0" />
           </div>
-          <div className={styles.kpiValue}>{formatCurrency(overview?.rentalRevenue || overview?.rental_revenue)}</div>
-          <div className={styles.kpiMeta}>{overview?.totalRentals || 0} rental reservations</div>
+          <div className={styles.kpiValue}>
+            {formatCurrency(overview?.totalOrders > 0 ? (overview?.salesRevenue || overview?.sales_revenue) / overview.totalOrders : 0)}
+          </div>
+          <div className={styles.kpiMeta}>Across completed patron orders</div>
         </div>
 
         <div className={styles.kpiCard}>
@@ -116,7 +118,7 @@ export default function Analytics() {
             <Award size={16} color="#ffffff" />
           </div>
           <div className={styles.kpiValue}>{formatCurrency(overview?.totalRevenue || overview?.total_revenue)}</div>
-          <div className={styles.kpiMeta}>Across sales and rental operations</div>
+          <div className={styles.kpiMeta}>Total retail sales turnover</div>
         </div>
 
         <div className={styles.kpiCard}>
@@ -131,7 +133,7 @@ export default function Analytics() {
 
       {/* Revenue Trend Area Chart */}
       <div className={styles.chartBox}>
-        <h3>Revenue Trajectory (Sales vs Rentals)</h3>
+        <h3>Revenue Trajectory</h3>
         {revenueTrends && revenueTrends.length > 0 ? (
           <div style={{ height: 320, width: '100%' }}>
             <ResponsiveContainer>
@@ -141,21 +143,16 @@ export default function Analytics() {
                     <stop offset="5%" stopColor="#ffffff" stopOpacity={0.8}/>
                     <stop offset="95%" stopColor="#ffffff" stopOpacity={0}/>
                   </linearGradient>
-                  <linearGradient id="rentGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#c0c0c0" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#c0c0c0" stopOpacity={0}/>
-                  </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#EFEFEF" />
                 <XAxis dataKey="date" stroke="#888" fontSize={12} />
                 <YAxis stroke="#888" fontSize={12} tickFormatter={(v) => `₹${v/1000}k`} />
                 <Tooltip
                   contentStyle={{ background: '#FFFFFF', border: '1px solid #E5E5E5', color: '#111111', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
-                  formatter={(val) => [formatCurrency(val), '']}
+                  formatter={(val) => [formatCurrency(val), 'Purchase Sales']}
                 />
                 <Legend />
                 <Area type="monotone" dataKey="sales" name="Purchase Sales" stroke="#111111" fillOpacity={1} fill="url(#salesGrad)" />
-                <Area type="monotone" dataKey="rentals" name="Rental Fees" stroke="#888888" fillOpacity={1} fill="url(#rentGrad)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -197,7 +194,6 @@ export default function Analytics() {
                   <th style={{ padding: '8px 10px' }}>Blazer</th>
                   <th style={{ padding: '8px 10px' }}>Category</th>
                   <th style={{ padding: '8px 10px', textAlign: 'center' }}>Sold</th>
-                  <th style={{ padding: '8px 10px', textAlign: 'center' }}>Rented</th>
                 </tr>
               </thead>
               <tbody>
@@ -207,12 +203,11 @@ export default function Analytics() {
                       <td style={{ padding: '10px 10px', color: '#111111', fontWeight: 600 }}>{p.name}</td>
                       <td style={{ padding: '10px 10px', color: '#666666' }}>{p.category_name}</td>
                       <td style={{ padding: '10px 10px', textAlign: 'center', color: '#111111' }}>{p.units_sold || 0}</td>
-                      <td style={{ padding: '10px 10px', textAlign: 'center', color: '#b99a58', fontWeight: 600 }}>{p.rental_count || 0}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" style={{ padding: '2rem', textAlign: 'center', color: '#888' }}>
+                    <td colSpan="3" style={{ padding: '2rem', textAlign: 'center', color: '#888' }}>
                       No blazer velocity recorded.
                     </td>
                   </tr>
@@ -233,8 +228,7 @@ export default function Analytics() {
                 <th style={{ padding: '8px 10px' }}>Blazer</th>
                 <th style={{ padding: '8px 10px' }}>SKU</th>
                 <th style={{ padding: '8px 10px' }}>Size</th>
-                <th style={{ padding: '8px 10px', textAlign: 'center' }}>Retail Stock</th>
-                <th style={{ padding: '8px 10px', textAlign: 'center' }}>Rental Stock</th>
+                <th style={{ padding: '8px 10px', textAlign: 'center' }}>Available Stock</th>
                 <th style={{ padding: '8px 10px' }}>Status</th>
               </tr>
             </thead>
@@ -247,9 +241,6 @@ export default function Analytics() {
                     <td style={{ padding: '10px 10px', color: '#555555' }}>{it.size}</td>
                     <td style={{ padding: '10px 10px', textAlign: 'center', color: it.stock_quantity <= 1 ? '#d63031' : '#111111' }}>
                       {it.stock_quantity}
-                    </td>
-                    <td style={{ padding: '10px 10px', textAlign: 'center', color: it.rental_stock_quantity <= 1 ? '#ffab00' : '#b99a58' }}>
-                      {it.rental_stock_quantity}
                     </td>
                     <td style={{ padding: '10px 10px' }}>
                       <span className={`${styles.badge} ${styles.badgeWarning}`}>Reorder Required</span>

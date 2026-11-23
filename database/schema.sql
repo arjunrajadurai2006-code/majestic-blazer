@@ -9,9 +9,6 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'order_status') THEN
     CREATE TYPE order_status AS ENUM ('pending', 'confirmed', 'shipped', 'delivered', 'cancelled', 'refunded');
   END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'rental_status') THEN
-    CREATE TYPE rental_status AS ENUM ('requested', 'confirmed', 'picked_up', 'returned', 'cancelled', 'overdue');
-  END IF;
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'payment_provider') THEN
     CREATE TYPE payment_provider AS ENUM ('razorpay', 'cod', 'manual');
   END IF;
@@ -84,12 +81,9 @@ CREATE TABLE IF NOT EXISTS products (
   fit VARCHAR(60) DEFAULT 'Tailored Slim Fit',
   care_instructions TEXT DEFAULT 'Dry clean only. Store on wooden hanger.',
   is_purchasable BOOLEAN NOT NULL DEFAULT true,
-  is_rentable BOOLEAN NOT NULL DEFAULT false,
   is_featured BOOLEAN NOT NULL DEFAULT false,
   sale_price NUMERIC(10,2) NULL,
   original_price NUMERIC(10,2) NULL,
-  rent_price_per_day NUMERIC(10,2) NULL,
-  security_deposit NUMERIC(10,2) NULL,
   is_active BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -121,7 +115,6 @@ CREATE TABLE IF NOT EXISTS product_variants (
   sku VARCHAR(60) NOT NULL UNIQUE,
   size VARCHAR(10) NOT NULL,
   stock_quantity INTEGER NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
-  rental_stock_quantity INTEGER NOT NULL DEFAULT 0 CHECK (rental_stock_quantity >= 0),
   CONSTRAINT uq_product_size UNIQUE (product_id, size)
 );
 
@@ -183,48 +176,9 @@ CREATE TABLE IF NOT EXISTS order_items (
   unit_price NUMERIC(10,2) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS rental_bookings (
-  id SERIAL PRIMARY KEY,
-  booking_number VARCHAR(40) NOT NULL UNIQUE,
-  user_id INTEGER NOT NULL REFERENCES users(id),
-  product_id INTEGER NOT NULL REFERENCES products(id),
-  variant_id INTEGER NULL REFERENCES product_variants(id) ON DELETE SET NULL,
-  start_date DATE NOT NULL,
-  end_date DATE NOT NULL,
-  rental_days INTEGER NOT NULL DEFAULT 1,
-  rent_amount NUMERIC(10,2) NOT NULL,
-  deposit_amount NUMERIC(10,2) NOT NULL DEFAULT 0,
-  late_fee NUMERIC(10,2) NOT NULL DEFAULT 0,
-  damage_fee NUMERIC(10,2) NOT NULL DEFAULT 0,
-  delivery_type VARCHAR(20) NOT NULL DEFAULT 'pickup' CHECK (delivery_type IN ('delivery', 'pickup')),
-  shipping_address TEXT NULL,
-  status rental_status NOT NULL DEFAULT 'requested',
-  returned_at TIMESTAMP WITH TIME ZONE NULL,
-  return_condition VARCHAR(100) NULL,
-  deposit_refund_status VARCHAR(30) NOT NULL DEFAULT 'pending' CHECK (deposit_refund_status IN ('pending', 'refunded', 'partially_refunded', 'forfeited')),
-  deposit_refunded_amount NUMERIC(10,2) NOT NULL DEFAULT 0,
-  notes TEXT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
-ALTER TABLE rental_bookings ADD COLUMN IF NOT EXISTS rental_days INTEGER NOT NULL DEFAULT 1;
-ALTER TABLE rental_bookings ADD COLUMN IF NOT EXISTS damage_fee NUMERIC(10,2) NOT NULL DEFAULT 0;
-ALTER TABLE rental_bookings ADD COLUMN IF NOT EXISTS delivery_type VARCHAR(20) NOT NULL DEFAULT 'pickup';
-ALTER TABLE rental_bookings ADD COLUMN IF NOT EXISTS shipping_address TEXT NULL;
-ALTER TABLE rental_bookings ADD COLUMN IF NOT EXISTS returned_at TIMESTAMP WITH TIME ZONE NULL;
-ALTER TABLE rental_bookings ADD COLUMN IF NOT EXISTS return_condition VARCHAR(100) NULL;
-ALTER TABLE rental_bookings ADD COLUMN IF NOT EXISTS deposit_refund_status VARCHAR(30) NOT NULL DEFAULT 'pending';
-ALTER TABLE rental_bookings ADD COLUMN IF NOT EXISTS deposit_refunded_amount NUMERIC(10,2) NOT NULL DEFAULT 0;
-ALTER TABLE rental_bookings ADD COLUMN IF NOT EXISTS notes TEXT NULL;
-ALTER TABLE rental_bookings ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
-
-CREATE INDEX IF NOT EXISTS idx_rental_dates ON rental_bookings (product_id, start_date, end_date);
-
 CREATE TABLE IF NOT EXISTS payments (
   id SERIAL PRIMARY KEY,
   order_id INTEGER NULL REFERENCES orders(id) ON DELETE SET NULL,
-  rental_booking_id INTEGER NULL REFERENCES rental_bookings(id) ON DELETE SET NULL,
   user_id INTEGER NULL REFERENCES users(id) ON DELETE SET NULL,
   provider payment_provider NOT NULL DEFAULT 'razorpay',
   provider_order_id VARCHAR(100),
@@ -245,11 +199,29 @@ ALTER TABLE payments ADD COLUMN IF NOT EXISTS refund_status VARCHAR(30) NULL;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_payments_provider_payment_id ON payments (provider_payment_id) WHERE provider_payment_id IS NOT NULL;
 
+CREATE TABLE IF NOT EXISTS inventory_reservations (
+  id SERIAL PRIMARY KEY,
+  reservation_code VARCHAR(60) NOT NULL UNIQUE,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  order_id INTEGER NULL REFERENCES orders(id) ON DELETE CASCADE,
+  product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  variant_id INTEGER NOT NULL REFERENCES product_variants(id) ON DELETE CASCADE,
+  quantity INTEGER NOT NULL CHECK (quantity > 0),
+  status VARCHAR(30) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'completed', 'released', 'expired')),
+  payment_id INTEGER NULL REFERENCES payments(id) ON DELETE SET NULL,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_inv_res_variant_active ON inventory_reservations (variant_id, status, expires_at);
+CREATE INDEX IF NOT EXISTS idx_inv_res_order ON inventory_reservations (order_id);
+CREATE INDEX IF NOT EXISTS idx_inv_res_user ON inventory_reservations (user_id);
+
 CREATE TABLE IF NOT EXISTS invoices (
   id SERIAL PRIMARY KEY,
   invoice_number VARCHAR(40) NOT NULL UNIQUE,
   order_id INTEGER NULL REFERENCES orders(id) ON DELETE SET NULL,
-  rental_booking_id INTEGER NULL REFERENCES rental_bookings(id) ON DELETE SET NULL,
   amount NUMERIC(10,2) NOT NULL,
   pdf_path VARCHAR(255),
   invoice_data JSONB NULL,

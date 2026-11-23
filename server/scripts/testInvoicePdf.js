@@ -1,30 +1,29 @@
-import { pool } from '../src/config/db.js';
-import http from 'http';
+import jwt from 'jsonwebtoken';
+import { env } from '../src/config/env.js';
 
 async function testPdf() {
-  const { rows } = await pool.query('SELECT invoice_number, order_id, rental_booking_id FROM invoices LIMIT 5');
-  console.log('Sample invoices in DB:', rows);
+  const adminToken = jwt.sign({ sub: 1, role: 'admin' }, env.jwt.secret, { expiresIn: '1h' });
+  
+  const allRes = await fetch('http://localhost:5000/api/invoices/all?limit=5', {
+    headers: { Authorization: `Bearer ${adminToken}` },
+  });
+  const allData = await allRes.json();
+  const rows = allData.data || [];
+  console.log('Sample invoices retrieved from API:', rows.map(r => ({ id: r.id, number: r.invoice_number })));
 
   for (const inv of rows) {
-    await new Promise((resolve, reject) => {
-      const req = http.get(`http://localhost:5000/api/invoices/${inv.invoice_number}/pdf`, (res) => {
-        let size = 0;
-        res.on('data', (c) => size += c.length);
-        res.on('end', () => {
-          console.log(`Invoice ${inv.invoice_number} (Order: ${inv.order_id}, Rental: ${inv.rental_booking_id}) status: ${res.statusCode}, size: ${size} bytes, type: ${res.headers['content-type']}`);
-          if (res.statusCode === 200 && res.headers['content-type'] === 'application/pdf' && size > 1000) {
-            resolve();
-          } else {
-            reject(new Error(`PDF download failed with status ${res.statusCode}`));
-          }
-        });
-      });
-      req.on('error', reject);
+    const res = await fetch(`http://localhost:5000/api/invoices/${inv.invoice_number}/pdf`, {
+      headers: { Authorization: `Bearer ${adminToken}` },
     });
+    const size = (await res.arrayBuffer()).byteLength;
+    const cType = res.headers.get('content-type');
+    console.log(`Invoice ${inv.invoice_number} status: ${res.status}, size: ${size} bytes, type: ${cType}`);
+    if (res.status !== 200 || !cType?.includes('application/pdf') || size < 1000) {
+      throw new Error(`PDF download failed with status ${res.status}`);
+    }
   }
 
   console.log('ALL INVOICE PDF GENERATION TESTS PASSED!');
-  await pool.end();
   process.exit(0);
 }
 

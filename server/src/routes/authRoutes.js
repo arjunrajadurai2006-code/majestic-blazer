@@ -6,7 +6,21 @@ import { validate } from '../middleware/validate.js';
 import { loginRules, registerRules } from '../validators/authValidators.js';
 
 const router = Router();
-const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 30, standardHeaders: true, legacyHeaders: false });
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: (req) => {
+    const resetMs = req.rateLimit?.resetTime ? req.rateLimit.resetTime.getTime() - Date.now() : 15 * 60 * 1000;
+    const retryAfter = Math.max(1, Math.ceil(resetMs / 1000));
+    return {
+      success: false,
+      message: `Too many authentication attempts. Please wait ${retryAfter} seconds before trying again.`,
+      retryAfter,
+    };
+  },
+});
 
 router.post('/register', authLimiter, validate(registerRules), ctrl.register);
 router.post('/login', authLimiter, validate(loginRules), ctrl.login);

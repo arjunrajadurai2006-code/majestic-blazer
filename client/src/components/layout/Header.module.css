@@ -855,10 +855,40 @@
 @media (max-width: 480px) {
   .announcementText {
     font-size: 0.62rem;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
   }
 
   .bar {
     height: 62px;
+  }
+
+  .iconBtn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 360px) {
+  .announcementText {
+    font-size: 0.54rem;
+    letter-spacing: 0.06em;
+  }
+
+  .bar {
+    height: 56px;
+    gap: 8px;
+  }
+
+  .navLeft {
+    gap: 8px;
+  }
+
+  .navRight {
+    gap: 4px;
+  }
+
+  .iconBtn {
+    width: 32px;
+    height: 32px;
   }
 }

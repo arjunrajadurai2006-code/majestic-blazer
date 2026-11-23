@@ -20,6 +20,8 @@ export const errorHandler = (err, req, res, next) => {
   } else if (err.type === 'entity.parse.failed') {
     status = 400;
     message = 'Invalid JSON body syntax';
+  } else if (err.message && err.message.startsWith('CORS policy:')) {
+    status = err.statusCode || 403;
   }
 
   if (status >= 500) {

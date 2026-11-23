@@ -142,7 +142,8 @@ async function runTests() {
     }
     console.log('✓ Coupon validated:', couponRes.body.data.code, `Discount: ₹${couponRes.body.data.discountAmount}`);
 
-    const initialStock = Number(variant.stock_quantity);
+    const { rows: beforeVariant } = await pool.query('SELECT stock_quantity FROM product_variants WHERE id = $1', [variant.id]);
+    const initialStock = Number(beforeVariant[0].stock_quantity);
     const orderRes = await request('/orders', {
       method: 'POST',
       headers: { Authorization: `Bearer ${customerToken}` },
@@ -159,12 +160,34 @@ async function runTests() {
     const order = orderRes.body.data;
     console.log('✓ Created purchase order:', order.order_number, `Total: ₹${order.total}`);
 
-    // Verify stock decremented in PostgreSQL
+    // Verify stock reserved upon order creation (Phase 2.3 Temporary Reservation)
+    const { rows: resRows } = await pool.query('SELECT * FROM inventory_reservations WHERE order_id = $1 AND status = $2', [order.id, 'active']);
+    if (!resRows.length || resRows[0].quantity !== 1) {
+      throw new Error('Inventory reservation check failed');
+    }
+    console.log('✓ Inventory reserved correctly for order:', order.order_number, '(15-min reservation)');
+
+    // Verify payment confirmation converts reservation to physical stock decrement
+    const payRes = await request('/payments/verify', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${customerToken}` },
+      body: {
+        orderId: order.id,
+        razorpayOrderId: `order_test_${Date.now()}`,
+        razorpayPaymentId: `pay_test_${Date.now()}`,
+        razorpaySignature: 'simulated_signature_secure',
+        provider: 'manual',
+      },
+    });
+    if (payRes.status !== 200) {
+      throw new Error(`Payment verification failed: ${JSON.stringify(payRes.body)}`);
+    }
+
     const { rows: updatedVariant } = await pool.query('SELECT stock_quantity FROM product_variants WHERE id = $1', [variant.id]);
     if (Number(updatedVariant[0].stock_quantity) !== initialStock - 1) {
       throw new Error('Stock decrement check failed');
     }
-    console.log('✓ Stock decremented correctly:', initialStock, '->', updatedVariant[0].stock_quantity);
+    console.log('✓ Stock decremented upon payment confirmation:', initialStock, '->', updatedVariant[0].stock_quantity);
 
     console.log('\n--- 8. Wishlist, Reviews & Contact Enquiries ---');
     await request('/wishlist', {
@@ -209,7 +232,9 @@ async function runTests() {
     const { rows: invRows } = await pool.query('SELECT invoice_number FROM invoices WHERE order_id = $1 LIMIT 1', [order.id]);
     if (invRows.length) {
       const invNum = invRows[0].invoice_number;
-      const pdfRes = await fetch(`${baseUrl}/invoices/${invNum}/pdf`);
+      const pdfRes = await fetch(`${baseUrl}/invoices/${invNum}/pdf`, {
+        headers: { Authorization: `Bearer ${customerToken}` },
+      });
       if (pdfRes.status !== 200 || !pdfRes.headers.get('content-type')?.includes('application/pdf')) {
         throw new Error('PDF invoice streaming failed');
       }

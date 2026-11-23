@@ -313,10 +313,14 @@
   border: 1px solid var(--color-border);
   color: var(--color-text-primary);
   padding: 8px 14px;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   outline: none;
   cursor: pointer;
   border-radius: var(--radius-sm);
+  -webkit-appearance: menulist;
+  appearance: menulist;
+  touch-action: manipulation;
+  min-height: 40px;
 }
 
 .sortSelect:focus {
@@ -554,7 +558,11 @@
   .sortSelect {
     flex: 1;
     padding: 8px 10px;
-    font-size: 0.78rem;
+    font-size: 16px !important;
+    min-height: 44px;
+    -webkit-appearance: menulist;
+    appearance: menulist;
+    touch-action: manipulation;
   }
 
   .pagination {
@@ -581,5 +589,17 @@
 
   .sizeGrid {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 360px) {
+  .header h1 {
+    font-size: 1.85rem;
+  }
+
+  .filterToggleBtn,
+  .sortSelect {
+    width: 100%;
+    flex: none;
   }
 }

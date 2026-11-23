@@ -1,6 +1,5 @@
 import * as User from '../models/userModel.js';
 import * as Order from '../models/orderModel.js';
-import * as Rental from '../models/rentalModel.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
 
@@ -14,13 +13,11 @@ export const getById = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   if (!user) throw new AppError('Customer not found', 404);
   const orders = await Order.listMine(user.id);
-  const rentals = await Rental.listMine(user.id);
   res.json({
     success: true,
     data: {
       ...user,
       orders,
-      rentals,
     },
   });
 });

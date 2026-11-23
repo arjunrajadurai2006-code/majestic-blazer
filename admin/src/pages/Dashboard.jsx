@@ -84,7 +84,7 @@ export default function Dashboard() {
         </div>
         <div className={styles.headerActions}>
           <Link to="/products" className={styles.btnPrimary}>Manage Catalog</Link>
-          <Link to="/rental-bookings" className={styles.btnSecondary}>Active Rentals</Link>
+          <Link to="/orders" className={styles.btnSecondary}>Fulfill Orders</Link>
         </div>
       </div>
 
@@ -99,7 +99,7 @@ export default function Dashboard() {
           </div>
           <div className={styles.kpiValue}>{formatCurrency(summary?.total_revenue ?? summary?.totalRevenue)}</div>
           <div className={styles.kpiMeta}>
-            Sales: {formatCurrency(summary?.sales_revenue ?? summary?.salesRevenue)} | Rentals: {formatCurrency(summary?.rental_revenue ?? summary?.rentalRevenue)}
+            Retail Sales Turnover
           </div>
         </div>
 
@@ -111,17 +111,6 @@ export default function Dashboard() {
           <div className={styles.kpiValue}>{summary?.total_orders ?? summary?.totalOrders ?? 0}</div>
           <div className={styles.kpiMeta}>
             {summary?.pending_orders ?? summary?.pendingOrders ?? 0} awaiting fulfillment
-          </div>
-        </div>
-
-        <div className={styles.kpiCard}>
-          <div className={styles.kpiLabel}>
-            <span>Rental Bookings</span>
-            <Calendar size={18} color="#9aa0a6" />
-          </div>
-          <div className={styles.kpiValue}>{summary?.total_rentals ?? summary?.totalRentals ?? 0}</div>
-          <div className={styles.kpiMeta}>
-            {summary?.active_rentals ?? summary?.activeRentals ?? 0} with patrons
           </div>
         </div>
 
@@ -198,28 +187,15 @@ export default function Dashboard() {
             Products requiring atelier re-order
           </div>
         </div>
-
-        <div className={styles.kpiCard}>
-          <div className={styles.kpiLabel}>
-            <span>Overdue Rentals</span>
-            <Clock size={18} color="#ff4757" />
-          </div>
-          <div className={styles.kpiValue} style={{ color: (summary?.overdue_rentals > 0) ? '#ff4757' : 'inherit' }}>
-            {summary?.overdue_rentals ?? summary?.overdueRentals ?? 0}
-          </div>
-          <div className={styles.kpiMeta}>
-            Overdue returns needing reconciliation
-          </div>
-        </div>
       </div>
 
       {/* Dynamic Revenue Chart with Time Range Filter */}
       <div className={styles.chartBox} style={{ marginBottom: 'var(--space-4)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
           <div>
-            <h3 style={{ margin: 0 }}>Revenue & Rental Trajectory</h3>
+            <h3 style={{ margin: 0 }}>Revenue Trajectory</h3>
             <span style={{ fontSize: '0.8rem', color: 'var(--color-silver)' }}>
-              Comparative breakdown between bespoke sales and garment rental revenues
+              Sales volume and order revenue trends
             </span>
           </div>
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
@@ -249,20 +225,15 @@ export default function Dashboard() {
                     <stop offset="5%" stopColor="#ffffff" stopOpacity={0.85}/>
                     <stop offset="95%" stopColor="#ffffff" stopOpacity={0.05}/>
                   </linearGradient>
-                  <linearGradient id="colorRent" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#c0c0c0" stopOpacity={0.85}/>
-                    <stop offset="95%" stopColor="#c0c0c0" stopOpacity={0.05}/>
-                  </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#EFEFEF" />
                 <XAxis dataKey="date" stroke="#888" fontSize={12} />
                 <YAxis stroke="#888" fontSize={12} tickFormatter={(v) => `₹${v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v}`} />
                 <Tooltip
                   contentStyle={{ background: '#FFFFFF', border: '1px solid #E5E5E5', color: '#111111', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
-                  formatter={(val, name) => [formatCurrency(val), name === 'sales' ? 'Sartorial Sales' : 'Garment Rentals']}
+                  formatter={(val) => [formatCurrency(val), 'Sartorial Sales']}
                 />
                 <Area type="monotone" dataKey="sales" name="Sartorial Sales" stroke="#111111" fillOpacity={1} fill="url(#colorSales)" strokeWidth={2} />
-                <Area type="monotone" dataKey="rentals" name="Garment Rentals" stroke="#888888" fillOpacity={1} fill="url(#colorRent)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -365,9 +336,6 @@ export default function Dashboard() {
                           )}
                           <div>
                             <div style={{ fontWeight: 600, color: '#111111' }}>{b.name}</div>
-                            <div style={{ fontSize: '0.75rem', color: '#666666' }}>
-                              {b.rental_count ? `${b.rental_count} rentals` : ''}
-                            </div>
                           </div>
                         </div>
                       </td>
@@ -449,8 +417,8 @@ export default function Dashboard() {
             <Link to="/products" className={styles.btnSecondary} style={{ justifyContent: 'center', padding: '0.75rem' }}>
               + Add New Blazer
             </Link>
-            <Link to="/rental-bookings" className={styles.btnSecondary} style={{ justifyContent: 'center', padding: '0.75rem' }}>
-              Garment Returns
+            <Link to="/orders" className={styles.btnSecondary} style={{ justifyContent: 'center', padding: '0.75rem' }}>
+              Fulfill Orders
             </Link>
             <Link to="/inventory" className={styles.btnSecondary} style={{ justifyContent: 'center', padding: '0.75rem' }}>
               Inventory Health
@@ -470,7 +438,7 @@ export default function Dashboard() {
                 {summary?.pending_orders ?? summary?.pendingOrders ?? 0} Review
               </Link>
             </li>
-            <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E5E5E5', paddingBottom: '0.5rem' }}>
+            <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #222', paddingBottom: '0.5rem' }}>
               <span>Overdue Garment Rentals</span>
               <Link to="/rental-bookings" className={`${styles.badge} ${styles.badgeDanger}`}>
                 {summary?.overdue_rentals ?? summary?.overdueRentals ?? 0} Settle

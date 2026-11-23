@@ -1,32 +1,21 @@
 import { useEffect, useState } from 'react';
 import { Save, Building2, Shield, Percent, CreditCard, CheckCircle, Database, RefreshCw, AlertTriangle } from 'lucide-react';
 import { api } from '../services/api';
+import { useSettings } from '../context/SettingsContext';
 import styles from '../styles/adminShared.module.css';
 
 export default function Settings() {
-  const [settings, setSettings] = useState({
-    store_name: 'Majestic Blazer',
-    brand_tagline: 'Style That Speaks',
-    store_address: 'Sathy Road, Kurumbampalayam, Coimbatore - 641107',
-    store_phone: '8903238882',
-    store_email: 'contact@majesticblazer.com',
-    rental_late_fee_per_day: '500',
-    rental_min_days: '1',
-    rental_max_days: '14',
-    tax_percentage: '0',
-    shipping_fee: '0',
-    gst_registration_number: '',
-    razorpay_key_id: '',
-  });
+  const { settings: globalSettings, updateSettings } = useSettings();
+  const [settings, setSettings] = useState(globalSettings);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   const handleSeedDemo = async () => {
-    if (!window.confirm('Populate/refresh realistic demonstration data? This will replenish sample blazers, orders, rentals, coupons, and reviews.')) {
+    if (!window.confirm('Populate/refresh realistic demonstration data? This will replenish sample blazers, orders, coupons, and reviews.')) {
       return;
     }
     try {
@@ -43,22 +32,10 @@ export default function Settings() {
   };
 
   useEffect(() => {
-    async function loadSettings() {
-      try {
-        setLoading(true);
-        setError('');
-        const res = await api.get('/settings');
-        if (res.data) {
-          setSettings(prev => ({ ...prev, ...res.data }));
-        }
-      } catch (err) {
-        setError(err.message || 'Failed to load store settings');
-      } finally {
-        setLoading(false);
-      }
+    if (globalSettings) {
+      setSettings(prev => ({ ...prev, ...globalSettings }));
     }
-    loadSettings();
-  }, []);
+  }, [globalSettings]);
 
   const handleChange = (key, value) => {
     setSettings(prev => ({ ...prev, [key]: value }));
@@ -70,9 +47,20 @@ export default function Settings() {
     setError('');
     setSuccess('');
 
+    if (!settings.store_name || !settings.store_name.trim()) {
+      setError('Store brand name cannot be empty.');
+      setSaving(false);
+      return;
+    }
+    if (!settings.brand_tagline || !settings.brand_tagline.trim()) {
+      setError('Official brand tagline cannot be empty.');
+      setSaving(false);
+      return;
+    }
+
     try {
-      await api.put('/settings', settings);
-      setSuccess('Store parameters and rental policies saved successfully');
+      await updateSettings(settings);
+      setSuccess('Store parameters and branding configuration saved successfully.');
     } catch (err) {
       setError(err.message || 'Failed to update settings');
     } finally {
@@ -85,7 +73,7 @@ export default function Settings() {
       <div className={styles.pageHeader}>
         <div>
           <h1>Store Policies & Configuration</h1>
-          <p className={styles.subtitle}>Atelier operational identity, rental penalty rules and taxation</p>
+          <p className={styles.subtitle}>Atelier operational identity, shipping parameters, and taxation</p>
         </div>
       </div>
 
@@ -156,26 +144,12 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* Rental Policies Section */}
+        {/* Fulfillment & Shipping Section */}
         <div className={styles.chartBox} style={{ marginBottom: '1.5rem' }}>
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Shield size={18} color="#c0c0c0" /> Rental Duration & Penalty Parameters
+            <Shield size={18} color="#c0c0c0" /> Fulfillment & Shipping Parameters
           </h3>
           <div className={styles.formGrid}>
-            <div className={styles.formGroup}>
-              <label>Late Return Penalty (₹ / day)</label>
-              <input
-                type="number"
-                min="0"
-                className={styles.input}
-                value={settings.rental_late_fee_per_day || ''}
-                onChange={(e) => handleChange('rental_late_fee_per_day', e.target.value)}
-              />
-              <span style={{ fontSize: '0.75rem', color: '#888' }}>
-                Deducted automatically from deposit on overdue returns
-              </span>
-            </div>
-
             <div className={styles.formGroup}>
               <label>Complimentary Courier Shipping Fee (₹)</label>
               <input
@@ -188,28 +162,6 @@ export default function Settings() {
               <span style={{ fontSize: '0.75rem', color: '#888' }}>
                 Set to 0 for complimentary pan-India shipping
               </span>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>Minimum Rental Duration (Days)</label>
-              <input
-                type="number"
-                min="1"
-                className={styles.input}
-                value={settings.rental_min_days || '1'}
-                onChange={(e) => handleChange('rental_min_days', e.target.value)}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>Maximum Rental Duration (Days)</label>
-              <input
-                type="number"
-                min="1"
-                className={styles.input}
-                value={settings.rental_max_days || '14'}
-                onChange={(e) => handleChange('rental_max_days', e.target.value)}
-              />
             </div>
           </div>
         </div>
@@ -276,7 +228,7 @@ export default function Settings() {
             <Database size={18} color="#666666" /> Developer Sandbox & Demonstration Data
           </h3>
           <p style={{ fontSize: '0.85rem', color: '#666666', margin: '0.5rem 0 1rem 0', lineHeight: '1.5' }}>
-            Populate or replenish realistic luxury menswear sample data across all admin tables: 37 catalog blazers, 6 categories, 45+ patron accounts, 36 orders, 20 rental schedules, coupons, and customer reviews.
+            Populate or replenish realistic luxury menswear sample data across all admin tables: 37 catalog blazers, 6 categories, 45+ patron accounts, 36 orders, coupons, and customer reviews.
           </p>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#666666' }}>

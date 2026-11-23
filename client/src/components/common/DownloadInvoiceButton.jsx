@@ -59,7 +59,7 @@ export default function DownloadInvoiceButton({
       const result = await downloadInvoicePdf({
         identifier: ref,
         orderNumber: orderNumber || String(ref),
-        invoiceType: invoiceType || (label?.toLowerCase().includes('rental') ? 'rental' : 'purchase'),
+        invoiceType: 'purchase',
       });
 
       setStatus('success');

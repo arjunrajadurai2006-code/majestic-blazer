@@ -26,15 +26,26 @@ function resolveApiBase() {
   return base;
 }
 
-export const API_BASE = resolveApiBase();
-export const getApiUrl = (path) => `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
-
 const TOKEN_KEY = 'mb_token';
 
 export const tokenStore = {
   get: () => localStorage.getItem(TOKEN_KEY),
   set: (token) => localStorage.setItem(TOKEN_KEY, token),
   clear: () => localStorage.removeItem(TOKEN_KEY),
+};
+
+export const API_BASE = resolveApiBase();
+export const getApiUrl = (path) => {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const base = `${API_BASE}${cleanPath}`;
+  if (cleanPath.startsWith('/invoices/') && cleanPath.endsWith('/pdf')) {
+    const token = tokenStore.get();
+    if (token && !base.includes('token=')) {
+      const sep = base.includes('?') ? '&' : '?';
+      return `${base}${sep}token=${encodeURIComponent(token)}`;
+    }
+  }
+  return base;
 };
 
 export async function api(path, { method = 'GET', body, auth = true } = {}) {
@@ -77,6 +88,15 @@ export async function api(path, { method = 'GET', body, auth = true } = {}) {
     const error = new Error(message);
     error.status = res.status;
     error.details = json.details;
+
+    // Parse rate limit retry-after duration (in seconds)
+    const retryHeader = res.headers.get('Retry-After') || res.headers.get('RateLimit-Reset');
+    if (retryHeader && !isNaN(Number(retryHeader))) {
+      error.retryAfter = Math.max(1, Math.round(Number(retryHeader)));
+    } else if (json.retryAfter && !isNaN(Number(json.retryAfter))) {
+      error.retryAfter = Math.max(1, Math.round(Number(json.retryAfter)));
+    }
+
     throw error;
   }
   return json;

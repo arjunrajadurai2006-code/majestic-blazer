@@ -9,7 +9,8 @@ export function CartProvider({ children }) {
   const [items, setItems] = useState(() => {
     try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
-      return saved ? JSON.parse(saved) : [];
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed.filter((i) => i && i.type === 'buy') : [];
     } catch {
       return [];
     }
@@ -45,15 +46,30 @@ export function CartProvider({ children }) {
   }, [appliedCoupon]);
 
   const addToCart = (product, variant, quantity = 1) => {
+    const key = `buy_${product.id}_${variant.id}`;
+    let isUpdated = false;
+    let finalQty = quantity;
+
+    // Check against current items
+    const existing = items.find((i) => i.key === key);
+    if (existing) {
+      isUpdated = true;
+      const maxStock = variant.stock_quantity || 10;
+      finalQty = Math.min(existing.quantity + quantity, maxStock);
+    } else {
+      finalQty = Math.min(quantity, variant.stock_quantity || 10);
+    }
+
     setItems((prev) => {
-      const key = `buy_${product.id}_${variant.id}`;
       const existingIndex = prev.findIndex((i) => i.key === key);
       if (existingIndex > -1) {
         const updated = [...prev];
-        const newQty = updated[existingIndex].quantity + quantity;
+        const maxStock = variant.stock_quantity || 10;
+        const newQty = Math.min(updated[existingIndex].quantity + quantity, maxStock);
         updated[existingIndex] = {
           ...updated[existingIndex],
-          quantity: Math.min(newQty, variant.stock_quantity || 10),
+          quantity: newQty,
+          maxQuantity: maxStock,
         };
         return updated;
       }
@@ -71,40 +87,13 @@ export function CartProvider({ children }) {
           sku: variant.sku,
           price: Number(product.sale_price),
           imageUrl: product.image_url || product.images?.[0]?.url,
-          quantity,
+          quantity: Math.min(quantity, variant.stock_quantity || 10),
           maxQuantity: variant.stock_quantity || 10,
         },
       ];
     });
-  };
 
-  const addRentalToCart = (product, variant, { startDate, endDate, rentalDays, rentAmount, depositAmount }) => {
-    setItems((prev) => {
-      const key = `rent_${product.id}_${variant.id}_${startDate}_${endDate}`;
-      const existing = prev.find((i) => i.key === key);
-      if (existing) return prev; // already in cart
-      return [
-        ...prev,
-        {
-          key,
-          type: 'rental',
-          productId: product.id,
-          variantId: variant.id,
-          name: product.name,
-          slug: product.slug,
-          color: product.color,
-          size: variant.size,
-          sku: variant.sku,
-          imageUrl: product.image_url || product.images?.[0]?.url,
-          startDate,
-          endDate,
-          rentalDays,
-          rentAmount: Number(rentAmount),
-          depositAmount: Number(depositAmount),
-          quantity: 1,
-        },
-      ];
-    });
+    return { updated: isUpdated, quantity: finalQty };
   };
 
   const updateQuantity = (key, quantity) => {
@@ -112,7 +101,6 @@ export function CartProvider({ children }) {
       prev
         .map((item) => {
           if (item.key !== key) return item;
-          if (item.type === 'rental') return item; // rentals are single booking
           const newQty = Math.max(1, Math.min(quantity, item.maxQuantity || 10));
           return { ...item, quantity: newQty };
         })
@@ -130,13 +118,7 @@ export function CartProvider({ children }) {
   };
 
   const applyCoupon = async (code) => {
-    const buySubtotal = items
-      .filter((i) => i.type === 'buy')
-      .reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const rentSubtotal = items
-      .filter((i) => i.type === 'rental')
-      .reduce((sum, i) => sum + i.rentAmount, 0);
-    const cartTotal = buySubtotal + rentSubtotal;
+    const cartTotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
     const res = await api.post('/coupons/validate', { code, cartTotal });
     setAppliedCoupon(res.data);
@@ -148,20 +130,8 @@ export function CartProvider({ children }) {
   };
 
   const totals = useMemo(() => {
-    let buySubtotal = 0;
-    let rentSubtotal = 0;
-    let depositSubtotal = 0;
-
-    for (const item of items) {
-      if (item.type === 'buy') {
-        buySubtotal += item.price * item.quantity;
-      } else if (item.type === 'rental') {
-        rentSubtotal += item.rentAmount;
-        depositSubtotal += item.depositAmount;
-      }
-    }
-
-    const cartTotal = buySubtotal + rentSubtotal;
+    const buySubtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const cartTotal = buySubtotal;
     let discount = 0;
     if (appliedCoupon) {
       if (appliedCoupon.discountType === 'percentage') {
@@ -176,12 +146,12 @@ export function CartProvider({ children }) {
     }
 
     const deliveryFee = 0; // Complimentary luxury delivery
-    const totalPayable = Math.max(0, cartTotal - discount + deliveryFee + depositSubtotal);
+    const totalPayable = Math.max(0, cartTotal - discount + deliveryFee);
 
     return {
       buySubtotal,
-      rentSubtotal,
-      depositSubtotal,
+      rentSubtotal: 0,
+      depositSubtotal: 0,
       cartTotal,
       discount,
       deliveryFee,
@@ -194,7 +164,6 @@ export function CartProvider({ children }) {
     items,
     appliedCoupon,
     addToCart,
-    addRentalToCart,
     updateQuantity,
     removeFromCart,
     clearCart,

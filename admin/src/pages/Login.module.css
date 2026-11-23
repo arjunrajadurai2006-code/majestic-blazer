@@ -391,3 +391,21 @@
     font-size: 1.55rem;
   }
 }
+
+@media (max-width: 360px) {
+  .wrap {
+    padding: 16px 8px;
+  }
+  .card {
+    padding: 20px 12px;
+  }
+  .segmentBtn {
+    padding: 6px 4px;
+  }
+  .segmentTitle {
+    font-size: 0.68rem;
+  }
+  .segmentDesc {
+    font-size: 0.58rem;
+  }
+}

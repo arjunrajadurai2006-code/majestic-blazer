@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { X, Heart, ShoppingBag, Calendar, Star, Check, ArrowRight, ShieldCheck, Truck } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { X, Heart, ShoppingBag, Star, Check, ArrowRight, ShieldCheck, Truck } from 'lucide-react';
 import { api } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useToast } from '../../context/ToastContext';
+import { savePendingGuestAction } from '../../services/guestAction';
 import styles from './QuickViewModal.module.css';
 
 export default function QuickViewModal({ productSummary, isOpen, onClose }) {
@@ -13,11 +15,31 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [mode, setMode] = useState('buy'); // 'buy' | 'rent'
 
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { addToCart } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
   const { success, error: toastError } = useToast();
+
+  // Guard helper: redirect guests preserving intent
+  const guardAction = (action, preserved) => {
+    if (!user) {
+      savePendingGuestAction({
+        action: preserved.action,
+        productId: preserved.productId,
+        variantId: preserved.variantId,
+        size: preserved.size,
+        quantity: preserved.quantity,
+        returnUrl: location.pathname + location.search,
+      });
+      onClose();
+      navigate('/login', { state: { from: location.pathname + location.search, preserved } });
+      return;
+    }
+    action();
+  };
 
   useEffect(() => {
     if (!isOpen || !productSummary) {
@@ -44,7 +66,6 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
           const available = data.variants.find((v) => v.stock_quantity > 0) || data.variants[0];
           setSelectedVariant(available);
         }
-        setMode(data.is_purchasable ? 'buy' : 'rent');
       })
       .catch((err) => {
         console.error('Failed to load full product for quick view', err);
@@ -71,19 +92,33 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
   const wish = isWishlisted(currentProduct.id);
 
   const handleAddToCart = () => {
-    if (!selectedVariant) {
-      toastError('Please select a chest size before adding to cart.');
-      return;
-    }
-    if (mode === 'buy') {
-      if (selectedVariant.stock_quantity <= 0) {
-        toastError('This size is currently out of stock.');
-        return;
+    if (!selectedVariant) { toastError('Please select a chest size before adding to cart.'); return; }
+    if (selectedVariant.stock_quantity <= 0) { toastError('This size is currently out of stock.'); return; }
+    guardAction(
+      () => {
+        const result = addToCart(currentProduct, selectedVariant, quantity);
+        if (result?.updated) {
+          success(`Updated quantity of "${currentProduct.name} (${selectedVariant.size})" to ${result.quantity} in your bespoke cart.`);
+        } else {
+          success(`Added ${currentProduct.name} (${selectedVariant.size}) to your bespoke cart.`);
+        }
+        onClose();
+      },
+      {
+        action: 'addToCart',
+        productId: currentProduct.id,
+        variantId: selectedVariant.id,
+        size: selectedVariant.size,
+        quantity: Math.max(1, quantity),
       }
-      addToCart(currentProduct, selectedVariant, quantity);
-      success(`Added ${currentProduct.name} (${selectedVariant.size}) to your bespoke cart.`);
-      onClose();
-    }
+    );
+  };
+
+  const handleToggleWishlist = () => {
+    guardAction(
+      () => toggleWishlist(currentProduct),
+      { action: 'wishlist', productId: currentProduct.id }
+    );
   };
 
   const images = currentProduct.images && currentProduct.images.length > 0
@@ -110,15 +145,8 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
                 src={selectedImage || currentProduct.image_url || images[0]?.url}
                 alt={currentProduct.name}
                 className={styles.mainImage}
+                decoding="async"
               />
-              <div className={styles.badges}>
-                {currentProduct.is_purchasable && currentProduct.is_rentable && (
-                  <span className={styles.badge}>BUY & RENT</span>
-                )}
-                {!currentProduct.is_purchasable && currentProduct.is_rentable && (
-                  <span className={styles.badge}>RENT ONLY</span>
-                )}
-              </div>
             </div>
 
             {images.length > 1 && (
@@ -130,7 +158,14 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
                     className={`${styles.thumbBtn} ${selectedImage === img.url ? styles.thumbActive : ''}`}
                     onClick={() => setSelectedImage(img.url)}
                   >
-                    <img src={img.url} alt="Thumbnail preview" />
+                    <img
+                      src={img.url}
+                      alt="Thumbnail preview"
+                      loading="lazy"
+                      decoding="async"
+                      width="60"
+                      height="75"
+                    />
                   </button>
                 ))}
               </div>
@@ -162,41 +197,19 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
 
             {/* Price Box */}
             <div className={styles.pricingBox}>
-              {currentProduct.is_purchasable && (
-                <div
-                  className={`${styles.priceTab} ${mode === 'buy' ? styles.priceTabActive : ''}`}
-                  onClick={() => setMode('buy')}
-                >
-                  <span className={styles.tabLabel}>PURCHASE PRICE</span>
-                  <div className={styles.priceRow}>
-                    <span className={styles.currency}>₹</span>
-                    <span className={styles.priceValue}>
-                      {Number(currentProduct.sale_price).toLocaleString('en-IN')}
+              <div className={styles.priceTabActive}>
+                <div className={styles.priceRow}>
+                  <span className={styles.currency}>₹</span>
+                  <span className={styles.priceValue}>
+                    {Number(currentProduct.sale_price).toLocaleString('en-IN')}
+                  </span>
+                  {currentProduct.original_price && Number(currentProduct.original_price) > Number(currentProduct.sale_price) && (
+                    <span className={styles.origPrice}>
+                      ₹{Number(currentProduct.original_price).toLocaleString('en-IN')}
                     </span>
-                    {currentProduct.original_price && Number(currentProduct.original_price) > Number(currentProduct.sale_price) && (
-                      <span className={styles.origPrice}>
-                        ₹{Number(currentProduct.original_price).toLocaleString('en-IN')}
-                      </span>
-                    )}
-                  </div>
+                  )}
                 </div>
-              )}
-
-              {currentProduct.is_rentable && (
-                <div
-                  className={`${styles.priceTab} ${mode === 'rent' ? styles.priceTabActive : ''}`}
-                  onClick={() => setMode('rent')}
-                >
-                  <span className={styles.tabLabel}>OCCASION RENTAL</span>
-                  <div className={styles.priceRow}>
-                    <span className={styles.currency}>₹</span>
-                    <span className={styles.priceValue}>
-                      {Number(currentProduct.rent_price_per_day).toLocaleString('en-IN')}
-                    </span>
-                    <span className={styles.dayUnit}>/ day</span>
-                  </div>
-                </div>
-              )}
+              </div>
             </div>
 
             <p className={styles.description}>
@@ -222,7 +235,7 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
                 <div className={styles.sizeGrid}>
                   {currentProduct.variants.map((v) => {
                     const isSelected = selectedVariant?.id === v.id;
-                    const isOut = mode === 'buy' ? v.stock_quantity <= 0 : v.rental_stock_quantity <= 0;
+                    const isOut = v.stock_quantity <= 0;
                     return (
                       <button
                         key={v.id}
@@ -241,77 +254,53 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
 
             {/* Actions */}
             <div className={styles.actionSection}>
-              {mode === 'buy' ? (
-                <div className={styles.btnRow}>
-                  <div className={styles.qtyBox}>
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      disabled={quantity <= 1}
-                    >
-                      -
-                    </button>
-                    <span>{quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((q) => Math.min(selectedVariant?.stock_quantity || 10, q + 1))}
-                      disabled={quantity >= (selectedVariant?.stock_quantity || 10)}
-                    >
-                      +
-                    </button>
-                  </div>
-
+              <div className={styles.btnRow}>
+                <div className={styles.qtyBox}>
                   <button
                     type="button"
-                    className={styles.addCartBtn}
-                    onClick={handleAddToCart}
-                    disabled={!selectedVariant || selectedVariant.stock_quantity <= 0}
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    disabled={quantity <= 1}
                   >
-                    <ShoppingBag size={18} />
-                    <span>Add to Wardrobe</span>
+                    -
                   </button>
-
+                  <span>{quantity}</span>
                   <button
                     type="button"
-                    className={`${styles.wishlistBtn} ${wish ? styles.wishActive : ''}`}
-                    onClick={() => toggleWishlist(currentProduct)}
-                    aria-label={wish ? `Remove ${currentProduct.name} from wishlist` : `Save ${currentProduct.name} to wishlist`}
-                    aria-pressed={wish}
-                    title={wish ? 'Saved in Wishlist' : 'Save to Wishlist'}
+                    onClick={() => setQuantity((q) => Math.min(selectedVariant?.stock_quantity || 10, q + 1))}
+                    disabled={quantity >= (selectedVariant?.stock_quantity || 10)}
                   >
-                    <Heart size={20} fill={wish ? '#E53945' : 'none'} color={wish ? '#E53945' : '#444444'} />
+                    +
                   </button>
                 </div>
-              ) : (
-                <div className={styles.rentDirectWrap}>
-                  <Link
-                    to={`/products/${currentProduct.slug}`}
-                    className={styles.rentDirectBtn}
-                    onClick={onClose}
-                  >
-                    <Calendar size={18} />
-                    <span>Configure Rental Dates & Fitting</span>
-                  </Link>
 
-                  <button
-                    type="button"
-                    className={`${styles.wishlistBtn} ${wish ? styles.wishActive : ''}`}
-                    onClick={() => toggleWishlist(currentProduct)}
-                    aria-label={wish ? `Remove ${currentProduct.name} from wishlist` : `Save ${currentProduct.name} to wishlist`}
-                    aria-pressed={wish}
-                    title={wish ? 'Saved in Wishlist' : 'Save to Wishlist'}
-                  >
-                    <Heart size={20} fill={wish ? '#E53945' : 'none'} color={wish ? '#E53945' : '#444444'} />
-                  </button>
-                </div>
-              )}
+                <button
+                  type="button"
+                  className={styles.addCartBtn}
+                  onClick={handleAddToCart}
+                  disabled={!selectedVariant || selectedVariant.stock_quantity <= 0}
+                >
+                  <ShoppingBag size={18} />
+                  <span>Add to Wardrobe</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`${styles.wishlistBtn} ${wish ? styles.wishActive : ''}`}
+                  onClick={handleToggleWishlist}
+                  aria-label={wish ? `Remove ${currentProduct.name} from wishlist` : `Save ${currentProduct.name} to wishlist`}
+                  aria-pressed={wish}
+                  title={wish ? 'Saved in Wishlist' : 'Save to Wishlist'}
+                >
+                  <Heart size={20} fill={wish ? '#E53945' : 'none'} color={wish ? '#E53945' : '#444444'} />
+                </button>
+              </div>
             </div>
 
             {/* Trust highlights */}
             <div className={styles.trustBadges}>
               <div className={styles.trustItem}>
                 <ShieldCheck size={16} />
-                <span>Dry Cleaning Included</span>
+                <span>Complimentary Alterations</span>
               </div>
               <div className={styles.trustItem}>
                 <Truck size={16} />

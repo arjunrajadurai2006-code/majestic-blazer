@@ -811,6 +811,14 @@
   color-scheme: light;
   width: 100%;
   box-sizing: border-box;
+  touch-action: manipulation;
+}
+
+.formGroup select {
+  min-height: 44px;
+  -webkit-appearance: menulist;
+  appearance: menulist;
+  cursor: pointer;
 }
 
 .formGroup select:focus,

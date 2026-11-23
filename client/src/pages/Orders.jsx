@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Package, Calendar, ArrowRight } from 'lucide-react';
+import { Package, ArrowRight } from 'lucide-react';
 import { api } from '../services/api';
 import DownloadInvoiceButton from '../components/common/DownloadInvoiceButton';
 import styles from './Orders.module.css';
@@ -30,10 +30,6 @@ export default function Orders() {
           <span className={styles.eyebrow}>CLIENT DASHBOARD</span>
           <h1>Your Purchase Orders</h1>
         </div>
-        <Link to="/rental-bookings" className={styles.rentalLink}>
-          <span>View Rental Bookings</span>
-          <ArrowRight size={14} />
-        </Link>
       </div>
 
       {loading ? (
@@ -45,7 +41,9 @@ export default function Orders() {
               <div className={styles.orderTop}>
                 <div>
                   <span className={styles.orderNoLabel}>ORDER NUMBER</span>
-                  <strong>{order.order_number}</strong>
+                  <Link to={`/orders/${order.id}`} className={styles.orderNumberLink}>
+                    <strong>{order.order_number}</strong>
+                  </Link>
                   <span className={styles.orderDate}>
                     Placed on {new Date(order.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                   </span>
@@ -68,7 +66,7 @@ export default function Orders() {
               <div className={styles.itemList}>
                 {order.items?.map((item) => (
                   <div key={item.id} className={styles.itemRow}>
-                    <img src={item.imageUrl} alt={item.productName} className={styles.itemImg} />
+                    <img src={item.imageUrl} alt={item.productName} className={styles.itemImg} loading="lazy" decoding="async" width="80" height="100" />
                     <div className={styles.itemInfo}>
                       <Link to={`/products/${item.productSlug}`} className={styles.itemName}>
                         {item.productName}
@@ -87,9 +85,15 @@ export default function Orders() {
                   <span>Method: <strong>{order.delivery_type === 'pickup' ? 'Flagship Boutique Collection (Coimbatore)' : 'Insured Courier Delivery'}</strong></span>
                   {order.tracking_number && <span>Tracking: {order.tracking_number}</span>}
                 </div>
-                <div className={styles.totalBlock}>
-                  <span>Total Payable:</span>
-                  <strong className={styles.totalPrice}>₹{Number(order.total).toLocaleString('en-IN')}</strong>
+                <div className={styles.bottomRightActions}>
+                  <Link to={`/orders/${order.id}`} className={styles.viewDetailsBtn}>
+                    <span>View Order Details</span>
+                    <ArrowRight size={13} />
+                  </Link>
+                  <div className={styles.totalBlock}>
+                    <span>Total Payable:</span>
+                    <strong className={styles.totalPrice}>₹{Number(order.total).toLocaleString('en-IN')}</strong>
+                  </div>
                 </div>
               </div>
             </article>

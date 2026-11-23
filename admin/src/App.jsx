@@ -6,7 +6,6 @@ import Products from './pages/Products';
 import Categories from './pages/Categories';
 import Inventory from './pages/Inventory';
 import Orders from './pages/Orders';
-import RentalBookings from './pages/RentalBookings';
 import Customers from './pages/Customers';
 import Payments from './pages/Payments';
 import Coupons from './pages/Coupons';
@@ -25,7 +24,6 @@ export default function App() {
         <Route path="categories" element={<Categories />} />
         <Route path="inventory" element={<Inventory />} />
         <Route path="orders" element={<Orders />} />
-        <Route path="rental-bookings" element={<RentalBookings />} />
         <Route path="customers" element={<Customers />} />
         <Route path="payments" element={<Payments />} />
         <Route path="coupons" element={<Coupons />} />

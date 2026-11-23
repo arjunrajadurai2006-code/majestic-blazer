@@ -14,7 +14,6 @@ import styles from './Header.module.css';
 const NAV = [
   { to: '/', label: 'Home', end: true },
   { to: '/shop', label: 'Shop Blazers' },
-  { to: '/rent', label: 'Rent Collection' },
   { to: '/contact', label: 'Boutique & Contact' },
 ];
 
@@ -113,7 +112,7 @@ export default function Header() {
         <div className={styles.announcement}>
           <div className={`container ${styles.announcementInner}`}>
             <a href="tel:8903238882" className={styles.announcementText}>
-              BESPOKE & RENTAL ENQUIRIES: 8903238882
+              BESPOKE & TAILORING ENQUIRIES: 8903238882
             </a>
           </div>
         </div>
@@ -224,16 +223,6 @@ export default function Header() {
                         </NavLink>
 
                         <NavLink
-                          to="/rental-bookings"
-                          className={styles.dropdownItem}
-                          onClick={() => setAccountDropdownOpen(false)}
-                          role="menuitem"
-                        >
-                          <Calendar size={15} />
-                          <span>Rental Bookings</span>
-                        </NavLink>
-
-                        <NavLink
                           to="/wishlist"
                           className={styles.dropdownItem}
                           onClick={() => setAccountDropdownOpen(false)}
@@ -334,9 +323,6 @@ export default function Header() {
                       <NavLink to="/orders" className={styles.mobileSubLink} onClick={closeMobileMenu}>
                         <Package size={16} /> My Orders
                       </NavLink>
-                      <NavLink to="/rental-bookings" className={styles.mobileSubLink} onClick={closeMobileMenu}>
-                        <Calendar size={16} /> Rental Bookings
-                      </NavLink>
                       <NavLink to="/wishlist" className={styles.mobileSubLink} onClick={closeMobileMenu}>
                         <Heart
                           size={16}
@@ -394,7 +380,7 @@ export default function Header() {
               <button type="button" onClick={() => { navigate('/shop?search=Velvet'); setSearchOpen(false); }}>Velvet</button>
               <button type="button" onClick={() => { navigate('/shop?search=Tuxedo'); setSearchOpen(false); }}>Tuxedos</button>
               <button type="button" onClick={() => { navigate('/shop?search=Double-Breasted'); setSearchOpen(false); }}>Double-Breasted</button>
-              <button type="button" onClick={() => { navigate('/rent'); setSearchOpen(false); }}>Rentals</button>
+              <button type="button" onClick={() => { navigate('/shop?search=Jacquard'); setSearchOpen(false); }}>Jacquard</button>
             </div>
           </div>
         </div>

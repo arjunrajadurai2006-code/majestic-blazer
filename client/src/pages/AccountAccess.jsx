@@ -44,7 +44,7 @@ export default function AccountAccess() {
           </div>
 
           <p className={styles.description}>
-            Access shopping history, rental bookings, wishlist, saved addresses and invoices.
+            Access shopping history, saved pieces, address book and official tax invoices.
           </p>
 
           <Link to="/login" className={styles.customerBtn}>
@@ -78,7 +78,7 @@ export default function AccountAccess() {
           </div>
 
           <p className={styles.description}>
-            Manage products, inventory, orders, rental bookings, customers and analytics.
+            Manage products, inventory, orders, customers, finances and analytics.
           </p>
 
           <a

@@ -2,8 +2,8 @@ import { pool } from '../config/db.js';
 
 export const listByUser = async (userId) => {
   const { rows } = await pool.query(
-    `SELECT w.id, w.created_at, p.id AS product_id, p.name, p.slug, p.sale_price, p.rent_price_per_day,
-       p.is_purchasable, p.is_rentable, c.name AS category_name,
+    `SELECT w.id, w.created_at, p.id AS product_id, p.name, p.slug, p.sale_price,
+       p.is_purchasable, c.name AS category_name,
        (SELECT url FROM product_images img WHERE img.product_id = p.id ORDER BY img.is_primary DESC LIMIT 1) AS image_url
      FROM wishlists w
      JOIN products p ON p.id = w.product_id

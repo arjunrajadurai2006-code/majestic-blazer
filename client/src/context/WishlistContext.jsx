@@ -84,9 +84,7 @@ export function WishlistProvider({ children }) {
         name: product.name,
         slug: product.slug,
         sale_price: product.sale_price,
-        rent_price_per_day: product.rent_price_per_day,
         is_purchasable: product.is_purchasable,
-        is_rentable: product.is_rentable,
         image_url: product.image_url || product.images?.[0]?.url,
       };
       setWishlistItems((prev) => {

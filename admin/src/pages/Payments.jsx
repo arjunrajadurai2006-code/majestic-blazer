@@ -46,9 +46,9 @@ export default function Payments() {
     try {
       await api.post(`/payments/${refundPayment.id}/refund`, {
         refundAmount: Number(refundAmount),
-        refundStatus: 'refunded',
+        refundStatus: 'pending',
       });
-      setSuccess(`Refund of ₹${refundAmount} recorded successfully for transaction #${refundPayment.id}`);
+      setSuccess(`Refund request of ₹${refundAmount} recorded (Pending Gateway Confirmation) for transaction #${refundPayment.id}`);
       setRefundPayment(null);
       loadPayments();
     } catch (err) {
@@ -58,10 +58,28 @@ export default function Payments() {
     }
   };
 
+  const handleCollectCod = async (paymentId) => {
+    try {
+      setError('');
+      setSuccess('');
+      await api.post(`/payments/${paymentId}/collect-cod`);
+      setSuccess(`COD payment transaction #${paymentId} marked as collected and paid.`);
+      loadPayments();
+    } catch (err) {
+      setError(err.message || 'Failed to record COD payment collection');
+    }
+  };
+
   const formatCurrency = (amt) =>
     new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amt || 0);
 
-  const getStatusBadge = (st) => {
+  const getStatusBadge = (st, refundSt) => {
+    if (refundSt === 'pending') {
+      return `${styles.badge} ${styles.badgeWarning}`;
+    }
+    if (refundSt === 'failed') {
+      return `${styles.badge} ${styles.badgeDanger}`;
+    }
     switch (st) {
       case 'paid':
       case 'success':
@@ -115,19 +133,14 @@ export default function Payments() {
                     <strong style={{ color: '#111111' }}>#{p.id}</strong>
                   </td>
                   <td>
-                    {p.order_number && (
+                    {p.order_number ? (
                       <div>
                         <span className={`${styles.badge} ${styles.badgeDefault}`}>Purchase</span>
                         <div style={{ fontSize: '0.8rem', color: '#666666', marginTop: '2px' }}>Order #{p.order_number}</div>
                       </div>
+                    ) : (
+                      <span style={{ color: '#666666' }}>Direct</span>
                     )}
-                    {p.booking_number && (
-                      <div>
-                        <span className={`${styles.badge} ${styles.badgeInfo}`}>Rental</span>
-                        <div style={{ fontSize: '0.8rem', color: '#666666', marginTop: '2px' }}>Booking #{p.booking_number}</div>
-                      </div>
-                    )}
-                    {!p.order_number && !p.booking_number && <span style={{ color: '#666666' }}>Direct</span>}
                   </td>
                   <td>
                     <div style={{ fontWeight: 500, color: '#111111' }}>{p.customer_name || 'Client'}</div>
@@ -152,22 +165,42 @@ export default function Payments() {
                     )}
                   </td>
                   <td>
-                    <span className={getStatusBadge(p.status)}>
-                      {p.status}
+                    <span className={getStatusBadge(p.status, p.refund_status)}>
+                      {p.refund_status === 'pending'
+                        ? 'Refund Pending'
+                        : p.refund_status === 'failed'
+                        ? 'Refund Failed'
+                        : p.provider === 'cod' && p.status === 'created'
+                        ? 'Awaiting Collection'
+                        : p.status}
                     </span>
                   </td>
                   <td style={{ color: '#888', fontSize: '0.85rem' }}>
                     {new Date(p.created_at).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}
                   </td>
                   <td>
-                    {p.status === 'paid' && (
+                    {p.status === 'paid' && p.refund_status !== 'pending' && (
                       <button
                         className={`${styles.btnSecondary} ${styles.btnSmall}`}
                         onClick={() => openRefundModal(p)}
-                        title="Process Transaction Refund"
+                        title={p.refund_status === 'failed' ? 'Retry Processing Refund' : 'Request Transaction Refund'}
                       >
-                        <RotateCcw size={12} /> Refund
+                        <RotateCcw size={12} /> {p.refund_status === 'failed' ? 'Retry Refund' : 'Refund'}
                       </button>
+                    )}
+                    {p.provider === 'cod' && p.status === 'created' && (
+                      <button
+                        className={`${styles.btnSecondary} ${styles.btnSmall}`}
+                        onClick={() => handleCollectCod(p.id)}
+                        title="Confirm Physical Cash Collection"
+                      >
+                        <CheckCircle size={12} /> Collect COD
+                      </button>
+                    )}
+                    {p.refund_status === 'pending' && (
+                      <span style={{ fontSize: '0.75rem', color: '#b99a58', fontStyle: 'italic' }}>
+                        Awaiting Gateway
+                      </span>
                     )}
                   </td>
                 </tr>

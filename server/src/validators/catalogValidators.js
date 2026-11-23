@@ -16,15 +16,13 @@ export const productRules = [
   slug,
   body('description').optional({ values: 'falsy' }).trim().isLength({ max: 5000 }),
   body('isPurchasable').optional().isBoolean().toBoolean(),
-  body('isRentable').optional().isBoolean().toBoolean(),
-  money('salePrice'), money('rentPricePerDay'), money('securityDeposit'),
-  body().custom((v) => (v.isPurchasable ?? true) || v.isRentable).withMessage('Product must be purchasable, rentable, or both'),
+  money('salePrice'),
+  body().custom((v) => (v.isPurchasable ?? true)).withMessage('Product must be purchasable'),
 ];
 
 export const productListRules = [
   query('page').optional().isInt({ min: 1 }).toInt(),
   query('limit').optional().isInt({ min: 1, max: 50 }).toInt(),
-  query('type').optional().isIn(['buy', 'rent']),
   query('category').optional().trim().isLength({ max: 120 }),
   query('search').optional().trim().isLength({ max: 120 }),
 ];

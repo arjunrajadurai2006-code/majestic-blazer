@@ -6,11 +6,15 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   background-color: var(--color-page-bg, #FFFFFF);
   overflow-x: hidden;
   overflow-x: clip;
   max-width: 100%;
+  /* Ensure the root element fills the full viewport height so the flex
+     column layout (html > body > #root) can push the footer to the bottom
+     on short-content pages without requiring position:fixed or absolute. */
+  min-height: 100%;
 }
 
 body {
@@ -26,6 +30,22 @@ body {
   overflow-x: hidden;
   overflow-x: clip;
   max-width: 100%;
+  width: 100%;
+  /* Stretch body to at least the full viewport so the flex column works */
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* Flex column so #root can grow and push the footer to the bottom */
+  display: flex;
+  flex-direction: column;
+}
+
+/* React mount point: fill the body flex column */
+#root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
 }
 
@@ -91,6 +111,21 @@ ul, ol {
 button, input, textarea, select {
   font: inherit;
   color: inherit;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+select {
+  cursor: pointer;
+  -webkit-appearance: menulist;
+  appearance: menulist;
+}
+
+@media (max-width: 768px) {
+  /* Prevent iOS Mobile Safari auto-zoom on inputs and selects (requires >=16px) */
+  select, input:not([type="checkbox"]):not([type="radio"]), textarea {
+    font-size: 16px !important;
+  }
 }
 
 :focus-visible {

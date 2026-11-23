@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, MapPin, KeyRound, LogOut, Package, Calendar, Plus, Trash2, Check } from 'lucide-react';
+import { User, MapPin, KeyRound, LogOut, Package, Heart, Plus, Trash2, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { api } from '../services/api';
@@ -132,15 +132,15 @@ export default function Profile() {
         <Link to="/orders" className={styles.tile}>
           <Package size={24} className={styles.tileIcon} />
           <div>
-            <strong>Purchase Orders</strong>
+            <strong>My Orders</strong>
             <span>View order history and download official tax invoices</span>
           </div>
         </Link>
-        <Link to="/rental-bookings" className={styles.tile}>
-          <Calendar size={24} className={styles.tileIcon} />
+        <Link to="/wishlist" className={styles.tile}>
+          <Heart size={24} className={styles.tileIcon} />
           <div>
-            <strong>Occasion Rentals</strong>
-            <span>Track upcoming rental dates, return status and deposit refunds</span>
+            <strong>Saved Pieces</strong>
+            <span>View your saved blazer silhouettes and private curation</span>
           </div>
         </Link>
       </div>

@@ -2,13 +2,21 @@ import app from './app.js';
 import { env } from './config/env.js';
 import { pool, testConnection } from './config/db.js';
 import { ensureDemoAdmin } from './controllers/authController.js';
+import { initReservationSchema, cleanupExpiredReservations } from './models/reservationModel.js';
+
+let cleanupTimer = null;
 
 try {
   await testConnection();
   console.log('PostgreSQL connected');
+  await initReservationSchema();
   if (env.demoMode) {
     await ensureDemoAdmin();
   }
+  // Schedule 1-minute interval for cleaning up expired inventory reservations
+  cleanupTimer = setInterval(() => {
+    cleanupExpiredReservations().catch((err) => console.error('Reservation cleanup error:', err.message));
+  }, 60000);
 } catch (err) {
   console.error('PostgreSQL connection failed:', err.message);
   if (env.isProd) {
@@ -20,6 +28,12 @@ try {
 
 const server = app.listen(env.port, () => console.log(`Majestic Blazer API listening on port ${env.port}`));
 
-const shutdown = () => server.close(async () => { await pool.end(); process.exit(0); });
+const shutdown = () => {
+  if (cleanupTimer) clearInterval(cleanupTimer);
+  server.close(async () => {
+    await pool.end();
+    process.exit(0);
+  });
+};
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);

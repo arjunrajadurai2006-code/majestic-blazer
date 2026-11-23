@@ -1,5 +1,7 @@
 import { pool } from '../config/db.js';
 import { AppError } from '../utils/AppError.js';
+import * as Reservation from './reservationModel.js';
+import { ORDER_STATUSES, PERMITTED_STATUS_TRANSITIONS } from '../validators/orderValidators.js';
 
 export const create = async (userId, {
   items,
@@ -24,6 +26,7 @@ export const create = async (userId, {
     const validatedItems = [];
 
     for (const item of items) {
+      // 1. Lock variant row to serialize concurrent checks
       const { rows: variantRows } = await client.query(
         `SELECT pv.*, p.name AS product_name, p.sale_price, p.is_purchasable, p.is_active
          FROM product_variants pv
@@ -37,8 +40,23 @@ export const create = async (userId, {
         throw new AppError(`Item "${item.name || 'product'}" is not available for purchase`, 400);
       }
 
-      if (variant.stock_quantity < item.quantity) {
-        throw new AppError(`Insufficient stock for "${variant.product_name}" (Size: ${variant.size}). Available: ${variant.stock_quantity}`, 400);
+      // 2. Calculate true available stock (physical stock minus active unexpired reservations)
+      const { rows: resRows } = await client.query(
+        `SELECT COALESCE(SUM(quantity), 0) AS reserved_quantity
+         FROM inventory_reservations
+         WHERE variant_id = $1
+           AND status = 'active'
+           AND expires_at > NOW()`,
+        [variant.id]
+      );
+      const activeReserved = Number(resRows[0]?.reserved_quantity || 0);
+      const availableStock = variant.stock_quantity - activeReserved;
+
+      if (availableStock < item.quantity) {
+        throw new AppError(
+          `Insufficient stock for "${variant.product_name}" (Size: ${variant.size}). Available: ${Math.max(0, availableStock)}`,
+          400
+        );
       }
 
       const unitPrice = Number(variant.sale_price);
@@ -47,15 +65,13 @@ export const create = async (userId, {
       validatedItems.push({
         productId: variant.product_id,
         variantId: variant.id,
+        productName: variant.product_name,
+        size: variant.size,
         quantity: item.quantity,
         unitPrice,
       });
 
-      // Decrement stock
-      await client.query(
-        'UPDATE product_variants SET stock_quantity = stock_quantity - $1 WHERE id = $2',
-        [item.quantity, variant.id]
-      );
+      // NOTE: Stock is NOT decremented here! It is temporarily reserved with a 15-minute expiry.
     }
 
     const total = Math.max(0, subtotal - Number(discount) + Number(tax) + Number(shipping));
@@ -92,6 +108,14 @@ export const create = async (userId, {
         [order.id, item.productId, item.variantId, item.quantity, item.unitPrice]
       );
     }
+
+    // 3. Atomically create 15-minute inventory reservations
+    await Reservation.reserveInventory({
+      userId,
+      orderId: order.id,
+      items: validatedItems,
+      expiryMinutes: 15,
+    }, client);
 
     // Auto-create invoice record
     const invoiceNumber = `INV-${Date.now().toString().slice(-6)}-${randomSuffix}`;
@@ -153,10 +177,11 @@ export const listMine = async (userId) => {
 };
 
 export const getById = async (id, userId = null) => {
-  const where = ['o.id = $1'];
-  const params = [id];
+  const isNumeric = /^\d+$/.test(String(id || '').trim());
+  const where = [isNumeric ? 'o.id = $1' : 'o.order_number = $1'];
+  const params = [isNumeric ? parseInt(id, 10) : String(id || '').trim()];
   if (userId) {
-    where.push('o.user_id = $2');
+    where.push(`o.user_id = $${params.length + 1}`);
     params.push(userId);
   }
 
@@ -168,7 +193,7 @@ export const getById = async (id, userId = null) => {
          'productId', oi.product_id,
          'productName', p.name,
          'productSlug', p.slug,
-         'imageUrl', (SELECT url FROM product_images img WHERE img.product_id = p.id ORDER BY img.is_primary DESC LIMIT 1),
+         'imageUrl', (SELECT url FROM product_images img WHERE img.product_id = p.id ORDER BY img.is_primary DESC, img.sort_order ASC LIMIT 1),
          'variantId', oi.variant_id,
          'size', pv.size,
          'sku', pv.sku,
@@ -183,7 +208,9 @@ export const getById = async (id, userId = null) => {
          'provider', p.provider,
          'status', p.status,
          'amount', p.amount,
-         'paymentId', p.provider_payment_id
+         'paymentId', p.provider_payment_id,
+         'refundStatus', p.refund_status,
+         'refundAmount', p.refund_amount
        ) FROM payments p WHERE p.order_id = o.id ORDER BY p.id DESC LIMIT 1) AS payment,
        (SELECT i.invoice_number FROM invoices i WHERE i.order_id = o.id LIMIT 1) AS invoice_number
      FROM orders o
@@ -237,31 +264,136 @@ export const listAll = async ({ status, search, page = 1, limit = 20 }) => {
   return { items, total };
 };
 
-export const updateStatus = async (id, { status, trackingNumber, notes }) => {
-  const client = await pool.connect();
-  try {
-    await client.query('BEGIN');
+export const updateStatus = async (
+  id,
+  { status, trackingNumber, notes, reason, actorId = null, actorRole = 'admin', reqIp = null, restock = null } = {},
+  externalClient = null
+) => {
+  const isOuterClient = Boolean(externalClient && externalClient.query);
+  const client = isOuterClient ? externalClient : await pool.connect();
 
-    const { rows: existing } = await client.query('SELECT * FROM orders WHERE id = $1 FOR UPDATE', [id]);
+  try {
+    if (!isOuterClient) await client.query('BEGIN');
+
+    const isNumeric = /^\d+$/.test(String(id || '').trim());
+    const whereClause = isNumeric ? 'WHERE id = $1' : 'WHERE order_number = $1';
+    const whereParam = isNumeric ? parseInt(id, 10) : String(id || '').trim();
+
+    const { rows: existing } = await client.query(
+      `SELECT * FROM orders ${whereClause} FOR UPDATE`,
+      [whereParam]
+    );
     if (!existing.length) throw new AppError('Order not found', 404);
     const order = existing[0];
 
-    // If order is newly cancelled, restore stock
-    if (status === 'cancelled' && order.status !== 'cancelled') {
-      const { rows: orderItems } = await client.query(
-        'SELECT variant_id, quantity FROM order_items WHERE order_id = $1',
-        [id]
-      );
-      for (const item of orderItems) {
-        if (item.variant_id) {
-          await client.query(
-            'UPDATE product_variants SET stock_quantity = stock_quantity + $1 WHERE id = $2',
-            [item.quantity, item.variant_id]
+    // 1. Validate status format and presence
+    let targetStatus = order.status;
+    if (status !== undefined && status !== null) {
+      const cleanStatus = String(status).trim().toLowerCase();
+      if (!ORDER_STATUSES.includes(cleanStatus)) {
+        throw new AppError(
+          `Invalid order status: "${status}". Permitted statuses are: ${ORDER_STATUSES.join(', ')}`,
+          400
+        );
+      }
+      targetStatus = cleanStatus;
+    }
+
+    let didRestock = false;
+    let stockPolicyNote = null;
+
+    // 2. Validate state machine transition rules
+    if (targetStatus !== order.status) {
+      const permitted = PERMITTED_STATUS_TRANSITIONS[order.status] || [];
+
+      if (order.status === 'cancelled') {
+        throw new AppError('Cannot modify a cancelled order. Cancelled orders are terminal and cannot be reopened.', 409);
+      }
+
+      if (order.status === 'delivered' && targetStatus !== 'refunded') {
+        throw new AppError(`Cannot change delivered order to "${targetStatus}". Delivered orders can only be refunded upon return.`, 409);
+      }
+
+      if (order.status === 'refunded') {
+        throw new AppError('Cannot modify a refunded order. Refunded orders are terminal and cannot be reopened.', 409);
+      }
+
+      if (!permitted.includes(targetStatus)) {
+        throw new AppError(
+          `Invalid status transition: Cannot change order from "${order.status}" to "${targetStatus}".`,
+          409
+        );
+      }
+
+      // 3. Payment verification requirement:
+      // Online orders cannot transition from 'pending' to 'confirmed' without a verified payment in database
+      if (order.status === 'pending' && targetStatus === 'confirmed') {
+        const { rows: payRows } = await client.query(
+          "SELECT id, provider, status FROM payments WHERE order_id = $1 AND status = 'paid' LIMIT 1",
+          [order.id]
+        );
+        if (!payRows.length) {
+          throw new AppError(
+            'Cannot mark order as confirmed without a verified payment record. Online payments must be verified through the payment gateway.',
+            409
           );
         }
       }
+
+      // 4. Inventory synchronization on status transitions
+      if (targetStatus === 'cancelled') {
+        if (order.status === 'confirmed') {
+          // Confirmed order was in atelier preparation (not yet dispatched).
+          // Restores physical stock exactly once.
+          const { rows: orderItems } = await client.query(
+            'SELECT variant_id, quantity FROM order_items WHERE order_id = $1',
+            [order.id]
+          );
+          for (const item of orderItems) {
+            if (item.variant_id) {
+              await client.query(
+                'UPDATE product_variants SET stock_quantity = stock_quantity + $1 WHERE id = $2',
+                [item.quantity, item.variant_id]
+              );
+            }
+          }
+          didRestock = true;
+          stockPolicyNote = 'Physical stock restored to atelier inventory';
+        } else if (order.status === 'shipped') {
+          // Shipped order: Garment was handed over to courier (in transit).
+          // Explicit Stock Policy: Physical stock is WITHHELD until item physically returns to atelier and passes quality inspection.
+          // Restocking only occurs if explicitly confirmed by administrator (restock === true).
+          if (restock === true) {
+            const { rows: orderItems } = await client.query(
+              'SELECT variant_id, quantity FROM order_items WHERE order_id = $1',
+              [order.id]
+            );
+            for (const item of orderItems) {
+              if (item.variant_id) {
+                await client.query(
+                  'UPDATE product_variants SET stock_quantity = stock_quantity + $1 WHERE id = $2',
+                  [item.quantity, item.variant_id]
+                );
+              }
+            }
+            didRestock = true;
+            stockPolicyNote = 'Shipped order cancelled & restocked following physical atelier inspection';
+          } else {
+            stockPolicyNote = 'Shipped order cancelled: Item in transit (RTO). Physical stock withheld pending atelier return inspection';
+          }
+        }
+        // Release active reservations if any still exist
+        await Reservation.releaseReservationsForOrder(order.id, 'released', client);
+
+        // If order had an uncollected COD payment in 'created' status, mark as 'failed' (uncollected / cancelled)
+        await client.query(
+          "UPDATE payments SET status = 'failed' WHERE order_id = $1 AND provider = 'cod' AND status = 'created'",
+          [order.id]
+        );
+      }
     }
 
+    // 5. Update order record
     const { rows: updated } = await client.query(
       `UPDATE orders SET
         status = $1,
@@ -270,16 +402,47 @@ export const updateStatus = async (id, { status, trackingNumber, notes }) => {
         updated_at = CURRENT_TIMESTAMP
        WHERE id = $4
        RETURNING *`,
-      [status, trackingNumber || null, notes || null, id]
+      [targetStatus, trackingNumber || null, notes || null, order.id]
     );
 
-    await client.query('COMMIT');
+    // 6. Record atomic audit log entry if status changed
+    if (targetStatus !== order.status) {
+      const auditDetails = {
+        orderId: order.id,
+        orderNumber: order.order_number,
+        previousStatus: order.status,
+        newStatus: targetStatus,
+        actionSource: actorRole === 'admin' ? 'admin_portal' : 'customer_storefront',
+        actorId,
+        actorRole,
+        reason: reason || notes || null,
+        trackingNumber: trackingNumber || order.tracking_number || null,
+        didRestock,
+        stockPolicyNote,
+      };
+
+      await client.query(
+        `INSERT INTO audit_logs (
+          user_id, action, entity_type, entity_id, details, ip_address, created_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP)`,
+        [
+          actorId,
+          targetStatus === 'cancelled' ? 'ORDER_CANCELLED' : 'ORDER_STATUS_UPDATE',
+          'orders',
+          String(order.id),
+          JSON.stringify(auditDetails),
+          reqIp || null,
+        ]
+      );
+    }
+
+    if (!isOuterClient) await client.query('COMMIT');
     return updated[0];
   } catch (err) {
-    await client.query('ROLLBACK');
+    if (!isOuterClient) await client.query('ROLLBACK');
     throw err;
   } finally {
-    client.release();
+    if (!isOuterClient) client.release();
   }
 };
 

@@ -415,6 +415,69 @@
   width: 100%;
 }
 
+/* Pincode Autofill & Status Indicators */
+.pincodeLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pincodeSpinner {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  color: #B38E46;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.spinnerDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid #B38E46;
+  border-top-color: transparent;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pincodeStatusBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+.statusSuccess {
+  background: #F4FBF7;
+  border: 1px solid #C3E6D0;
+  color: #1B6E3F;
+}
+
+.statusError {
+  background: #FFF8F8;
+  border: 1px solid #F5D3D3;
+  color: #B3261E;
+}
+
+.statusInfo {
+  background: #F8F9FA;
+  border: 1px solid #E2E4E8;
+  color: #555555;
+}
+
 /* Pickup Details Notice Card */
 .pickupCard {
   background: #F9F9F9;
@@ -1212,5 +1275,19 @@
 
   .orderNumberText {
     font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .checkoutPage {
+    padding: 20px 0 40px;
+  }
+
+  .leftCol {
+    padding: 14px 10px;
+  }
+
+  .stepIndicator span:not(.stepNum) {
+    display: none;
   }
 }
