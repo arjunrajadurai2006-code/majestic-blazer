@@ -11,18 +11,13 @@
 export const ADMIN_APP_URL = (() => {
   if (typeof window !== 'undefined') {
     const host = window.location.hostname;
-    if (host === 'majesticblazer.com' || host === 'www.majesticblazer.com') {
+    if (host === 'majesticblazer.com' || host === 'www.majesticblazer.com' || host.includes('vercel.app')) {
       return `${window.location.origin}/admin`;
     }
     // When testing local unified router (e.g. localhost:8787), route admin under /admin
     if ((host === 'localhost' || host === '127.0.0.1') && window.location.port === '8787') {
       return `${window.location.origin}/admin`;
     }
-  }
-  if (import.meta.env.VITE_ADMIN_APP_URL) return import.meta.env.VITE_ADMIN_APP_URL.replace(/\/$/, '');
-  if (import.meta.env.VITE_ADMIN_URL) return import.meta.env.VITE_ADMIN_URL.replace(/\/$/, '');
-  if (typeof window !== 'undefined') {
-    const host = window.location.hostname;
     if (host === 'localhost' || host === '127.0.0.1') {
       return 'http://localhost:5174';
     }

@@ -102,6 +102,22 @@ export const login = asyncHandler(async (req, res) => {
 
   let user = await User.findByEmail(normalizedEmail);
 
+  // If user is an administrator, strictly verify their password hash
+  if (user && user.role === 'admin') {
+    if (!user.is_active) {
+      throw new AppError('Account is inactive', 401);
+    }
+    const valid = await bcrypt.compare(password, user.password_hash);
+    if (!valid) {
+      throw new AppError('Invalid email or password', 401);
+    }
+    return res.status(200).json({
+      success: true,
+      data: { token: signToken(user), user: publicUser(user) },
+    });
+  }
+
+  // Customer authentication flow (existing logic preserved)
   if (env.demoMode) {
     if (user) {
       if (user.role !== 'customer') {

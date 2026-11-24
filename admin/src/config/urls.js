@@ -11,18 +11,13 @@
 export const CUSTOMER_APP_URL = (() => {
   if (typeof window !== 'undefined') {
     const host = window.location.hostname;
-    if (host === 'majesticblazer.com' || host === 'www.majesticblazer.com') {
+    if (host === 'majesticblazer.com' || host === 'www.majesticblazer.com' || host.includes('vercel.app')) {
       return window.location.origin;
     }
     // When testing local unified router (e.g. localhost:8787), route customer to worker root
     if ((host === 'localhost' || host === '127.0.0.1') && window.location.port === '8787') {
       return window.location.origin;
     }
-  }
-  if (import.meta.env.VITE_CUSTOMER_APP_URL) return import.meta.env.VITE_CUSTOMER_APP_URL.replace(/\/$/, '');
-  if (import.meta.env.VITE_STOREFRONT_URL) return import.meta.env.VITE_STOREFRONT_URL.replace(/\/$/, '');
-  if (typeof window !== 'undefined') {
-    const host = window.location.hostname;
     if (host === 'localhost' || host === '127.0.0.1') {
       return 'http://localhost:5173';
     }

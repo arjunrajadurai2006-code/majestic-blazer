@@ -1,10 +1,10 @@
 function resolveApiBase() {
   const raw = (import.meta.env.VITE_API_URL || '').trim();
 
-  // If running in browser on the unified custom domain, use relative same-origin /api
+  // If running in browser on unified custom domain or Vercel, use relative same-origin /api
   if (typeof window !== 'undefined') {
     const host = window.location.hostname;
-    if (host === 'majesticblazer.com' || host === 'www.majesticblazer.com') {
+    if (host === 'majesticblazer.com' || host === 'www.majesticblazer.com' || host.includes('vercel.app')) {
       return '/api';
     }
   }
@@ -37,9 +37,14 @@ function resolveApiBase() {
 const TOKEN_KEY = 'mb_token';
 
 export const tokenStore = {
-  get: () => localStorage.getItem(TOKEN_KEY),
-  set: (token) => localStorage.setItem(TOKEN_KEY, token),
-  clear: () => localStorage.removeItem(TOKEN_KEY),
+  get: () => localStorage.getItem(TOKEN_KEY) || localStorage.getItem('mb_admin_token'),
+  set: (token) => {
+    localStorage.setItem(TOKEN_KEY, token);
+  },
+  clear: () => {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem('mb_admin_token');
+  },
 };
 
 export const API_BASE = resolveApiBase();

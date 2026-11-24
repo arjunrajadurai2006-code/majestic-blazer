@@ -143,29 +143,32 @@ export default function AuthForm({ mode = 'login' }) {
         });
         const destination = (result?.action === 'buyNow' ? '/checkout' : null) || returnTo;
         navigate(destination, { replace: true });
-      } else if (activeRole === 'admin') {
-        // Administrator Login
-        const data = await adminLogin({ email: trimmedEmail, password });
-        setActionSuccess('Administrator access confirmed. Redirecting to Atelier Console...');
-
-        // Acquire single-use handoff code bound to admin app
-        let handoffCode = data.handoffCode;
-        if (!handoffCode) {
-          const handoffRes = await api('/auth/handoff/create', {
-            method: 'POST',
-            body: { targetApp: 'admin' },
-            headers: { Authorization: `Bearer ${data.token}` },
-            auth: false,
-          });
-          handoffCode = handoffRes.data.handoffCode;
+      } else {
+        // Shared Unified Login (Customer or Administrator)
+        let authenticatedUser;
+        let token;
+        if (activeRole === 'admin') {
+          const data = await adminLogin({ email: trimmedEmail, password });
+          authenticatedUser = data.user;
+          token = data.token;
+          tokenStore.set(token);
+        } else {
+          authenticatedUser = await login({ email: trimmedEmail, password });
+          token = tokenStore.get();
         }
 
-        setTimeout(() => {
-          window.location.href = `${ADMIN_APP_URL}/?code=${encodeURIComponent(handoffCode)}`;
-        }, 350);
-      } else {
-        // Customer Login
-        const authenticatedUser = await login({ email: trimmedEmail, password });
+        // Backend determines authenticated user's role
+        if (authenticatedUser?.role === 'admin') {
+          localStorage.setItem('mb_admin_token', token);
+          localStorage.setItem('mb_token', token);
+          setActionSuccess('Administrator access confirmed. Redirecting to Atelier Console...');
+          setTimeout(() => {
+            window.location.href = `${ADMIN_APP_URL}/`;
+          }, 350);
+          return;
+        }
+
+        // Customer post-login redirect
         const pending = getPendingGuestAction();
         const returnTo = location.state?.from || pending?.returnUrl || '/';
         const result = await executePendingGuestAction({
@@ -234,22 +237,11 @@ export default function AuthForm({ mode = 'login' }) {
 
     try {
       const data = await demoAdminLogin();
+      localStorage.setItem('mb_admin_token', data.token);
+      localStorage.setItem('mb_token', data.token);
       setActionSuccess('Demo administrator authenticated. Redirecting to Atelier Console...');
-
-      // Acquire single-use handoff code bound to admin app
-      let handoffCode = data.handoffCode;
-      if (!handoffCode) {
-        const handoffRes = await api('/auth/handoff/create', {
-          method: 'POST',
-          body: { targetApp: 'admin' },
-          headers: { Authorization: `Bearer ${data.token}` },
-          auth: false,
-        });
-        handoffCode = handoffRes.data.handoffCode;
-      }
-
       setTimeout(() => {
-        window.location.href = `${ADMIN_APP_URL}/?code=${encodeURIComponent(handoffCode)}`;
+        window.location.href = `${ADMIN_APP_URL}/`;
       }, 350);
     } catch (err) {
       if (err.status === 429) {
