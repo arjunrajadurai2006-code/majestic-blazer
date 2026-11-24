@@ -34,3 +34,11 @@ screenshot-*.png
 # Uploads
 server/uploads/*
 !server/uploads/.gitkeep
+
+# Cloudflare local development files
+.wrangler/
+**/.wrangler/
+.dev.vars
+.dev.vars.*
+**/.dev.vars
+**/.dev.vars.*

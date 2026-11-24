@@ -1,8 +1,16 @@
 function resolveApiBase() {
   const raw = (import.meta.env.VITE_API_URL || '').trim();
 
+  // If running in browser on the unified custom domain, use relative same-origin /api
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host === 'majesticblazer.com' || host === 'www.majesticblazer.com') {
+      return '/api';
+    }
+  }
+
   if (!raw) {
-    // If running in browser and on production host (Vercel or custom domain), default to deployed Railway API
+    // If running in browser and on standalone production host (e.g. Vercel), default to deployed Railway API
     if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
       return 'https://majestic-blazer-production.up.railway.app/api';
     }
@@ -36,7 +44,10 @@ export const tokenStore = {
 
 export const API_BASE = resolveApiBase();
 export const getApiUrl = (path) => {
-  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  let cleanPath = path.startsWith('/') ? path : `/${path}`;
+  if (API_BASE.endsWith('/api') && cleanPath.startsWith('/api/')) {
+    cleanPath = cleanPath.slice(4);
+  }
   const base = `${API_BASE}${cleanPath}`;
   if (cleanPath.startsWith('/invoices/') && cleanPath.endsWith('/pdf')) {
     const token = tokenStore.get();

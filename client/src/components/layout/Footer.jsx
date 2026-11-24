@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../common/Logo';
 import { useToast } from '../../context/ToastContext';
+import { ADMIN_APP_URL } from '../../config/urls';
 import styles from './Footer.module.css';
 
 export const BUSINESS = {
@@ -16,6 +17,7 @@ export const BUSINESS = {
 export default function Footer() {
   const [email, setEmail] = useState('');
   const { success } = useToast();
+  const adminLoginUrl = `${ADMIN_APP_URL}/login`;
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -67,6 +69,8 @@ export default function Footer() {
             <li><Link to="/orders">Order History & Invoices</Link></li>
             <li><Link to="/wishlist">Saved Pieces</Link></li>
             <li><Link to="/contact">Contact Our Tailors</Link></li>
+            <li><Link to="/access">Account Access</Link></li>
+            <li><a href={adminLoginUrl} className={styles.adminFooterLink} target="_blank" rel="noopener noreferrer">Atelier Admin</a></li>
             <li><Link to="/privacy-policy">Privacy Policy</Link></li>
             <li><Link to="/terms-and-conditions">Terms & Conditions</Link></li>
           </ul>

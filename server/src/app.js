@@ -29,11 +29,21 @@ app.use(
   })
 );
 
-// Robust CORS configuration with explicit origin allowlist, production domain restrictions, and preflight handling
-const prodOriginPatterns = [
-  /^https:\/\/majestic-blazer.*\.vercel\.app$/,
-  /^https:\/\/.*\.majesticblazer\.com$/,
-  /^https:\/\/majesticblazer\.com$/,
+// Explicit CORS allowlists: strict production origins and necessary local development origins
+const PRODUCTION_ORIGINS = [
+  'https://majestic-blazer.vercel.app',
+  'https://majestic-blazer-miup.vercel.app',
+  'https://majesticblazer.com',
+  'https://www.majesticblazer.com',
+];
+
+const LOCAL_DEV_ORIGINS = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:8787',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+  'http://127.0.0.1:8787',
 ];
 
 export const corsOptions = {
@@ -41,7 +51,7 @@ export const corsOptions = {
     // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
     if (!origin) return callback(null, true);
 
-    // In production, reject any origin that is not explicitly allowed in production allowlist
+    // In production, reject any origin that is not explicitly permitted in the production allowlist
     if (env.isProd) {
       // Localhost origins are strictly forbidden in production
       const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
@@ -50,8 +60,8 @@ export const corsOptions = {
       }
 
       const isAllowedProd =
-        env.corsOrigins.includes(origin) ||
-        prodOriginPatterns.some((pattern) => pattern.test(origin));
+        PRODUCTION_ORIGINS.includes(origin) ||
+        env.corsOrigins.includes(origin);
 
       if (isAllowedProd) {
         return callback(null, true);
@@ -59,11 +69,12 @@ export const corsOptions = {
       return callback(new AppError(`CORS policy: Origin ${origin} not allowed by CORS`, 403), false);
     }
 
-    // In non-production or development, allow explicit development origins, configured origins, or production patterns
+    // In non-production / development: allow explicit production origins, local dev origins, or configured origins
     const isAllowedDev =
+      PRODUCTION_ORIGINS.includes(origin) ||
+      LOCAL_DEV_ORIGINS.includes(origin) ||
       env.devOrigins.includes(origin) ||
-      env.corsOrigins.includes(origin) ||
-      prodOriginPatterns.some((pattern) => pattern.test(origin));
+      env.corsOrigins.includes(origin);
 
     if (isAllowedDev) {
       return callback(null, true);
