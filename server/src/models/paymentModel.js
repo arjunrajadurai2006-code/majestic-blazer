@@ -48,6 +48,14 @@ export const createRazorpayOrder = async ({
     payableAmount = Number(targetOrder.total);
     receipt = receipt || targetOrder.order_number;
   } else if (manualAmount) {
+    if (userId) {
+      const { rows: userRows } = await pool.query('SELECT role FROM users WHERE id = $1 LIMIT 1', [userId]);
+      if (userRows[0]?.role !== 'admin') {
+        throw new AppError('Order ID is required. Custom payment amounts can only be initiated by administrators.', 403);
+      }
+    } else {
+      throw new AppError('Order ID is required to initiate payment.', 400);
+    }
     payableAmount = Number(manualAmount);
     receipt = receipt || `rcpt_${Date.now()}`;
   } else {
@@ -106,7 +114,7 @@ export const createRazorpayOrder = async ({
         const errData = await rzpRes.json().catch(() => ({}));
         throw new AppError(
           `Razorpay order gateway error: ${errData.error?.description || rzpRes.statusText}`,
-          502
+          rzpRes.status === 401 ? 401 : 502
         );
       }
 

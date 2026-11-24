@@ -1,0 +1,14 @@
+{
+  "name": "majestic-blazer-cloudflare-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker routing proxy for majesticblazer.com unified domain",
+  "main": "worker.js",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.88.0"
+  }
+}

@@ -3,6 +3,7 @@ import { env } from './config/env.js';
 import { pool, testConnection } from './config/db.js';
 import { ensureDemoAdmin } from './controllers/authController.js';
 import { initReservationSchema, cleanupExpiredReservations } from './models/reservationModel.js';
+import { initHandoffSchema } from './services/handoffService.js';
 
 let cleanupTimer = null;
 
@@ -10,6 +11,7 @@ try {
   await testConnection();
   console.log('PostgreSQL connected');
   await initReservationSchema();
+  await initHandoffSchema();
   if (env.demoMode) {
     await ensureDemoAdmin();
   }

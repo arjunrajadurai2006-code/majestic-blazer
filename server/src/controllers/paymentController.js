@@ -154,6 +154,10 @@ export const razorpayWebhook = asyncHandler(async (req, res) => {
   const signature = req.headers['x-razorpay-signature'];
   const rawBody = req.body;
 
+  if (env.isProd && !env.razorpay.webhookSecret) {
+    throw new AppError('Razorpay webhook secret is not configured in production environment', 500);
+  }
+
   if (env.razorpay.webhookSecret) {
     if (!signature) {
       throw new AppError('Missing x-razorpay-signature header on webhook request', 400);

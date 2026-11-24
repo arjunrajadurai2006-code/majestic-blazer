@@ -6,9 +6,14 @@ import { AuthProvider } from './context/AuthContext';
 import { SettingsProvider } from './context/SettingsContext';
 import './styles/global.css';
 
+const basename = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin')
+  ? '/admin'
+  : '';
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter
+      basename={basename}
       future={{
         v7_startTransition: true,
         v7_relativeSplatPath: true,

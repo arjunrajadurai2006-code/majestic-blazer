@@ -158,10 +158,10 @@ async function runLiveTests() {
 
     // 12. CORS allows Admin Vercel Portal origin
     const res12 = await request('/health', {
-      headers: { Origin: 'https://majestic-blazer-admin.vercel.app' },
+      headers: { Origin: 'https://majestic-blazer-miup.vercel.app' },
     });
     const corsHeader = res12.headers.get('access-control-allow-origin');
-    const pass12 = res12.status === 200 && (corsHeader === 'https://majestic-blazer-admin.vercel.app' || corsHeader === '*');
+    const pass12 = res12.status === 200 && (corsHeader === 'https://majestic-blazer-miup.vercel.app' || corsHeader === '*');
     recordTest(
       'CORS allows Admin Vercel Portal origin',
       pass12,

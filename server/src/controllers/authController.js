@@ -7,6 +7,7 @@ import { pool } from '../config/db.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
 import { signToken, revokeToken } from '../utils/token.js';
+import { createHandoffCode, exchangeHandoffCode } from '../services/handoffService.js';
 
 const BCRYPT_ROUNDS = 12;
 const DUMMY_HASH = bcrypt.hashSync('timing-equaliser', BCRYPT_ROUNDS);
@@ -263,11 +264,20 @@ export const demoCustomerLogin = asyncHandler(async (req, res) => {
     role: 'customer',
   });
   const user = await User.findById(id);
+
+  const handoffRequested = req.query.handoff === 'true' || req.body?.handoff === true;
+  let handoffCode;
+  if (handoffRequested) {
+    const handoff = await createHandoffCode({ userId: user.id, userRole: user.role, targetApp: 'customer' });
+    handoffCode = handoff.code;
+  }
+
   res.status(200).json({
     success: true,
     data: {
       token: signToken(user),
       user: publicUser(user),
+      ...(handoffCode ? { handoffCode } : {}),
     },
   });
 });
@@ -283,10 +293,73 @@ export const demoAdminLogin = asyncHandler(async (req, res) => {
   if (!user || user.role !== 'admin' || !user.is_active) {
     throw new AppError('Configured administrator account not found or inactive', 404);
   }
+
+  const handoffRequested = req.query.handoff === 'true' || req.body?.handoff === true;
+  let handoffCode;
+  if (handoffRequested) {
+    const handoff = await createHandoffCode({ userId: user.id, userRole: user.role, targetApp: 'admin' });
+    handoffCode = handoff.code;
+  }
+
   res.status(200).json({
     success: true,
     data: {
       token: signToken(user),
+      user: publicUser(user),
+      ...(handoffCode ? { handoffCode } : {}),
+    },
+  });
+});
+
+// Generate a secure single-use cross-application handoff code for the authenticated user
+export const createHandoff = asyncHandler(async (req, res) => {
+  const { targetApp } = req.body;
+  if (!targetApp || !['admin', 'customer'].includes(targetApp)) {
+    throw new AppError('Valid targetApp ("admin" or "customer") is required', 400);
+  }
+  if (targetApp === 'admin' && req.user.role !== 'admin') {
+    throw new AppError('Customer accounts cannot generate administrator handoff codes', 403);
+  }
+
+  const handoff = await createHandoffCode({
+    userId: req.user.id,
+    userRole: req.user.role,
+    targetApp,
+  });
+
+  res.status(200).json({
+    success: true,
+    data: {
+      handoffCode: handoff.code,
+      targetApp: handoff.targetApp,
+      expiresAt: handoff.expiresAt,
+    },
+  });
+});
+
+// Atomically exchange a single-use handoff code for an authentic session token
+export const exchangeHandoff = asyncHandler(async (req, res) => {
+  const { code, targetApp } = req.body;
+  const result = await exchangeHandoffCode({ code, targetApp });
+
+  if (!result.success) {
+    throw new AppError(result.error, result.statusCode || 401);
+  }
+
+  const user = await User.findById(result.data.userId);
+  if (!user || !user.is_active) {
+    throw new AppError('Authenticated account not found or is inactive', 401);
+  }
+
+  if (targetApp === 'admin' && user.role !== 'admin') {
+    throw new AppError('Customer credentials cannot access administrator portal', 403);
+  }
+
+  const token = signToken(user);
+  res.status(200).json({
+    success: true,
+    data: {
+      token,
       user: publicUser(user),
     },
   });

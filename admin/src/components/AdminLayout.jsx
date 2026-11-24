@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { LogOut, AlertCircle, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
@@ -55,7 +55,9 @@ export default function AdminLayout() {
   return (
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
-        <img src={logo} alt="Majestic Blazer" className={styles.logo} />
+        <Link to="/" title="Atelier Dashboard" className={styles.logoLink}>
+          <img src={logo} alt="Majestic Blazer" className={styles.logo} />
+        </Link>
         <nav aria-label="Admin">
           <ul className={styles.nav}>
             {ADMIN_NAV.map((item) => (

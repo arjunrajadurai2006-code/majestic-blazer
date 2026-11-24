@@ -13,6 +13,7 @@ import Reviews from './pages/Reviews';
 import Invoices from './pages/Invoices';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
+import NotFound from './pages/NotFound';
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="invoices" element={<Invoices />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

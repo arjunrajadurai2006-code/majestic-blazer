@@ -7,6 +7,7 @@ import { useWishlist } from '../../context/WishlistContext';
 import { useToast } from '../../context/ToastContext';
 import { getPendingGuestAction, executePendingGuestAction } from '../../services/guestAction';
 import { api } from '../../services/api';
+import { ADMIN_APP_URL } from '../../config/urls';
 import Logo from './Logo';
 import styles from './AuthForm.module.css';
 
@@ -18,10 +19,7 @@ export default function AuthForm({ mode = 'login' }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const adminUrl = import.meta.env.VITE_ADMIN_URL ||
-    (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'http://localhost:5174'
-      : 'https://majestic-blazer-admin.vercel.app');
+  const adminUrl = ADMIN_APP_URL;
 
   // Mode selection: 'customer' or 'admin' (default: 'customer')
   const [activeRole, setActiveRole] = useState('customer');
@@ -149,13 +147,21 @@ export default function AuthForm({ mode = 'login' }) {
         // Administrator Login
         const data = await adminLogin({ email: trimmedEmail, password });
         setActionSuccess('Administrator access confirmed. Redirecting to Atelier Console...');
-        const adminUrl = import.meta.env.VITE_ADMIN_URL ||
-          (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-            ? 'http://localhost:5174'
-            : 'https://majestic-blazer-admin.vercel.app');
+
+        // Acquire single-use handoff code bound to admin app
+        let handoffCode = data.handoffCode;
+        if (!handoffCode) {
+          const handoffRes = await api('/auth/handoff/create', {
+            method: 'POST',
+            body: { targetApp: 'admin' },
+            headers: { Authorization: `Bearer ${data.token}` },
+            auth: false,
+          });
+          handoffCode = handoffRes.data.handoffCode;
+        }
 
         setTimeout(() => {
-          window.location.href = `${adminUrl.replace(/\/$/, '')}/?token=${encodeURIComponent(data.token)}`;
+          window.location.href = `${ADMIN_APP_URL}/?code=${encodeURIComponent(handoffCode)}`;
         }, 350);
       } else {
         // Customer Login
@@ -229,13 +235,21 @@ export default function AuthForm({ mode = 'login' }) {
     try {
       const data = await demoAdminLogin();
       setActionSuccess('Demo administrator authenticated. Redirecting to Atelier Console...');
-      const adminUrl = import.meta.env.VITE_ADMIN_URL ||
-        (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-          ? 'http://localhost:5174'
-          : 'https://majestic-blazer-admin.vercel.app');
+
+      // Acquire single-use handoff code bound to admin app
+      let handoffCode = data.handoffCode;
+      if (!handoffCode) {
+        const handoffRes = await api('/auth/handoff/create', {
+          method: 'POST',
+          body: { targetApp: 'admin' },
+          headers: { Authorization: `Bearer ${data.token}` },
+          auth: false,
+        });
+        handoffCode = handoffRes.data.handoffCode;
+      }
 
       setTimeout(() => {
-        window.location.href = `${adminUrl.replace(/\/$/, '')}/?token=${encodeURIComponent(data.token)}`;
+        window.location.href = `${ADMIN_APP_URL}/?code=${encodeURIComponent(handoffCode)}`;
       }, 350);
     } catch (err) {
       if (err.status === 429) {

@@ -3,12 +3,13 @@ import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { ShieldCheck, UserCheck, AlertCircle, CheckCircle2, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
+import { CUSTOMER_APP_URL } from '../config/urls';
 import { api } from '../services/api';
 import logo from '../assets/majestic-blazer-logo.jpeg';
 import styles from './Login.module.css';
 
 export default function Login() {
-  const { admin, login, demoAdminLogin, customerLogin, demoCustomerLogin } = useAuth();
+  const { admin, loading, login, demoAdminLogin, customerLogin, demoCustomerLogin } = useAuth();
   const { settings } = useSettings();
   const brandTagline = settings?.brand_tagline || 'Style That Speaks';
   const storeName = settings?.store_name || 'Majestic Blazer';
@@ -48,13 +49,13 @@ export default function Login() {
     setPassword('');
   }, [activeRole]);
 
+  // If loading session / exchanging handoff code, hold rendering
+  if (loading) return null;
+
   // If already authenticated as admin, redirect to root
   if (admin) return <Navigate to="/" replace />;
 
-  const storefrontUrl = import.meta.env.VITE_STOREFRONT_URL ||
-    (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'http://localhost:5173'
-      : 'https://majestic-blazer.vercel.app');
+  const storefrontUrl = CUSTOMER_APP_URL;
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -85,8 +86,20 @@ export default function Login() {
       } else {
         const data = await customerLogin({ email: trimmedEmail, password });
         setActionSuccess('Customer authenticated. Redirecting to Customer Storefront...');
+
+        let handoffCode = data.handoffCode;
+        if (!handoffCode) {
+          const handoffRes = await api('/auth/handoff/create', {
+            method: 'POST',
+            body: { targetApp: 'customer' },
+            headers: { Authorization: `Bearer ${data.token}` },
+            auth: false,
+          });
+          handoffCode = handoffRes.data.handoffCode;
+        }
+
         setTimeout(() => {
-          window.location.href = `${storefrontUrl.replace(/\/$/, '')}/?token=${encodeURIComponent(data.token)}`;
+          window.location.href = `${storefrontUrl.replace(/\/$/, '')}/?code=${encodeURIComponent(handoffCode)}`;
         }, 350);
       }
     } catch (err) {
@@ -117,8 +130,20 @@ export default function Login() {
     try {
       const data = await demoCustomerLogin();
       setActionSuccess('Demo Customer authenticated. Redirecting to Customer Storefront...');
+
+      let handoffCode = data.handoffCode;
+      if (!handoffCode) {
+        const handoffRes = await api('/auth/handoff/create', {
+          method: 'POST',
+          body: { targetApp: 'customer' },
+          headers: { Authorization: `Bearer ${data.token}` },
+          auth: false,
+        });
+        handoffCode = handoffRes.data.handoffCode;
+      }
+
       setTimeout(() => {
-        window.location.href = `${storefrontUrl.replace(/\/$/, '')}/?token=${encodeURIComponent(data.token)}`;
+        window.location.href = `${storefrontUrl.replace(/\/$/, '')}/?code=${encodeURIComponent(handoffCode)}`;
       }, 350);
     } catch (err) {
       setError(err.message || 'Unable to start demo customer session.');

@@ -37,6 +37,10 @@ router.post('/demo-customer-login', authLimiter, ctrl.demoCustomerLogin);
 router.post('/demo-admin', authLimiter, ctrl.demoAdminLogin);
 router.post('/demo-admin-login', authLimiter, ctrl.demoAdminLogin);
 
+// Cross-application secure authentication handoff
+router.post('/handoff/create', authenticate, ctrl.createHandoff);
+router.post('/handoff/exchange', authLimiter, ctrl.exchangeHandoff);
+
 // Saved addresses
 router.get('/addresses', authenticate, ctrl.listAddresses);
 router.post('/addresses', authenticate, ctrl.addAddress);

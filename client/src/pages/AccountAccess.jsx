@@ -1,15 +1,11 @@
 import { Link } from 'react-router-dom';
 import { User, ShieldCheck, ArrowRight, Lock, Sparkles } from 'lucide-react';
 import Logo from '../components/common/Logo';
+import { ADMIN_APP_URL } from '../config/urls';
 import styles from './AccountAccess.module.css';
 
 export default function AccountAccess() {
-  // Determine existing admin login URL
-  const adminLoginUrl = import.meta.env.VITE_ADMIN_URL
-    ? `${import.meta.env.VITE_ADMIN_URL.replace(/\/$/, '')}/login`
-    : (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? 'http://localhost:5174/login'
-        : 'https://majestic-blazer-admin.vercel.app/login');
+  const adminLoginUrl = `${ADMIN_APP_URL}/login`;
 
   return (
     <div className={styles.wrap}>
@@ -105,4 +101,3 @@ export default function AccountAccess() {
     </div>
   );
 }
-

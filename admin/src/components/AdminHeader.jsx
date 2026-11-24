@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
+import { CUSTOMER_APP_URL } from '../config/urls';
 import styles from './AdminHeader.module.css';
 
 export default function AdminHeader({ onToggleMobileNav }) {
@@ -69,10 +70,7 @@ export default function AdminHeader({ onToggleMobileNav }) {
       .toUpperCase()
     : 'AD';
 
-  const storefrontUrl = typeof window !== 'undefined' &&
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? 'http://localhost:5173'
-    : '/';
+  const storefrontUrl = CUSTOMER_APP_URL;
 
   return (
     <>
