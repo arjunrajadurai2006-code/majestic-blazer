@@ -31,6 +31,7 @@ app.use(
 
 // Explicit CORS allowlists: strict production origins and necessary local development origins
 const PRODUCTION_ORIGINS = [
+  'https://majestic-blazer-id.vercel.app',
   'https://majestic-blazer.vercel.app',
   'https://majestic-blazer-miup.vercel.app',
   'https://majesticblazer.com',
