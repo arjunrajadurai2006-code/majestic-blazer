@@ -129,8 +129,30 @@ select {
 }
 
 :focus-visible {
-  outline: 1.5px solid var(--color-text-primary, #111111);
+  outline: 2px solid var(--color-text-primary, #111111);
   outline-offset: 3px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 9999;
+  background: #080808;
+  color: #FFFFFF;
+  padding: 12px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+  left: 8px;
+  top: 8px;
+  outline: 2px solid #FFFFFF;
+  outline-offset: 2px;
 }
 
 /* Custom Luxury Scrollbar */

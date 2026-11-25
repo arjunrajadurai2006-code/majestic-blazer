@@ -34,6 +34,8 @@ export default function Logo({
         src={logo} 
         alt="Majestic Blazer: Style that speaks" 
         className={styles.logoImg}
+        width="180"
+        height="100"
         style={imgStyle}
       />
     </Link>

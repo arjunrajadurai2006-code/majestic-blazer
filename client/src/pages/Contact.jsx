@@ -3,9 +3,16 @@ import { MapPin, Phone, Mail, Clock, Send, CheckCircle2 } from 'lucide-react';
 import { api } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { BUSINESS } from '../components/layout/Footer';
+import { useDocumentSeo } from '../utils/seo';
 import styles from './Contact.module.css';
 
 export default function Contact() {
+  useDocumentSeo({
+    title: 'Boutique & Contact | MAJESTIC BLAZER',
+    description:
+      'Visit our flagship menswear atelier on Sathy Road, Kurumbampalayam, Coimbatore for private fitting appointments and bespoke tailoring consultations.',
+    path: '/contact',
+  });
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');

@@ -4,12 +4,20 @@ import { Filter, SlidersHorizontal, X, Search, RotateCcw } from 'lucide-react';
 import ProductCard from '../components/common/ProductCard';
 import QuickViewModal from '../components/common/QuickViewModal';
 import { api } from '../services/api';
+import { useDocumentSeo } from '../utils/seo';
 import styles from './Shop.module.css';
 
 const SIZES = ['36R', '38R', '40R', '42R', '44R'];
 const COLORS = ['Midnight Navy', 'Onyx Black', 'Charcoal Grey', 'Wine Burgundy', 'Sand Tan', 'Oxford Navy'];
 
 export default function Shop() {
+  useDocumentSeo({
+    title: 'Shop Tailored Blazers | MAJESTIC BLAZER',
+    description:
+      'Explore hand-canvassed formal blazers, midnight velvets, double-breasted classics, and black-tie tuxedos with complimentary master alterations.',
+    path: '/shop',
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [products, setProducts] = useState([]);
@@ -125,7 +133,9 @@ export default function Shop() {
         {/* Mobile Filter Toggle */}
         <div className={styles.mobileBar}>
           <button
+            type="button"
             className={styles.filterToggleBtn}
+            aria-expanded={mobileFilterOpen}
             onClick={() => setMobileFilterOpen((v) => !v)}
           >
             <SlidersHorizontal size={18} />
@@ -173,6 +183,7 @@ export default function Shop() {
                 <button
                   type="button"
                   className={`${styles.filterChip} ${!currentCategory ? styles.chipActive : ''}`}
+                  aria-pressed={!currentCategory}
                   onClick={() => updateParam('category', '')}
                 >
                   All Categories
@@ -182,6 +193,7 @@ export default function Shop() {
                     key={cat.id}
                     type="button"
                     className={`${styles.filterChip} ${currentCategory === cat.slug ? styles.chipActive : ''}`}
+                    aria-pressed={currentCategory === cat.slug}
                     onClick={() => updateParam('category', cat.slug)}
                   >
                     {cat.name}
@@ -199,6 +211,7 @@ export default function Shop() {
                     key={sz}
                     type="button"
                     className={`${styles.sizeBtn} ${currentSize === sz ? styles.sizeActive : ''}`}
+                    aria-pressed={currentSize === sz}
                     onClick={() => updateParam('size', currentSize === sz ? '' : sz)}
                   >
                     {sz}
@@ -216,6 +229,7 @@ export default function Shop() {
                     key={col}
                     type="button"
                     className={`${styles.colorChip} ${currentColor === col ? styles.colorActive : ''}`}
+                    aria-pressed={currentColor === col}
                     onClick={() => updateParam('color', currentColor === col ? '' : col)}
                   >
                     {col}
@@ -258,7 +272,7 @@ export default function Shop() {
           </aside>
 
           {/* Catalog Content Area */}
-          <main className={styles.content}>
+          <div className={styles.content}>
             {/* Desktop Top Toolbar */}
             <div className={styles.toolbar}>
               <span className={styles.resultCount}>
@@ -363,7 +377,7 @@ export default function Shop() {
                 </button>
               </div>
             )}
-          </main>
+          </div>
         </div>
       </div>
 

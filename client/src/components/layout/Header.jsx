@@ -359,12 +359,19 @@ export default function Header() {
 
       {/* Search Modal Overlay */}
       {searchOpen && (
-        <div className={styles.searchOverlay} onClick={() => setSearchOpen(false)}>
+        <div
+          className={styles.searchOverlay}
+          onClick={() => setSearchOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Search blazer collection"
+        >
           <div className={styles.searchModal} onClick={(e) => e.stopPropagation()}>
             <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
-              <Search size={22} className={styles.searchIcon} />
+              <Search size={22} className={styles.searchIcon} aria-hidden="true" />
               <input
                 type="text"
+                aria-label="Search blazers"
                 placeholder="Search velvet, tuxedos, peak lapels, navy blazers..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}

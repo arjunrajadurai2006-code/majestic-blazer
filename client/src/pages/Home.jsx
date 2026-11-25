@@ -7,6 +7,7 @@ import Button from '../components/common/Button';
 import { api } from '../services/api';
 import { BUSINESS } from '../components/layout/Footer';
 import { getResponsiveWebpSrcSet } from '../utils/responsiveImage';
+import { useDocumentSeo } from '../utils/seo';
 import styles from './Home.module.css';
 
 const TAILORING_STEPS = [
@@ -80,6 +81,13 @@ const TESTIMONIALS = [
 ];
 
 export default function Home() {
+  useDocumentSeo({
+    title: "MAJESTIC BLAZER | Premium Men's Blazers & Formalwear",
+    description:
+      'Handcrafted luxury blazers, Italian velvet wedding silhouettes, and black-tie tuxedos tailored in Coimbatore. Style That Speaks.',
+    path: '/',
+  });
+
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [formalwearProducts, setFormalwearProducts] = useState([]);
   const [loading, setLoading] = useState(true);

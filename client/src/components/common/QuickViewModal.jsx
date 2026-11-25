@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { X, Heart, ShoppingBag, Star, Check, ArrowRight, ShieldCheck, Truck } from 'lucide-react';
 import { api } from '../../services/api';
@@ -15,6 +15,9 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const modalRef = useRef(null);
+  const closeBtnRef = useRef(null);
+  const previousFocusRef = useRef(null);
 
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -50,7 +53,9 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
     }
 
     let isMounted = true;
+    previousFocusRef.current = document.activeElement;
     setLoading(true);
+    requestAnimationFrame(() => closeBtnRef.current?.focus());
 
     api.get(`/products/${productSummary.slug}`)
       .then((res) => {
@@ -76,13 +81,34 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
       });
 
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusables = modalRef.current.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       isMounted = false;
       window.removeEventListener('keydown', handleKeyDown);
+      if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
+        previousFocusRef.current.focus();
+      }
     };
   }, [isOpen, productSummary, onClose]);
 
@@ -126,9 +152,10 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
     : [{ id: 'primary', url: currentProduct.image_url || '/assets/products/imperial-navy-velvet-front.webp' }];
 
   return (
-    <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true">
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+    <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="quickview-title">
+      <div ref={modalRef} className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <button
+          ref={closeBtnRef}
           type="button"
           className={styles.closeBtn}
           onClick={onClose}
@@ -176,7 +203,7 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
           <div className={styles.detailsCol}>
             <div className={styles.headerInfo}>
               <span className={styles.category}>{currentProduct.category_name || 'Tailored Menswear'}</span>
-              <h2 className={styles.title}>{currentProduct.name}</h2>
+              <h2 id="quickview-title" className={styles.title}>{currentProduct.name}</h2>
 
               <div className={styles.ratingRow}>
                 <div className={styles.stars}>

@@ -1,6 +1,12 @@
+import { useDocumentSeo } from '../utils/seo';
 import styles from './Legal.module.css';
 
 export default function TermsAndConditions() {
+  useDocumentSeo({
+    title: 'Terms & Conditions | MAJESTIC BLAZER',
+    description: 'Terms and Conditions for purchasing luxury blazers and tailoring services from Majestic Blazer.',
+    path: '/terms-and-conditions',
+  });
   return (
     <div className={`container ${styles.page}`}>
       <span className={styles.eyebrow}>LEGAL AGREEMENT</span>

@@ -2,9 +2,16 @@ import { Link } from 'react-router-dom';
 import { User, ShieldCheck, ArrowRight, Lock, Sparkles } from 'lucide-react';
 import Logo from '../components/common/Logo';
 import { ADMIN_APP_URL } from '../config/urls';
+import { useDocumentSeo } from '../utils/seo';
 import styles from './AccountAccess.module.css';
 
 export default function AccountAccess() {
+  useDocumentSeo({
+    title: 'Account Access | MAJESTIC BLAZER',
+    description: 'Select your Majestic Blazer customer or administrator access portal.',
+    path: '/access',
+    noindex: true,
+  });
   const adminLoginUrl = `${ADMIN_APP_URL}/login`;
 
   return (

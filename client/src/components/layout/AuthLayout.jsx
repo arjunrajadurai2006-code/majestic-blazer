@@ -6,5 +6,9 @@
 import { Outlet } from 'react-router-dom';
 
 export default function AuthLayout() {
-  return <Outlet />;
+  return (
+    <main id="main-content" tabIndex={-1}>
+      <Outlet />
+    </main>
+  );
 }

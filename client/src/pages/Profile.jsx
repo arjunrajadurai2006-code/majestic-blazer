@@ -4,9 +4,16 @@ import { User, MapPin, KeyRound, LogOut, Package, Heart, Plus, Trash2, Check } f
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { api } from '../services/api';
+import { useDocumentSeo } from '../utils/seo';
 import styles from './Profile.module.css';
 
 export default function Profile() {
+  useDocumentSeo({
+    title: 'My Profile | MAJESTIC BLAZER',
+    description: 'Manage your Majestic Blazer patron profile and saved addresses.',
+    path: '/profile',
+    noindex: true,
+  });
   const { user, logout } = useAuth();
   const { success, error: toastError } = useToast();
   const navigate = useNavigate();

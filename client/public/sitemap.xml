@@ -1,29 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://majesticblazer.com/</loc>
+    <loc>https://majestic-blazer-id.vercel.app/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://majesticblazer.com/shop</loc>
+    <loc>https://majestic-blazer-id.vercel.app/shop</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://majesticblazer.com/contact</loc>
+    <loc>https://majestic-blazer-id.vercel.app/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://majesticblazer.com/terms-and-conditions</loc>
+    <loc>https://majestic-blazer-id.vercel.app/privacy-policy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://majesticblazer.com/privacy-policy</loc>
+    <loc>https://majestic-blazer-id.vercel.app/terms-and-conditions</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/imperial-royal-navy-velvet-peak-lapel-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/regal-midnight-black-satin-shawl-collar-tuxedo</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/sovereign-charcoal-grey-glen-check-executive-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/monarch-burgundy-gold-brocade-bandhgala-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/ascot-sand-tan-breathable-linen-silk-unstructured-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/crown-classic-double-breasted-oxford-navy-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/classic-black-slim-fit-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/charcoal-executive-canvassed-wool-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/midnight-navy-single-breasted-peak-lapel-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/sovereign-anthracite-sharkskin-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/riviera-unstructured-sand-linen-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/tuscan-textured-hopsack-wool-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/capri-sky-blue-chambray-summer-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/olive-sage-garment-dyed-cotton-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/st-tropez-off-white-raw-silk-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/monarch-royal-burgundy-embroidered-bandhgala</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/sovereign-ivory-jacquard-wedding-dinner-jacket</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/maharaja-emerald-brocade-ceremonial-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/gilded-midnight-black-silk-embroidered-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/peacock-teal-raw-silk-prince-coat</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/heritage-emerald-velvet-shawl-lapel-tuxedo</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/midnight-blue-astral-jacquard-party-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/crimson-velvet-smoking-jacket</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/obsidian-black-sequin-embellished-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/cobalt-blue-satin-faced-cocktail-jacket</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/sovereign-midnight-black-grosgrain-tuxedo</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/cashmere-wool-blend-navy-windowpane-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/savile-row-flannel-double-breasted-chalkstripe-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/camel-hair-peak-lapel-sartorial-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/viceroy-houndstooth-silk-wool-country-jacket</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/executive-navy-travel-flex-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/bankers-grey-subtle-glen-check-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/boardroom-micro-stripe-charcoal-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/aviation-blue-poplin-tropical-wool-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://majestic-blazer-id.vercel.app/products/graphite-twill-modern-notched-lapel-blazer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>
-
