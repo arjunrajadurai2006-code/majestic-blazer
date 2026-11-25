@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { FileText, Download, Printer, Search, RefreshCw } from 'lucide-react';
+import { FileText, Download, Printer, Search, RefreshCw, Receipt } from 'lucide-react';
 import { api } from '../services/api';
+import ThermalReceiptModal from '../components/ThermalReceiptModal';
 import styles from '../styles/adminShared.module.css';
 
 export default function Invoices() {
@@ -8,6 +9,7 @@ export default function Invoices() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
+  const [thermalReceiptInvoiceId, setThermalReceiptInvoiceId] = useState(null);
 
   const loadInvoices = async () => {
     try {
@@ -133,10 +135,19 @@ export default function Invoices() {
                           rel="noreferrer"
                           className={styles.btnSecondary}
                           style={{ padding: '0.35rem 0.65rem' }}
-                          title="Open / Download Official PDF"
+                          title="Open / Download Official A4 PDF"
                         >
                           <Download size={14} /> PDF
                         </a>
+                        <button
+                          type="button"
+                          className={styles.btnSecondary}
+                          style={{ padding: '0.35rem 0.65rem' }}
+                          onClick={() => setThermalReceiptInvoiceId(inv.id)}
+                          title="Generate / Print 80mm Thermal Receipt"
+                        >
+                          <Receipt size={14} /> Thermal
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -152,6 +163,14 @@ export default function Invoices() {
           </tbody>
         </table>
       </div>
+
+      {/* 80mm Thermal Receipt Modal */}
+      {thermalReceiptInvoiceId && (
+        <ThermalReceiptModal
+          orderId={thermalReceiptInvoiceId}
+          onClose={() => setThermalReceiptInvoiceId(null)}
+        />
+      )}
     </div>
   );
 }

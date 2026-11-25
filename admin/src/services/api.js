@@ -58,7 +58,7 @@ export const getApiUrl = (path) => {
     cleanPath = cleanPath.slice(4);
   }
   const base = `${API_BASE}${cleanPath}`;
-  if (cleanPath.startsWith('/invoices/') && cleanPath.endsWith('/pdf')) {
+  if (cleanPath.startsWith('/invoices/') && (cleanPath.endsWith('/pdf') || cleanPath.endsWith('/thermal-pdf'))) {
     const token = tokenStore.get();
     if (token && !base.includes('token=')) {
       const sep = base.includes('?') ? '&' : '?';
