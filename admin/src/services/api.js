@@ -11,8 +11,12 @@ function resolveApiBase() {
 
   if (!raw) {
     // If running in browser and on standalone production host, default to deployed Railway API
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      return 'https://majestic-blazer-production.up.railway.app/api';
+    if (typeof window !== 'undefined') {
+      const h = window.location.hostname;
+      const isLocalHost = h === 'localhost' || h === '127.0.0.1' || /^10\.\d+\.\d+\.\d+$/.test(h) || /^192\.168\.\d+\.\d+$/.test(h) || /^172\.(1[6-9]|2\d|3[01])\.\d+\.\d+$/.test(h) || h.endsWith('.local');
+      if (!isLocalHost) {
+        return 'https://majestic-blazer-production.up.railway.app/api';
+      }
     }
     return '/api';
   }
@@ -54,7 +58,7 @@ export const getApiUrl = (path) => {
     cleanPath = cleanPath.slice(4);
   }
   const base = `${API_BASE}${cleanPath}`;
-  if (cleanPath.startsWith('/invoices/') && cleanPath.endsWith('/pdf')) {
+  if (cleanPath.startsWith('/invoices/') && (cleanPath.endsWith('/pdf') || cleanPath.endsWith('/thermal-pdf'))) {
     const token = tokenStore.get();
     if (token && !base.includes('token=')) {
       const sep = base.includes('?') ? '&' : '?';

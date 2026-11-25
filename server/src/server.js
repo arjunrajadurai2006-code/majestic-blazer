@@ -30,6 +30,15 @@ try {
 
 const server = app.listen(env.port, () => console.log(`Majestic Blazer API listening on port ${env.port}`));
 
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`Port ${env.port} is already in use. Please terminate existing processes on port ${env.port}.`);
+    process.exit(1);
+  } else {
+    console.error('Server error:', err);
+  }
+});
+
 const shutdown = () => {
   if (cleanupTimer) clearInterval(cleanupTimer);
   server.close(async () => {

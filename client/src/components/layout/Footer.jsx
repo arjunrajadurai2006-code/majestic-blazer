@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ChevronDown } from 'lucide-react';
 import Logo from '../common/Logo';
 import { useToast } from '../../context/ToastContext';
 import { ADMIN_APP_URL } from '../../config/urls';
@@ -16,8 +17,13 @@ export const BUSINESS = {
 
 export default function Footer() {
   const [email, setEmail] = useState('');
+  const [openSection, setOpenSection] = useState(null);
   const { success } = useToast();
   const adminLoginUrl = `${ADMIN_APP_URL}/login`;
+
+  const toggleSection = (section) => {
+    setOpenSection((prev) => (prev === section ? null : section));
+  };
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -30,20 +36,36 @@ export default function Footer() {
   return (
     <footer className={styles.footer} id="site-footer">
       <div className={`container ${styles.grid}`}>
+        {/* Brand & Atelier Coordinates */}
         <div className={styles.brand}>
-          <Logo height={56} variant="bare" />
+          <Logo height={48} variant="bare" className={styles.brandLogo} />
           <p className={styles.tagline}>{BUSINESS.tagline}</p>
           <address className={styles.address}>
             <p>{BUSINESS.address}</p>
-            <p><a href={`tel:+91${BUSINESS.phone}`} className={styles.phoneLink}>Phone: +91 {BUSINESS.phone}</a></p>
-            <p><a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a></p>
+            <div className={styles.contactRow}>
+              <a href={`tel:+91${BUSINESS.phone}`} className={styles.phoneLink}>+91 {BUSINESS.phone}</a>
+              <span className={styles.dotSeparator}>•</span>
+              <a href={`mailto:${BUSINESS.email}`} className={styles.emailLink}>{BUSINESS.email}</a>
+            </div>
             <p className={styles.hours}>{BUSINESS.hours}</p>
           </address>
         </div>
 
+        {/* Column 1: Sartorial Collections */}
         <div className={styles.col}>
-          <h3>Sartorial Collections</h3>
-          <ul>
+          <button
+            type="button"
+            className={styles.colHeaderBtn}
+            onClick={() => toggleSection('collections')}
+            aria-expanded={openSection === 'collections'}
+          >
+            <span>Sartorial Collections</span>
+            <ChevronDown
+              size={15}
+              className={`${styles.colChevron} ${openSection === 'collections' ? styles.chevronRotated : ''}`}
+            />
+          </button>
+          <ul className={`${styles.colList} ${openSection === 'collections' ? styles.listOpen : ''}`}>
             <li><Link to="/shop">All Blazers</Link></li>
             <li><Link to="/shop?category=wedding-partywear">Wedding & Partywear</Link></li>
             <li><Link to="/shop?category=formal-blazers">Formal & Corporate</Link></li>
@@ -52,9 +74,21 @@ export default function Footer() {
           </ul>
         </div>
 
+        {/* Column 2: Bespoke & Services */}
         <div className={styles.col}>
-          <h3>Bespoke & Services</h3>
-          <ul>
+          <button
+            type="button"
+            className={styles.colHeaderBtn}
+            onClick={() => toggleSection('bespoke')}
+            aria-expanded={openSection === 'bespoke'}
+          >
+            <span>Bespoke & Services</span>
+            <ChevronDown
+              size={15}
+              className={`${styles.colChevron} ${openSection === 'bespoke' ? styles.chevronRotated : ''}`}
+            />
+          </button>
+          <ul className={`${styles.colList} ${openSection === 'bespoke' ? styles.listOpen : ''}`}>
             <li><Link to="/contact">Private Fitting Appointments</Link></li>
             <li><Link to="/contact">Bespoke Tailoring Consultations</Link></li>
             <li><Link to="/terms-and-conditions">Garment Care & Alterations</Link></li>
@@ -62,9 +96,21 @@ export default function Footer() {
           </ul>
         </div>
 
+        {/* Column 3: Client Service */}
         <div className={styles.col}>
-          <h3>Client Service</h3>
-          <ul>
+          <button
+            type="button"
+            className={styles.colHeaderBtn}
+            onClick={() => toggleSection('client')}
+            aria-expanded={openSection === 'client'}
+          >
+            <span>Client Service</span>
+            <ChevronDown
+              size={15}
+              className={`${styles.colChevron} ${openSection === 'client' ? styles.chevronRotated : ''}`}
+            />
+          </button>
+          <ul className={`${styles.colList} ${openSection === 'client' ? styles.listOpen : ''}`}>
             <li><Link to="/profile">My Account</Link></li>
             <li><Link to="/orders">Order History & Invoices</Link></li>
             <li><Link to="/wishlist">Saved Pieces</Link></li>
@@ -76,6 +122,7 @@ export default function Footer() {
           </ul>
         </div>
 
+        {/* Newsletter */}
         <div className={styles.newsletter}>
           <h3>The Private Gazette</h3>
           <p>Receive exclusive access to new fabric drops, trunk shows, and seasonal luxury blazer collections.</p>
@@ -83,7 +130,7 @@ export default function Footer() {
             <input
               type="email"
               aria-label="Email address for The Private Gazette newsletter"
-              placeholder="Enter your email address"
+              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

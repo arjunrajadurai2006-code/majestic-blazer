@@ -1,0 +1,424 @@
+/* Modal Overlay and Toolbar (Hidden during Print) */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 9999;
+  overflow-y: auto;
+  padding: 24px 16px;
+}
+
+.modal {
+  background: #1a1a1a;
+  border: 1px solid #333333;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: #141414;
+  border-bottom: 1px solid #282828;
+}
+
+.modalTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.badge80mm {
+  background: #b99a58;
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: #999999;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.closeBtn:hover {
+  color: #ffffff;
+}
+
+.actionBar {
+  display: flex;
+  gap: 10px;
+  padding: 12px 18px;
+  background: #222222;
+  border-bottom: 1px solid #333333;
+}
+
+.btnPrint {
+  flex: 1;
+  background: #b99a58;
+  color: #0d0d0d;
+  border: none;
+  padding: 9px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+
+.btnPrint:hover {
+  background: #d4b36c;
+}
+
+.btnDownload {
+  flex: 1;
+  background: #333333;
+  color: #ffffff;
+  border: 1px solid #444444;
+  padding: 9px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.btnDownload:hover {
+  background: #444444;
+  color: #ffffff;
+}
+
+.modalBody {
+  padding: 20px;
+  background: #111111;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: auto;
+}
+
+/* 80mm Thermal Receipt Layout (Physical Preview & Print Container) */
+.receiptContainer {
+  width: 80mm;
+  min-width: 80mm;
+  max-width: 80mm;
+  background: #ffffff;
+  color: #000000;
+  font-family: 'Courier New', Courier, monospace, 'SF Mono', Consolas, Menlo;
+  font-size: 11px;
+  line-height: 1.35;
+  padding: 6mm 4mm;
+  box-sizing: border-box;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  border-radius: 1px;
+  user-select: text;
+}
+
+.headerSection {
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.brandName {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  margin: 0 0 2px;
+  text-transform: uppercase;
+}
+
+.tagline {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+
+.addressText, .contactText {
+  font-size: 9.5px;
+  line-height: 1.3;
+  margin: 1px 0;
+  color: #111111;
+}
+
+.dashedDivider {
+  border-top: 1px dashed #000000;
+  margin: 7px 0;
+}
+
+.metaSection {
+  margin: 4px 0;
+}
+
+.titleRow {
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  margin-bottom: 2px;
+}
+
+.metaLabel {
+  font-weight: 700;
+}
+
+.metaValue {
+  text-align: right;
+  max-width: 55%;
+  word-break: break-word;
+}
+
+/* Products Table */
+.itemsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.5px;
+  margin: 4px 0;
+}
+
+.itemsTable th {
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 9.5px;
+  padding: 3px 0;
+  border-bottom: 1px dashed #000000;
+}
+
+.itemsTable td {
+  padding: 3px 0;
+  vertical-align: top;
+}
+
+.colNum {
+  width: 7%;
+  text-align: left;
+}
+
+.colItem {
+  width: 47%;
+  text-align: left;
+  word-break: break-word;
+  padding-right: 4px;
+}
+
+.itemVariant {
+  font-size: 9px;
+  color: #333333;
+  display: block;
+}
+
+.colQty {
+  width: 12%;
+  text-align: center;
+}
+
+.colRate {
+  width: 17%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.colAmt {
+  width: 17%;
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+/* Totals Summary */
+.summarySection {
+  margin: 4px 0;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  margin-bottom: 2px;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 900;
+  margin: 4px 0;
+}
+
+.paymentBreakdown {
+  margin: 4px 0;
+}
+
+.receivedRow, .balanceRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+
+.balanceHighlight {
+  color: #000000;
+}
+
+/* Terms and Conditions */
+.termsSection {
+  font-size: 8.5px;
+  line-height: 1.35;
+  margin: 5px 0;
+}
+
+.termsTitle {
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  display: block;
+}
+
+.termsList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.termsList li {
+  margin-bottom: 1px;
+}
+
+/* Footer Section */
+.footerSection {
+  text-align: center;
+  margin-top: 6px;
+  font-size: 10px;
+}
+
+.thankYouText {
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+
+.taglineFooter {
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+}
+
+.loadingBox {
+  padding: 40px;
+  color: #ffffff;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.errorBox {
+  padding: 24px;
+  color: #ff6b6b;
+  text-align: center;
+  font-size: 0.88rem;
+}
+
+/* ==========================================================================
+   DEDICATED 80MM BROWSER PRINT STYLES (window.print() and Ctrl + P)
+   ========================================================================== */
+@media print {
+  @page {
+    size: 80mm auto;
+    margin: 0mm;
+  }
+
+  html, body {
+    width: 80mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide absolutely everything in DOM */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Make ONLY the thermal receipt container visible */
+  #thermal-receipt-container,
+  #thermal-receipt-container * {
+    visibility: visible !important;
+  }
+
+  #thermal-receipt-container {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 80mm !important;
+    min-width: 80mm !important;
+    max-width: 80mm !important;
+    margin: 0 !important;
+    padding: 3mm 3mm !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Prevent browser header and footer spacing leaks */
+  .overlay,
+  .modal,
+  .modalHeader,
+  .actionBar,
+  .closeBtn,
+  .btnPrint,
+  .btnDownload,
+  .badge80mm {
+    display: none !important;
+  }
+}

@@ -218,86 +218,41 @@
 
 /* Pricing Box */
 .pricingBox {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 12px;
-  margin: 20px 0 16px;
-}
-
-.priceTab {
-  background: #F7F7F7;
-  border: 1px solid #E5E5E5;
-  padding: 12px 14px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.priceTab:hover {
-  border-color: #BDBDBD;
-}
-
-.priceTabActive {
-  background: #080808;
-  border-color: #080808;
-  color: #FFFFFF;
-}
-
-.tabLabel {
-  display: block;
-  font-size: 0.65rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #666666;
-  margin-bottom: 6px;
-  font-weight: 600;
-}
-
-.priceTabActive .tabLabel {
-  color: #BDBDBD;
+  margin: 18px 0 16px;
 }
 
 .priceRow {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .currency {
-  font-size: 0.95rem;
-  color: #666666;
+  font-size: 1.25rem;
+  color: #111111;
   font-weight: 600;
 }
 
-.priceTabActive .currency {
-  color: #FFFFFF;
-}
-
 .priceValue {
-  font-size: 1.35rem;
+  font-size: 1.85rem;
   font-weight: 700;
   color: #111111;
   letter-spacing: 0.02em;
 }
 
-.priceTabActive .priceValue {
-  color: #FFFFFF;
-}
-
 .origPrice {
-  font-size: 0.85rem;
+  font-size: 1.05rem;
   text-decoration: line-through;
   color: #595959;
-  margin-left: 4px;
+  margin-left: 6px;
 }
 
-.dayUnit {
+.taxNote {
+  display: block;
   font-size: 0.75rem;
-  color: #666666;
-}
-
-.priceTabActive .dayUnit {
-  color: #BDBDBD;
+  color: #777777;
+  margin-top: 4px;
 }
 
 .description {
@@ -360,7 +315,10 @@
   color: #080808;
 }
 
-.sizeActive {
+.sizeActive,
+.sizeBtn.sizeActive,
+.sizeBtn.sizeActive:hover,
+.sizeBtn.sizeActive:focus {
   background: #080808 !important;
   color: #FFFFFF !important;
   border-color: #080808 !important;
@@ -524,6 +482,53 @@
 
 .viewDetailsLink:hover {
   color: #080808;
+}
+
+/* Trust Badges */
+.trustBadges {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #ECECEC;
+}
+
+.trustItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: #444444;
+  line-height: 1.45;
+}
+
+.trustItem svg {
+  flex-shrink: 0;
+  color: #111111;
+}
+
+/* Full Product Page Link */
+.fullLinkWrap {
+  margin-top: 16px;
+  padding-top: 12px;
+}
+
+.fullLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #111111;
+  text-decoration: none;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+
+.fullLink:hover {
+  gap: 12px;
+  color: #000000;
+  text-decoration: underline;
 }
 
 @media (max-width: 600px) {

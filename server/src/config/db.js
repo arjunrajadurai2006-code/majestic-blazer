@@ -1,4 +1,5 @@
 import pg from 'pg';
+import { parse as parseConnectionString } from 'pg-connection-string';
 import { env } from './env.js';
 
 const { Pool } = pg;
@@ -19,21 +20,21 @@ const baseConfig = {
   keepAliveInitialDelayMillis: 10000,
 };
 
-const poolConfig = env.db.connectionString
-  ? {
-    connectionString: env.db.connectionString,
-    ssl: env.db.ssl,
-    ...baseConfig,
-  }
-  : {
-    host: env.db.host,
-    port: env.db.port,
-    user: env.db.user,
-    password: env.db.password,
-    database: env.db.database,
-    ssl: env.db.ssl,
-    ...baseConfig,
-  };
+const parsedConn = env.db.connectionString ? parseConnectionString(env.db.connectionString) : {};
+const poolConfig = {
+  ...baseConfig,
+  ...parsedConn,
+  ...(env.db.connectionString
+    ? {}
+    : {
+      host: env.db.host,
+      port: env.db.port,
+      user: env.db.user,
+      password: env.db.password,
+      database: env.db.database,
+    }),
+  ssl: env.db.ssl,
+};
 
 export const pool = new Pool(poolConfig);
 
