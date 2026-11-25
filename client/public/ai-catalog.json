@@ -1,0 +1,130 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "Majestic Blazer",
+  "alternateName": "MAJESTIC BLAZER — Style That Speaks",
+  "url": "https://majestic-blazer-id.vercel.app/",
+  "description": "Premier luxury menswear boutique in Coimbatore specializing in hand-canvassed formal blazers, Italian velvet wedding blazers, and black-tie tuxedos.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Sathy Road, Kurumbampalayam",
+    "addressLocality": "Coimbatore",
+    "addressRegion": "TN",
+    "postalCode": "641107",
+    "addressCountry": "IN"
+  },
+  "telephone": "+91-8903238882",
+  "email": "contact@majesticblazer.com",
+  "openingHours": [
+    "Mo-Sa 10:00-21:00",
+    "Su 11:00-20:00"
+  ],
+  "catalog": {
+    "@type": "ItemList",
+    "name": "Signature Blazer Collection",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@type": "Product",
+          "name": "Imperial Navy Velvet Blazer",
+          "category": "Wedding & Partywear",
+          "image": "https://majestic-blazer-id.vercel.app/assets/products/imperial-navy-velvet-front.webp",
+          "url": "https://majestic-blazer-id.vercel.app/shop?category=wedding-partywear",
+          "material": "Imported Italian Cotton Velvet",
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "item": {
+          "@type": "Product",
+          "name": "Regal Black Shawl Tuxedo",
+          "category": "Tuxedos & Black Tie",
+          "image": "https://majestic-blazer-id.vercel.app/assets/products/regal-black-tuxedo-front.webp",
+          "url": "https://majestic-blazer-id.vercel.app/shop?category=tuxedos-black-tie",
+          "material": "Super 140s Australian Merino Wool",
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@type": "Product",
+          "name": "Crown Oxford Double-Breasted Blazer",
+          "category": "Formal & Corporate",
+          "image": "https://majestic-blazer-id.vercel.app/assets/products/crown-oxford-double-breasted-front.webp",
+          "url": "https://majestic-blazer-id.vercel.app/shop?category=formal-blazers",
+          "material": "English Worsted Wool",
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "item": {
+          "@type": "Product",
+          "name": "Monarch Burgundy Bandhgala",
+          "category": "Wedding & Partywear",
+          "image": "https://majestic-blazer-id.vercel.app/assets/products/monarch-burgundy-bandhgala-front.webp",
+          "url": "https://majestic-blazer-id.vercel.app/shop?category=wedding-partywear",
+          "material": "Silk Brocade Jacquard",
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 5,
+        "item": {
+          "@type": "Product",
+          "name": "Sovereign Charcoal Check Blazer",
+          "category": "Formal & Corporate",
+          "image": "https://majestic-blazer-id.vercel.app/assets/products/sovereign-charcoal-check-front.webp",
+          "url": "https://majestic-blazer-id.vercel.app/shop?category=formal-blazers",
+          "material": "Superfine Worsted Wool",
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 6,
+        "item": {
+          "@type": "Product",
+          "name": "Ascot Sand Tan Linen Blazer",
+          "category": "Casual & Smart",
+          "image": "https://majestic-blazer-id.vercel.app/assets/products/ascot-sand-tan-linen-front.webp",
+          "url": "https://majestic-blazer-id.vercel.app/shop?category=casual-smart",
+          "material": "European Unstructured Linen",
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          }
+        }
+      }
+    ]
+  }
+}

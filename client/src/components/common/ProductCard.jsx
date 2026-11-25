@@ -4,6 +4,7 @@ import { Heart, Eye, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { savePendingGuestAction } from '../../services/guestAction';
+import { getResponsiveWebpSrcSet } from '../../utils/responsiveImage';
 import styles from './ProductCard.module.css';
 
 export default function ProductCard({ product, onQuickView }) {
@@ -41,14 +42,19 @@ export default function ProductCard({ product, onQuickView }) {
   };
 
   const imageSrc = product.image_url || product.images?.[0]?.url || '/assets/products/imperial-navy-velvet-front.webp';
+  const imageSrcSet = getResponsiveWebpSrcSet(imageSrc);
 
   return (
     <article className={styles.card}>
       <Link to={`/products/${product.slug}`} className={styles.imageWrap}>
         <img
           src={imageSrc}
+          srcSet={imageSrcSet}
+          sizes={imageSrcSet ? '(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 280px' : undefined}
           alt={product.name}
           className={styles.image}
+          width="600"
+          height="800"
           loading="lazy"
           decoding="async"
         />

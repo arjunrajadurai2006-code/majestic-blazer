@@ -13,7 +13,7 @@ export default function Invoices() {
     try {
       setLoading(true);
       setError('');
-      const res = await api.get('/invoices/all');
+      const res = await api.get('/invoices/all?limit=500');
       setInvoices(res.data || []);
     } catch (err) {
       setError(err.message || 'Failed to load invoices');

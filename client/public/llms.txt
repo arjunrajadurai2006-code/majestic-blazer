@@ -1,0 +1,21 @@
+# Majestic Blazer
+
+> Handcrafted luxury menswear, hand-canvassed blazers, and black-tie tuxedos in Coimbatore, India. Style That Speaks.
+
+Majestic Blazer is a premier menswear boutique located on Sathy Road, Kurumbampalayam, Coimbatore - 641107. We offer curated formal blazers, velvet wedding & partywear silhouettes, double-breasted classics, and Super 140s wool tuxedos with complimentary master alterations.
+
+## Public Storefront Pages
+
+- [Home](https://majestic-blazer-id.vercel.app/): Flagship showcase, featured blazers, and Coimbatore atelier overview.
+- [Shop Blazers](https://majestic-blazer-id.vercel.app/shop): Full public catalog with filters for category, chest size, shade, and price.
+- [Wedding & Partywear](https://majestic-blazer-id.vercel.app/shop?category=wedding-partywear): Velvet blazers and embroidered bandhgalas.
+- [Tuxedos & Black Tie](https://majestic-blazer-id.vercel.app/shop?category=tuxedos-black-tie): Satin shawl-collar evening wear and tuxedos.
+- [Formal & Corporate](https://majestic-blazer-id.vercel.app/shop?category=formal-blazers): Worsted wool and double-breasted boardroom blazers.
+- [Casual & Smart](https://majestic-blazer-id.vercel.app/shop?category=casual-smart): Unstructured linen and tailored weekend blazers.
+- [Boutique & Contact](https://majestic-blazer-id.vercel.app/contact): Private fitting appointments, store hours, and location details.
+
+## Policies & Machine-Readable Catalog
+
+- [AI Product Catalog (JSON)](https://majestic-blazer-id.vercel.app/ai-catalog.json): Structured public catalog metadata.
+- [Privacy Policy](https://majestic-blazer-id.vercel.app/privacy-policy): Customer data privacy commitments.
+- [Terms & Conditions](https://majestic-blazer-id.vercel.app/terms-and-conditions): Garment care, delivery, and alterations terms.

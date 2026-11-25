@@ -652,7 +652,7 @@
 }
 
 .searchInput::placeholder {
-  color: #888888;
+  color: #595959;
   font-family: var(--font-body, 'Montserrat', sans-serif);
   font-size: 0.95rem;
 }
