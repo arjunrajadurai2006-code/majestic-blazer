@@ -197,19 +197,18 @@ export default function QuickViewModal({ productSummary, isOpen, onClose }) {
 
             {/* Price Box */}
             <div className={styles.pricingBox}>
-              <div className={styles.priceTabActive}>
-                <div className={styles.priceRow}>
-                  <span className={styles.currency}>₹</span>
-                  <span className={styles.priceValue}>
-                    {Number(currentProduct.sale_price).toLocaleString('en-IN')}
+              <div className={styles.priceRow}>
+                <span className={styles.currency}>₹</span>
+                <span className={styles.priceValue}>
+                  {Number(currentProduct.sale_price).toLocaleString('en-IN')}
+                </span>
+                {currentProduct.original_price && Number(currentProduct.original_price) > Number(currentProduct.sale_price) && (
+                  <span className={styles.origPrice}>
+                    ₹{Number(currentProduct.original_price).toLocaleString('en-IN')}
                   </span>
-                  {currentProduct.original_price && Number(currentProduct.original_price) > Number(currentProduct.sale_price) && (
-                    <span className={styles.origPrice}>
-                      ₹{Number(currentProduct.original_price).toLocaleString('en-IN')}
-                    </span>
-                  )}
-                </div>
+                )}
               </div>
+              <span className={styles.taxNote}>Inclusive of all applicable luxury taxes</span>
             </div>
 
             <p className={styles.description}>
