@@ -70,8 +70,11 @@ export const corsOptions = {
       return callback(new AppError(`CORS policy: Origin ${origin} not allowed by CORS`, 403), false);
     }
 
-    // In non-production / development: allow explicit production origins, local dev origins, or configured origins
+    // In non-production / development: allow explicit production origins, local dev origins, LAN/Wi-Fi devices, or configured origins
+    const isPrivateNetwork = /^https?:\/\/(localhost|127\.0\.0\.1|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})(:\d+)?$/.test(origin);
+
     const isAllowedDev =
+      isPrivateNetwork ||
       PRODUCTION_ORIGINS.includes(origin) ||
       LOCAL_DEV_ORIGINS.includes(origin) ||
       env.devOrigins.includes(origin) ||

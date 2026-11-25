@@ -5,6 +5,7 @@ export default defineConfig(({ command }) => ({
   base: command === 'serve' && !process.env.UNIFIED ? '/' : '/admin/',
   plugins: [react()],
   server: {
+    host: true,
     port: 5174,
     proxy: { '/api': 'http://localhost:5000' },
   },

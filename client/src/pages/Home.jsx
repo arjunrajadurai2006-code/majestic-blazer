@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Sparkles, Clock, MapPin, Award, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Shield, Sparkles, Clock, MapPin, Award, CheckCircle2, ArrowRight, Phone } from 'lucide-react';
 import ProductCard from '../components/common/ProductCard';
 import QuickViewModal from '../components/common/QuickViewModal';
 import Button from '../components/common/Button';
@@ -468,11 +468,29 @@ export default function Home() {
               Experience private fitting rooms, tactile fabric swatches, and one-on-one styling with
               our master consultants. Try any blazer and consult our master tailors before purchasing.
             </p>
-            <address className={styles.boutiqueAddress}>
-              <p><strong>Address:</strong> {BUSINESS.address}</p>
-              <p><strong>Direct Line:</strong> <a href={`tel:+91${BUSINESS.phone}`}>+91 {BUSINESS.phone}</a></p>
-              <p><strong>Consultation Hours:</strong> {BUSINESS.hours}</p>
-            </address>
+            <div className={styles.boutiqueAddress}>
+              <div className={styles.addressItem}>
+                <MapPin size={18} className={styles.addressIcon} />
+                <div className={styles.addressText}>
+                  <span className={styles.addressLabel}>Address</span>
+                  <span className={styles.addressVal}>{BUSINESS.address}</span>
+                </div>
+              </div>
+              <div className={styles.addressItem}>
+                <Phone size={18} className={styles.addressIcon} />
+                <div className={styles.addressText}>
+                  <span className={styles.addressLabel}>Direct Line</span>
+                  <a href={`tel:+91${BUSINESS.phone}`} className={styles.addressLink}>+91 {BUSINESS.phone}</a>
+                </div>
+              </div>
+              <div className={styles.addressItem}>
+                <Clock size={18} className={styles.addressIcon} />
+                <div className={styles.addressText}>
+                  <span className={styles.addressLabel}>Consultation Hours</span>
+                  <span className={styles.addressVal}>{BUSINESS.hours}</span>
+                </div>
+              </div>
+            </div>
             <div className={styles.boutiqueBtns}>
               <Button to="/contact">Schedule Private Fitting</Button>
             </div>

@@ -6,7 +6,7 @@ import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useToast } from '../../context/ToastContext';
 import { getPendingGuestAction, executePendingGuestAction } from '../../services/guestAction';
-import { api } from '../../services/api';
+import { api, tokenStore } from '../../services/api';
 import { ADMIN_APP_URL } from '../../config/urls';
 import Logo from './Logo';
 import styles from './AuthForm.module.css';

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Search, Eye, FileText, Truck, Check, X, ExternalLink } from 'lucide-react';
+import { Search, Eye, FileText, Truck, Check, X, ExternalLink, Printer, Receipt, Download } from 'lucide-react';
 import { api } from '../services/api';
+import ThermalReceiptModal from '../components/ThermalReceiptModal';
 import styles from '../styles/adminShared.module.css';
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled', 'refunded'];
@@ -29,6 +30,20 @@ export default function Orders() {
   const [trackingNumber, setTrackingNumber] = useState('');
   const [restockShipped, setRestockShipped] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+
+  // 80mm Thermal Receipt state
+  const [thermalReceiptOrderId, setThermalReceiptOrderId] = useState(null);
+  const [triggerPrintOnOpen, setTriggerPrintOnOpen] = useState(false);
+
+  const handleOpenThermalBill = (orderId) => {
+    setTriggerPrintOnOpen(false);
+    setThermalReceiptOrderId(orderId);
+  };
+
+  const handlePrintThermalBill = (orderId) => {
+    setTriggerPrintOnOpen(true);
+    setThermalReceiptOrderId(orderId);
+  };
 
   const loadOrders = async () => {
     try {
@@ -220,6 +235,14 @@ export default function Orders() {
                     <div style={{ display: 'flex', gap: '6px' }}>
                       <button className={styles.btnSecondary} onClick={() => openOrderDetails(o.id)} title="View Order Details">
                         <Eye size={14} /> View
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.btnSecondary}
+                        onClick={() => handleOpenThermalBill(o.id)}
+                        title="Generate 80mm Thermal Receipt"
+                      >
+                        <Receipt size={14} /> Thermal Bill
                       </button>
                       <a
                         href={api.getApiUrl(`/invoices/${o.id}/pdf`)}
@@ -465,26 +488,76 @@ export default function Orders() {
                     )}
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', gap: '0.5rem' }}>
-                    <a
-                      href={api.getApiUrl(`/invoices/${selectedOrder.id}/pdf`)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={styles.btnSecondary}
-                    >
-                      <FileText size={14} /> Download PDF Invoice
-                    </a>
-                    {!isTerminal && (
-                      <button type="submit" className={styles.btnPrimary} disabled={updatingStatus}>
-                        {updatingStatus ? 'Updating...' : 'Save Order Status'}
-                      </button>
-                    )}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid #E5E5E5' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                        {/* 1. Download Customer Invoice (Existing functionality unchanged) */}
+                        <a
+                          href={api.getApiUrl(`/invoices/${selectedOrder.id}/pdf`)}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={styles.btnSecondary}
+                          title="Download official A4 Customer Tax Invoice"
+                        >
+                          <FileText size={14} /> Download Customer Invoice
+                        </a>
+
+                        {/* 2. Generate Thermal Bill (New functionality) */}
+                        <button
+                          type="button"
+                          onClick={() => handleOpenThermalBill(selectedOrder.id)}
+                          className={styles.btnSecondary}
+                          title="Generate and preview 80mm thermal receipt"
+                        >
+                          <Receipt size={14} /> Generate Thermal Bill
+                        </button>
+
+                        {/* 3. Print Thermal Bill (New functionality) */}
+                        <button
+                          type="button"
+                          onClick={() => handlePrintThermalBill(selectedOrder.id)}
+                          className={styles.btnSecondary}
+                          title="Open browser print dialog for 80mm printer"
+                        >
+                          <Printer size={14} /> Print Thermal Bill
+                        </button>
+
+                        {/* 4. Download Thermal Bill PDF (New functionality) */}
+                        <a
+                          href={api.getApiUrl(`/invoices/${selectedOrder.id}/thermal-pdf`)}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={styles.btnSecondary}
+                          title="Download 80mm thermal receipt in PDF format"
+                        >
+                          <Download size={14} /> Download Thermal Bill PDF
+                        </a>
+                      </div>
+
+                      {!isTerminal && (
+                        <button type="submit" className={styles.btnPrimary} disabled={updatingStatus}>
+                          {updatingStatus ? 'Updating...' : 'Save Order Status'}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </form>
               );
             })()}
           </div>
         </div>
+      )}
+
+      {/* 80mm Thermal Receipt Modal */}
+      {thermalReceiptOrderId && (
+        <ThermalReceiptModal
+          orderId={thermalReceiptOrderId}
+          onClose={() => {
+            setThermalReceiptOrderId(null);
+            setTriggerPrintOnOpen(false);
+          }}
+          onPrintReady={triggerPrintOnOpen ? () => setTimeout(() => window.print(), 350) : undefined}
+        />
       )}
     </div>
   );

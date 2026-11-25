@@ -3,20 +3,29 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import pg from 'pg';
+import { parse as parseConnectionString } from 'pg-connection-string';
 import { env } from '../src/config/env.js';
 
 const { Client } = pg;
 const schemaPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../database/schema.sql');
 const schema = fs.readFileSync(schemaPath, 'utf8');
 
-const client = new Client({
-  host: env.db.host,
-  port: env.db.port,
-  user: env.db.user,
-  password: env.db.password,
-  database: env.db.database,
+const parsedConn = env.db.connectionString ? parseConnectionString(env.db.connectionString) : {};
+const clientConfig = {
+  ...parsedConn,
+  ...(env.db.connectionString
+    ? {}
+    : {
+      host: env.db.host,
+      port: env.db.port,
+      user: env.db.user,
+      password: env.db.password,
+      database: env.db.database,
+    }),
   ssl: env.db.ssl,
-});
+};
+
+const client = new Client(clientConfig);
 
 try {
   await client.connect();
