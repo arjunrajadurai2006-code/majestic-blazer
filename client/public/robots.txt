@@ -1,9 +1,15 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /cart
+Disallow: /wishlist
 Disallow: /checkout
 Disallow: /profile
 Disallow: /orders
-Disallow: /rental-bookings
+Disallow: /login
+Disallow: /register
+Disallow: /access
+Disallow: /account-access
 
-Sitemap: https://majesticblazer.com/sitemap.xml
-
+Sitemap: https://majestic-blazer-id.vercel.app/sitemap.xml

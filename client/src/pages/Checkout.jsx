@@ -7,9 +7,16 @@ import { useToast } from '../context/ToastContext';
 import { useBackNavigation } from '../context/BackNavigationContext';
 import { api } from '../services/api';
 import DownloadInvoiceButton from '../components/common/DownloadInvoiceButton';
+import { useDocumentSeo } from '../utils/seo';
 import styles from './Checkout.module.css';
 
 export default function Checkout() {
+  useDocumentSeo({
+    title: 'Checkout | MAJESTIC BLAZER',
+    description: 'Complete your Majestic Blazer order.',
+    path: '/checkout',
+    noindex: true,
+  });
   const { user } = useAuth();
   const { items, buySubtotal, rentSubtotal, depositSubtotal, discount, totalPayable, clearCart } = useCart();
   const { success, error: toastError } = useToast();

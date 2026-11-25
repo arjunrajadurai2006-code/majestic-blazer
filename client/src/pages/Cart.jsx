@@ -3,9 +3,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, ArrowRight, Shield, Tag, Check, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import { useDocumentSeo } from '../utils/seo';
 import styles from './Cart.module.css';
 
 export default function Cart() {
+  useDocumentSeo({
+    title: 'Shopping Bag | MAJESTIC BLAZER',
+    description: 'Review your selected Majestic Blazer garments before checkout.',
+    path: '/cart',
+    noindex: true,
+  });
   const {
     items,
     buySubtotal,

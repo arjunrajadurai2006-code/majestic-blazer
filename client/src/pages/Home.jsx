@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Sparkles, Clock, MapPin, Award, CheckCircle2, ArrowRight, Phone } from 'lucide-react';
 import ProductCard from '../components/common/ProductCard';
@@ -6,6 +6,8 @@ import QuickViewModal from '../components/common/QuickViewModal';
 import Button from '../components/common/Button';
 import { api } from '../services/api';
 import { BUSINESS } from '../components/layout/Footer';
+import { getResponsiveWebpSrcSet } from '../utils/responsiveImage';
+import { useDocumentSeo } from '../utils/seo';
 import styles from './Home.module.css';
 
 const TAILORING_STEPS = [
@@ -79,10 +81,18 @@ const TESTIMONIALS = [
 ];
 
 export default function Home() {
+  useDocumentSeo({
+    title: "MAJESTIC BLAZER | Premium Men's Blazers & Formalwear",
+    description:
+      'Handcrafted luxury blazers, Italian velvet wedding silhouettes, and black-tie tuxedos tailored in Coimbatore. Style That Speaks.',
+    path: '/',
+  });
+
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [formalwearProducts, setFormalwearProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const handleQuickView = useCallback((prod) => setQuickViewProduct(prod), []);
 
   useEffect(() => {
     async function loadCatalog() {
@@ -214,7 +224,7 @@ export default function Home() {
               <ProductCard
                 key={p.id}
                 product={p}
-                onQuickView={(prod) => setQuickViewProduct(prod)}
+                onQuickView={handleQuickView}
               />
             ))}
           </div>
@@ -235,8 +245,12 @@ export default function Home() {
             <Link to="/shop?category=wedding-partywear" className={styles.categoryCard}>
               <img
                 src="/assets/collections/wedding-partywear.webp"
+                srcSet={getResponsiveWebpSrcSet('/assets/collections/wedding-partywear.webp')}
+                sizes="(max-width: 768px) 92vw, 25vw"
                 alt="Wedding and Partywear Blazers"
                 className={styles.categoryImage}
+                width="600"
+                height="600"
                 loading="lazy"
                 decoding="async"
               />
@@ -250,8 +264,12 @@ export default function Home() {
             <Link to="/shop?category=tuxedos-black-tie" className={styles.categoryCard}>
               <img
                 src="/assets/collections/tuxedos-black-tie.webp"
+                srcSet={getResponsiveWebpSrcSet('/assets/collections/tuxedos-black-tie.webp')}
+                sizes="(max-width: 768px) 92vw, 25vw"
                 alt="Tuxedos and Black Tie"
                 className={styles.categoryImage}
+                width="600"
+                height="900"
                 loading="lazy"
                 decoding="async"
               />
@@ -265,8 +283,12 @@ export default function Home() {
             <Link to="/shop?category=formal-blazers" className={styles.categoryCard}>
               <img
                 src="/assets/collections/formal-blazers.webp"
+                srcSet={getResponsiveWebpSrcSet('/assets/collections/formal-blazers.webp')}
+                sizes="(max-width: 768px) 92vw, 25vw"
                 alt="Formal Corporate Blazers"
                 className={styles.categoryImage}
+                width="600"
+                height="600"
                 loading="lazy"
                 decoding="async"
               />
@@ -280,8 +302,12 @@ export default function Home() {
             <Link to="/shop?category=casual-smart" className={styles.categoryCard}>
               <img
                 src="/assets/collections/casual-smart.webp"
+                srcSet={getResponsiveWebpSrcSet('/assets/collections/casual-smart.webp')}
+                sizes="(max-width: 768px) 92vw, 25vw"
                 alt="Casual Smart Blazers"
                 className={styles.categoryImage}
+                width="600"
+                height="600"
                 loading="lazy"
                 decoding="async"
               />
@@ -339,15 +365,23 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className={styles.productGrid}>
-          {formalwearProducts.map((p) => (
-            <ProductCard
-              key={p.id}
-              product={p}
-              onQuickView={(prod) => setQuickViewProduct(prod)}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className={styles.skeletonGrid}>
+            {[1, 2, 3, 4].map((n) => (
+              <div key={n} className={styles.skeletonCard} />
+            ))}
+          </div>
+        ) : (
+          <div className={styles.productGrid}>
+            {formalwearProducts.map((p) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                onQuickView={handleQuickView}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* 7. Why Choose Us / Craftsmanship */}
@@ -417,6 +451,8 @@ export default function Home() {
           <div className={styles.boutiqueImageWrap}>
             <img
               src="/assets/brand/flagship-atelier.webp"
+              srcSet={getResponsiveWebpSrcSet('/assets/brand/flagship-atelier.webp')}
+              sizes="(max-width: 768px) 92vw, 580px"
               alt="Majestic Blazer Coimbatore Boutique and Atelier"
               className={styles.boutiqueImage}
               loading="lazy"

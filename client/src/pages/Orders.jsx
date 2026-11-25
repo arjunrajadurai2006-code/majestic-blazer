@@ -3,9 +3,16 @@ import { Link } from 'react-router-dom';
 import { Package, ArrowRight } from 'lucide-react';
 import { api } from '../services/api';
 import DownloadInvoiceButton from '../components/common/DownloadInvoiceButton';
+import { useDocumentSeo } from '../utils/seo';
 import styles from './Orders.module.css';
 
 export default function Orders() {
+  useDocumentSeo({
+    title: 'My Orders | MAJESTIC BLAZER',
+    description: 'View your Majestic Blazer purchase orders and tax invoices.',
+    path: '/orders',
+    noindex: true,
+  });
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { LogOut, AlertCircle, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -32,6 +32,21 @@ export default function AdminLayout() {
   const [signingOut, setSigningOut] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const navigate = useNavigate();
+  const signOutTriggerRef = useRef(null);
+  const cancelBtnRef = useRef(null);
+
+  useEffect(() => {
+    if (!sidebarSignOutModal) return undefined;
+    cancelBtnRef.current?.focus();
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape' && !signingOut) {
+        setSidebarSignOutModal(false);
+        signOutTriggerRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [sidebarSignOutModal, signingOut]);
 
   if (loading) return null;
   if (!admin) return <Navigate to="/login" replace />;
@@ -54,6 +69,7 @@ export default function AdminLayout() {
 
   return (
     <div className={styles.shell}>
+      <a href="#admin-main-content" className="skip-link">Skip to main content</a>
       <aside className={styles.sidebar}>
         <Link to="/" title="Atelier Dashboard" className={styles.logoLink}>
           <img src={logo} alt="Majestic Blazer" className={styles.logo} />
@@ -70,6 +86,7 @@ export default function AdminLayout() {
           </ul>
         </nav>
         <button 
+          ref={signOutTriggerRef}
           type="button"
           className={styles.logout} 
           onClick={() => {
@@ -85,7 +102,7 @@ export default function AdminLayout() {
 
       <div className={styles.mainWrapper}>
         <AdminHeader />
-        <main className={styles.content}>
+        <main id="admin-main-content" tabIndex={-1} className={styles.content}>
           <Outlet />
         </main>
       </div>
@@ -119,6 +136,7 @@ export default function AdminLayout() {
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
+            aria-labelledby="admin-signout-title"
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
               <div style={{
@@ -134,7 +152,7 @@ export default function AdminLayout() {
               }}>
                 <AlertCircle size={22} />
               </div>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', color: '#111111', margin: 0 }}>
+              <h2 id="admin-signout-title" style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', color: '#111111', margin: 0 }}>
                 Confirm Sign Out
               </h2>
             </div>
@@ -145,6 +163,7 @@ export default function AdminLayout() {
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button
+                ref={cancelBtnRef}
                 type="button"
                 style={{
                   padding: '0.6rem 1.2rem',
@@ -155,7 +174,10 @@ export default function AdminLayout() {
                   fontSize: '0.85rem',
                   cursor: 'pointer'
                 }}
-                onClick={() => setSidebarSignOutModal(false)}
+                onClick={() => {
+                  setSidebarSignOutModal(false);
+                  signOutTriggerRef.current?.focus();
+                }}
                 disabled={signingOut}
               >
                 Cancel

@@ -2,9 +2,16 @@ import { Link } from 'react-router-dom';
 import { Heart, ArrowRight, ShieldCheck, User } from 'lucide-react';
 import { useWishlist } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
+import { useDocumentSeo } from '../utils/seo';
 import styles from './Wishlist.module.css';
 
 export default function Wishlist() {
+  useDocumentSeo({
+    title: 'Saved Pieces | MAJESTIC BLAZER',
+    description: 'Your saved Majestic Blazer pieces.',
+    path: '/wishlist',
+    noindex: true,
+  });
   const { wishlistItems, toggleWishlist, loading } = useWishlist();
   const { user } = useAuth();
 

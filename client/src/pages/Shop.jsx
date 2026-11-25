@@ -1,15 +1,23 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Filter, SlidersHorizontal, X, Search, RotateCcw } from 'lucide-react';
 import ProductCard from '../components/common/ProductCard';
 import QuickViewModal from '../components/common/QuickViewModal';
 import { api } from '../services/api';
+import { useDocumentSeo } from '../utils/seo';
 import styles from './Shop.module.css';
 
 const SIZES = ['36R', '38R', '40R', '42R', '44R'];
 const COLORS = ['Midnight Navy', 'Onyx Black', 'Charcoal Grey', 'Wine Burgundy', 'Sand Tan', 'Oxford Navy'];
 
 export default function Shop() {
+  useDocumentSeo({
+    title: 'Shop Tailored Blazers | MAJESTIC BLAZER',
+    description:
+      'Explore hand-canvassed formal blazers, midnight velvets, double-breasted classics, and black-tie tuxedos with complimentary master alterations.',
+    path: '/shop',
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [products, setProducts] = useState([]);
@@ -28,6 +36,19 @@ export default function Shop() {
   const currentPage = Number(searchParams.get('page')) || 1;
   const currentMinPrice = searchParams.get('minPrice') || '';
   const currentMaxPrice = searchParams.get('maxPrice') || '';
+
+  const [minPriceDraft, setMinPriceDraft] = useState(currentMinPrice);
+  const [maxPriceDraft, setMaxPriceDraft] = useState(currentMaxPrice);
+
+  useEffect(() => {
+    setMinPriceDraft(currentMinPrice);
+  }, [currentMinPrice]);
+
+  useEffect(() => {
+    setMaxPriceDraft(currentMaxPrice);
+  }, [currentMaxPrice]);
+
+  const handleQuickView = useCallback((prod) => setQuickViewProduct(prod), []);
 
   // Load categories
   useEffect(() => {
@@ -62,7 +83,7 @@ export default function Shop() {
     fetchProducts();
   }, [searchParams]);
 
-  const updateParam = (key, val) => {
+  const updateParam = useCallback((key, val) => {
     const next = new URLSearchParams(searchParams);
     if (val) {
       next.set(key, val);
@@ -71,7 +92,20 @@ export default function Shop() {
     }
     next.set('page', '1'); // reset page on filter change
     setSearchParams(next);
-  };
+  }, [searchParams, setSearchParams]);
+
+  // Debounce price inputs so typing doesn't trigger an API fetch on every keystroke (improves INP)
+  useEffect(() => {
+    if (minPriceDraft === currentMinPrice) return;
+    const timer = setTimeout(() => updateParam('minPrice', minPriceDraft), 300);
+    return () => clearTimeout(timer);
+  }, [minPriceDraft, currentMinPrice, updateParam]);
+
+  useEffect(() => {
+    if (maxPriceDraft === currentMaxPrice) return;
+    const timer = setTimeout(() => updateParam('maxPrice', maxPriceDraft), 300);
+    return () => clearTimeout(timer);
+  }, [maxPriceDraft, currentMaxPrice, updateParam]);
 
   const clearAllFilters = () => {
     setSearchParams(new URLSearchParams());
@@ -99,7 +133,9 @@ export default function Shop() {
         {/* Mobile Filter Toggle */}
         <div className={styles.mobileBar}>
           <button
+            type="button"
             className={styles.filterToggleBtn}
+            aria-expanded={mobileFilterOpen}
             onClick={() => setMobileFilterOpen((v) => !v)}
           >
             <SlidersHorizontal size={18} />
@@ -147,6 +183,7 @@ export default function Shop() {
                 <button
                   type="button"
                   className={`${styles.filterChip} ${!currentCategory ? styles.chipActive : ''}`}
+                  aria-pressed={!currentCategory}
                   onClick={() => updateParam('category', '')}
                 >
                   All Categories
@@ -156,6 +193,7 @@ export default function Shop() {
                     key={cat.id}
                     type="button"
                     className={`${styles.filterChip} ${currentCategory === cat.slug ? styles.chipActive : ''}`}
+                    aria-pressed={currentCategory === cat.slug}
                     onClick={() => updateParam('category', cat.slug)}
                   >
                     {cat.name}
@@ -173,6 +211,7 @@ export default function Shop() {
                     key={sz}
                     type="button"
                     className={`${styles.sizeBtn} ${currentSize === sz ? styles.sizeActive : ''}`}
+                    aria-pressed={currentSize === sz}
                     onClick={() => updateParam('size', currentSize === sz ? '' : sz)}
                   >
                     {sz}
@@ -190,6 +229,7 @@ export default function Shop() {
                     key={col}
                     type="button"
                     className={`${styles.colorChip} ${currentColor === col ? styles.colorActive : ''}`}
+                    aria-pressed={currentColor === col}
                     onClick={() => updateParam('color', currentColor === col ? '' : col)}
                   >
                     {col}
@@ -205,16 +245,18 @@ export default function Shop() {
                 <input
                   type="number"
                   placeholder="Min"
-                  value={currentMinPrice}
-                  onChange={(e) => updateParam('minPrice', e.target.value)}
+                  aria-label="Minimum price"
+                  value={minPriceDraft}
+                  onChange={(e) => setMinPriceDraft(e.target.value)}
                   className={styles.priceInput}
                 />
                 <span className={styles.priceDash}>–</span>
                 <input
                   type="number"
                   placeholder="Max"
-                  value={currentMaxPrice}
-                  onChange={(e) => updateParam('maxPrice', e.target.value)}
+                  aria-label="Maximum price"
+                  value={maxPriceDraft}
+                  onChange={(e) => setMaxPriceDraft(e.target.value)}
                   className={styles.priceInput}
                 />
               </div>
@@ -230,7 +272,7 @@ export default function Shop() {
           </aside>
 
           {/* Catalog Content Area */}
-          <main className={styles.content}>
+          <div className={styles.content}>
             {/* Desktop Top Toolbar */}
             <div className={styles.toolbar}>
               <span className={styles.resultCount}>
@@ -299,7 +341,7 @@ export default function Shop() {
                   <ProductCard
                     key={p.id}
                     product={p}
-                    onQuickView={(prod) => setQuickViewProduct(prod)}
+                    onQuickView={handleQuickView}
                   />
                 ))}
               </div>
@@ -335,7 +377,7 @@ export default function Shop() {
                 </button>
               </div>
             )}
-          </main>
+          </div>
         </div>
       </div>
 

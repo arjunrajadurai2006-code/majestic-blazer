@@ -100,7 +100,7 @@
 .segmentDesc {
   font-family: var(--font-body, 'Inter', sans-serif);
   font-size: 0.64rem;
-  color: #888888;
+  color: #595959;
   letter-spacing: 0.03em;
   transition: color 0.2s ease;
 }

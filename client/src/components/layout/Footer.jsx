@@ -129,6 +129,7 @@ export default function Footer() {
           <form onSubmit={handleSubscribe} className={styles.newsForm}>
             <input
               type="email"
+              aria-label="Email address for The Private Gazette newsletter"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}

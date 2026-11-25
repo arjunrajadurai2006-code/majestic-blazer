@@ -9,6 +9,8 @@ import { useWishlist } from '../context/WishlistContext';
 import { useToast } from '../context/ToastContext';
 import { useBackNavigation } from '../context/BackNavigationContext';
 import { savePendingGuestAction } from '../services/guestAction';
+import { getResponsiveWebpSrcSet } from '../utils/responsiveImage';
+import { useDocumentSeo, SITE_URL, toAbsoluteUrl } from '../utils/seo';
 import styles from './ProductDetails.module.css';
 
 export default function ProductDetails() {
@@ -55,6 +57,57 @@ export default function ProductDetails() {
     }
     fetchProduct();
   }, [slug]);
+
+  const activeVariant = product?.variants?.find((v) => v.id === selectedVariantId) || product?.variants?.[0];
+  const hasStock = product?.variants?.some((v) => Number(v.stock_quantity) > 0);
+  const seoImage = product?.images?.[0]?.url || product?.image_url;
+  const seoDescription = product?.description
+    ? product.description.replace(/\s+/g, ' ').trim().slice(0, 155)
+    : 'Hand-canvassed luxury blazer crafted by Majestic Blazer in Coimbatore.';
+
+  const productJsonLd = product
+    ? {
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'Product',
+            name: product.name,
+            image: [toAbsoluteUrl(seoImage)],
+            description: seoDescription,
+            sku: activeVariant?.sku || undefined,
+            brand: {
+              '@type': 'Brand',
+              name: 'Majestic Blazer',
+            },
+            offers: {
+              '@type': 'Offer',
+              url: `${SITE_URL}/products/${product.slug}`,
+              priceCurrency: 'INR',
+              price: Number(product.sale_price),
+              availability: hasStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            },
+          },
+          {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+              { '@type': 'ListItem', position: 2, name: 'Blazers', item: `${SITE_URL}/shop` },
+              { '@type': 'ListItem', position: 3, name: product.name, item: `${SITE_URL}/products/${product.slug}` },
+            ],
+          },
+        ],
+      }
+    : null;
+
+  useDocumentSeo({
+    title: product ? `${product.name} | MAJESTIC BLAZER` : 'Tailored Blazer | MAJESTIC BLAZER',
+    description: seoDescription,
+    path: `/products/${slug}`,
+    type: 'product',
+    image: seoImage,
+    noindex: !loading && !product,
+    jsonLd: productJsonLd,
+  });
 
   if (loading) {
     return (
@@ -192,9 +245,13 @@ export default function ProductDetails() {
           <div className={styles.mainImageWrap}>
             <img
               src={currentImage.url}
+              srcSet={getResponsiveWebpSrcSet(currentImage.url)}
+              sizes={getResponsiveWebpSrcSet(currentImage.url) ? '(max-width: 768px) 92vw, 560px' : undefined}
               alt={currentImage.alt_text || product.name}
               className={styles.mainImage}
-              fetchPriority="high"
+              width="600"
+              height="800"
+              fetchpriority="high"
               decoding="sync"
             />
             {discountPercent > 0 && (
@@ -253,6 +310,7 @@ export default function ProductDetails() {
                     key={v.id}
                     type="button"
                     disabled={isOutOfStock}
+                    aria-pressed={selectedVariantId === v.id}
                     className={`${styles.sizeBtn} ${selectedVariantId === v.id ? styles.sizeSelected : ''}`}
                     onClick={() => setSelectedVariantId(v.id)}
                   >

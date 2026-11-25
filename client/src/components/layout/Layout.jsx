@@ -41,9 +41,10 @@ export default function Layout() {
         - Footer always sits after content, never overlaps it.
       */}
       <div className={styles.layout}>
+        <a href="#main-content" className="skip-link">Skip to main content</a>
         <Header />
         <GlobalBackBar />
-        <main className={styles.main}>
+        <main id="main-content" tabIndex={-1} className={styles.main}>
           <Outlet />
         </main>
         <Footer />

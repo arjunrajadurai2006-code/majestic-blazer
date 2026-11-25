@@ -1,6 +1,12 @@
+import { useDocumentSeo } from '../utils/seo';
 import styles from './Legal.module.css';
 
 export default function PrivacyPolicy() {
+  useDocumentSeo({
+    title: 'Privacy Policy | MAJESTIC BLAZER',
+    description: 'Privacy Policy for Majestic Blazer menswear atelier and online storefront.',
+    path: '/privacy-policy',
+  });
   return (
     <div className={`container ${styles.page}`}>
       <span className={styles.eyebrow}>LEGAL POLICIES</span>
