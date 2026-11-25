@@ -5,6 +5,11 @@ import { AppError } from '../utils/AppError.js';
 export const list = asyncHandler(async (req, res) => {
   const includeInactive = req.query.all === 'true' || req.query.includeInactive === 'true';
   const categories = await Category.list({ includeInactive });
+  if (includeInactive || req.query.all === 'true' || req.headers.authorization) {
+    res.setHeader('Cache-Control', 'no-store');
+  } else {
+    res.setHeader('Cache-Control', 'public, max-age=120, stale-while-revalidate=600');
+  }
   res.json({ success: true, data: categories });
 });
 

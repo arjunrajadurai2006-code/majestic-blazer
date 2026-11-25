@@ -3,8 +3,8 @@ import { Route, Routes } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import AuthLayout from './components/layout/AuthLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';
-import Home from './pages/Home';
 
+const Home = lazy(() => import('./pages/Home'));
 const Shop = lazy(() => import('./pages/Shop'));
 const ProductDetails = lazy(() => import('./pages/ProductDetails'));
 const Cart = lazy(() => import('./pages/Cart'));

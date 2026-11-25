@@ -5,9 +5,24 @@ const LIST_COLUMNS = `p.id, p.name, p.slug, p.description, p.color, p.material, 
   p.sale_price, p.original_price,
   p.is_purchasable, p.is_featured, p.is_active, p.created_at,
   c.id AS category_id, c.name AS category_name, c.slug AS category_slug,
-  (SELECT url FROM product_images i WHERE i.product_id = p.id ORDER BY i.is_primary DESC, i.sort_order LIMIT 1) AS image_url,
-  (SELECT COALESCE(AVG(r.rating), 5.0) FROM reviews r WHERE r.product_id = p.id AND r.is_approved = true) AS avg_rating,
-  (SELECT COUNT(*) FROM reviews r WHERE r.product_id = p.id AND r.is_approved = true) AS reviews_count`;
+  img.url AS image_url,
+  COALESCE(rev.avg_rating, 5.0) AS avg_rating,
+  COALESCE(rev.reviews_count, 0) AS reviews_count`;
+
+const LIST_JOINS = `FROM products p
+  JOIN categories c ON c.id = p.category_id
+  LEFT JOIN LATERAL (
+    SELECT url FROM product_images i
+    WHERE i.product_id = p.id
+    ORDER BY i.is_primary DESC, i.sort_order
+    LIMIT 1
+  ) img ON true
+  LEFT JOIN (
+    SELECT product_id, AVG(rating) AS avg_rating, COUNT(*) AS reviews_count
+    FROM reviews
+    WHERE is_approved = true
+    GROUP BY product_id
+  ) rev ON rev.product_id = p.id`;
 
 export const list = async ({
   type,
@@ -86,15 +101,16 @@ export const list = async ({
   else if (sort === 'rating') orderBy = 'avg_rating DESC, p.created_at DESC';
 
   const countSql = `SELECT COUNT(*) AS total FROM products p JOIN categories c ON c.id = p.category_id ${whereSql}`;
-  const { rows: countRows } = await pool.query(countSql, whereParams);
-  const total = Number(countRows[0]?.total || 0);
-
   const offset = (Number(page) - 1) * Number(limit);
   const queryParams = [...whereParams, Number(limit), offset];
-  const itemsSql = `SELECT ${LIST_COLUMNS} FROM products p JOIN categories c ON c.id = p.category_id
+  const itemsSql = `SELECT ${LIST_COLUMNS} ${LIST_JOINS}
      ${whereSql} ORDER BY ${orderBy} LIMIT $${whereParams.length + 1} OFFSET $${whereParams.length + 2}`;
 
-  const { rows: items } = await pool.query(itemsSql, queryParams);
+  const [{ rows: countRows }, { rows: items }] = await Promise.all([
+    pool.query(countSql, whereParams),
+    pool.query(itemsSql, queryParams),
+  ]);
+  const total = Number(countRows[0]?.total || 0);
   return { items, total };
 };
 
@@ -109,33 +125,33 @@ export const findBySlug = async (slug) => {
   const product = rows[0];
   if (!product) return null;
 
-  const { rows: images } = await pool.query(
-    'SELECT id, url, alt_text, is_primary, sort_order FROM product_images WHERE product_id = $1 ORDER BY is_primary DESC, sort_order',
-    [product.id]
-  );
-
-  const { rows: variants } = await pool.query(
-    `SELECT pv.id, pv.sku, pv.size,
-       GREATEST(0, pv.stock_quantity - COALESCE((
-         SELECT SUM(ir.quantity)
-         FROM inventory_reservations ir
-         WHERE ir.variant_id = pv.id
-           AND ir.status = 'active'
-           AND ir.expires_at > NOW()
-       ), 0)) AS stock_quantity
-     FROM product_variants pv
-     WHERE pv.product_id = $1
-     ORDER BY pv.id`,
-    [product.id]
-  );
-
-  const { rows: reviews } = await pool.query(
-    `SELECT r.id, r.rating, r.title, r.comment, r.created_at, u.full_name AS user_name
-     FROM reviews r JOIN users u ON u.id = r.user_id
-     WHERE r.product_id = $1 AND r.is_approved = true
-     ORDER BY r.created_at DESC LIMIT 10`,
-    [product.id]
-  );
+  const [{ rows: images }, { rows: variants }, { rows: reviews }] = await Promise.all([
+    pool.query(
+      'SELECT id, url, alt_text, is_primary, sort_order FROM product_images WHERE product_id = $1 ORDER BY is_primary DESC, sort_order',
+      [product.id]
+    ),
+    pool.query(
+      `SELECT pv.id, pv.sku, pv.size,
+         GREATEST(0, pv.stock_quantity - COALESCE((
+           SELECT SUM(ir.quantity)
+           FROM inventory_reservations ir
+           WHERE ir.variant_id = pv.id
+             AND ir.status = 'active'
+             AND ir.expires_at > NOW()
+         ), 0)) AS stock_quantity
+       FROM product_variants pv
+       WHERE pv.product_id = $1
+       ORDER BY pv.id`,
+      [product.id]
+    ),
+    pool.query(
+      `SELECT r.id, r.rating, r.title, r.comment, r.created_at, u.full_name AS user_name
+       FROM reviews r JOIN users u ON u.id = r.user_id
+       WHERE r.product_id = $1 AND r.is_approved = true
+       ORDER BY r.created_at DESC LIMIT 10`,
+      [product.id]
+    ),
+  ]);
 
   return { ...product, images, variants, reviews };
 };
@@ -149,25 +165,26 @@ export const findById = async (id) => {
   const product = rows[0];
   if (!product) return null;
 
-  const { rows: images } = await pool.query(
-    'SELECT id, url, alt_text, is_primary, sort_order FROM product_images WHERE product_id = $1 ORDER BY is_primary DESC, sort_order',
-    [product.id]
-  );
-
-  const { rows: variants } = await pool.query(
-    `SELECT pv.id, pv.sku, pv.size,
-       GREATEST(0, pv.stock_quantity - COALESCE((
-         SELECT SUM(ir.quantity)
-         FROM inventory_reservations ir
-         WHERE ir.variant_id = pv.id
-           AND ir.status = 'active'
-           AND ir.expires_at > NOW()
-       ), 0)) AS stock_quantity
-     FROM product_variants pv
-     WHERE pv.product_id = $1
-     ORDER BY pv.id`,
-    [product.id]
-  );
+  const [{ rows: images }, { rows: variants }] = await Promise.all([
+    pool.query(
+      'SELECT id, url, alt_text, is_primary, sort_order FROM product_images WHERE product_id = $1 ORDER BY is_primary DESC, sort_order',
+      [product.id]
+    ),
+    pool.query(
+      `SELECT pv.id, pv.sku, pv.size,
+         GREATEST(0, pv.stock_quantity - COALESCE((
+           SELECT SUM(ir.quantity)
+           FROM inventory_reservations ir
+           WHERE ir.variant_id = pv.id
+             AND ir.status = 'active'
+             AND ir.expires_at > NOW()
+         ), 0)) AS stock_quantity
+       FROM product_variants pv
+       WHERE pv.product_id = $1
+       ORDER BY pv.id`,
+      [product.id]
+    ),
+  ]);
 
   return { ...product, images, variants };
 };
@@ -338,7 +355,7 @@ export const remove = async (id) => {
 
 export const getRelated = async (productId, categoryId, limit = 4) => {
   const { rows } = await pool.query(
-    `SELECT ${LIST_COLUMNS} FROM products p JOIN categories c ON c.id = p.category_id
+    `SELECT ${LIST_COLUMNS} ${LIST_JOINS}
      WHERE p.id != $1 AND p.category_id = $2 AND p.is_active = true
      ORDER BY p.is_featured DESC, p.created_at DESC LIMIT $3`,
     [productId, categoryId, limit]

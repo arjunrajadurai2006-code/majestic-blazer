@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { api } from '../services/api';
 import { useAuth } from './AuthContext';
 
@@ -44,7 +44,7 @@ export function WishlistProvider({ children }) {
     }
   }, [wishlistItems]);
 
-  const loadWishlist = async () => {
+  const loadWishlist = useCallback(async () => {
     if (!user) return;
     setLoading(true);
     try {
@@ -57,15 +57,15 @@ export function WishlistProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     if (user) {
       loadWishlist();
     }
-  }, [user]);
+  }, [user, loadWishlist]);
 
-  const toggleWishlist = async (product) => {
+  const toggleWishlist = useCallback(async (product) => {
     const productId = product?.id || product?.product_id;
     if (!productId) return;
 
@@ -95,11 +95,11 @@ export function WishlistProvider({ children }) {
         await api.post('/wishlist', { productId }).catch(() => {});
       }
     }
-  };
+  }, [user, wishlistIds]);
 
-  const isWishlisted = (productId) => wishlistIds.includes(productId);
+  const isWishlisted = useCallback((productId) => wishlistIds.includes(productId), [wishlistIds]);
 
-  const value = {
+  const value = useMemo(() => ({
     wishlistIds,
     wishlistItems,
     wishlistCount: wishlistIds.length,
@@ -107,7 +107,7 @@ export function WishlistProvider({ children }) {
     isWishlisted,
     loadWishlist,
     loading,
-  };
+  }), [wishlistIds, wishlistItems, toggleWishlist, isWishlisted, loadWishlist, loading]);
 
   return <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>;
 }

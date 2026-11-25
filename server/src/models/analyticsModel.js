@@ -2,27 +2,20 @@ import { pool } from '../config/db.js';
 
 export const getOverview = async () => {
   const [
-    salesRes,
     orderStatsRes,
     customerCountRes,
     productCountRes,
     inventoryRes,
     paymentStatsRes,
-    lowStockRes,
     recentOrdersRes,
     recentCustomersRes,
     topBlazersRes,
   ] = await Promise.all([
-    // Sales Revenue & Total Order Count
+    // Combined Sales Revenue & Order Status Breakdown (single table scan)
     pool.query(`
       SELECT
         COUNT(*) AS total_orders,
-        COALESCE(SUM(total) FILTER (WHERE status NOT IN ('cancelled', 'refunded')), 0) AS total_sales_revenue
-      FROM orders
-    `),
-    // Order Breakdown
-    pool.query(`
-      SELECT
+        COALESCE(SUM(total) FILTER (WHERE status NOT IN ('cancelled', 'refunded')), 0) AS total_sales_revenue,
         COUNT(*) FILTER (WHERE status = 'pending') AS pending_orders,
         COUNT(*) FILTER (WHERE status = 'confirmed') AS confirmed_orders,
         COUNT(*) FILTER (WHERE status = 'shipped') AS shipped_orders,
@@ -34,8 +27,14 @@ export const getOverview = async () => {
     pool.query("SELECT COUNT(*) AS total_customers FROM users WHERE role = 'customer'"),
     // Products
     pool.query('SELECT COUNT(*) AS total_products FROM products WHERE is_active = true'),
-    // Inventory Counts
-    pool.query('SELECT COALESCE(SUM(stock_quantity), 0) AS total_stock FROM product_variants'),
+    // Combined Inventory & Low-Stock Counts (single table scan)
+    pool.query(`
+      SELECT
+        COALESCE(SUM(stock_quantity), 0) AS total_stock,
+        COUNT(DISTINCT product_id) FILTER (WHERE stock_quantity <= 2) AS low_stock_products,
+        COUNT(*) FILTER (WHERE stock_quantity <= 2) AS low_stock_variants
+      FROM product_variants
+    `),
     // Payments
     pool.query(`
       SELECT
@@ -44,12 +43,6 @@ export const getOverview = async () => {
         COUNT(*) FILTER (WHERE status = 'failed') AS failed_payments,
         COUNT(*) FILTER (WHERE status = 'refunded') AS refunded_payments
       FROM payments
-    `),
-    // Low stock variants count
-    pool.query(`
-      SELECT COUNT(DISTINCT product_id) AS low_stock_products, COUNT(*) AS low_stock_variants
-      FROM product_variants
-      WHERE stock_quantity <= 2
     `),
     // Recent Orders (6)
     pool.query(`
@@ -72,10 +65,10 @@ export const getOverview = async () => {
     getTopBlazers(5),
   ]);
 
-  const salesRev = Number(salesRes.rows[0]?.total_sales_revenue || 0);
+  const salesRev = Number(orderStatsRes.rows[0]?.total_sales_revenue || 0);
   const totalRevenue = salesRev;
 
-  const totalOrders = Number(salesRes.rows[0]?.total_orders || 0);
+  const totalOrders = Number(orderStatsRes.rows[0]?.total_orders || 0);
   const totalCustomers = Number(customerCountRes.rows[0]?.total_customers || 0);
   const totalProducts = Number(productCountRes.rows[0]?.total_products || 0);
   const totalStock = Number(inventoryRes.rows[0]?.total_stock || 0);
@@ -91,8 +84,8 @@ export const getOverview = async () => {
   const failedPayments = Number(paymentStatsRes.rows[0]?.failed_payments || 0);
   const refundedPayments = Number(paymentStatsRes.rows[0]?.refunded_payments || 0);
 
-  const lowStockCount = Number(lowStockRes.rows[0]?.low_stock_products || 0);
-  const lowStockVariants = Number(lowStockRes.rows[0]?.low_stock_variants || 0);
+  const lowStockCount = Number(inventoryRes.rows[0]?.low_stock_products || 0);
+  const lowStockVariants = Number(inventoryRes.rows[0]?.low_stock_variants || 0);
 
   // Return dual camelCase and snake_case for 100% frontend compatibility
   return {

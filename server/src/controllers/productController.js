@@ -25,6 +25,12 @@ export const list = asyncHandler(async (req, res) => {
     includeInactive,
   });
 
+  if (includeInactive || req.query.all === 'true' || req.headers.authorization) {
+    res.setHeader('Cache-Control', 'no-store');
+  } else {
+    res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+  }
+
   res.json({
     success: true,
     data: items,
@@ -41,6 +47,7 @@ export const getBySlug = asyncHandler(async (req, res) => {
   const product = await Product.findBySlug(req.params.slug);
   if (!product) throw new AppError('Product not found', 404);
   const related = await Product.getRelated(product.id, product.category_id, 4);
+  res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
   res.json({ success: true, data: { ...product, related } });
 });
 

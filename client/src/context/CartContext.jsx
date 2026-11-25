@@ -160,7 +160,7 @@ export function CartProvider({ children }) {
     };
   }, [items, appliedCoupon]);
 
-  const value = {
+  const value = useMemo(() => ({
     items,
     appliedCoupon,
     addToCart,
@@ -170,7 +170,7 @@ export function CartProvider({ children }) {
     applyCoupon,
     removeCoupon,
     ...totals,
-  };
+  }), [items, appliedCoupon, totals]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
