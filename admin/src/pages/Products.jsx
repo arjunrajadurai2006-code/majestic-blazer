@@ -5,6 +5,15 @@ import styles from '../styles/adminShared.module.css';
 
 const DEFAULT_SIZES = ['36R', '38R', '40R', '42R', '44R'];
 
+const buildDefaultSku = (slug, size) => {
+  const cleanSlug = (slug || 'NEW')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '')
+    .slice(0, 18) || 'NEW';
+  return `MB-${cleanSlug}-${String(size).trim().toUpperCase()}`;
+};
+
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -19,6 +28,9 @@ export default function Products() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [uploadingImg, setUploadingImg] = useState(false);
+  const [modalError, setModalError] = useState('');
+  const [newSize, setNewSize] = useState('');
+  const [busyId, setBusyId] = useState(null);
   const fileInputRef = useRef(null);
 
   // Form State
@@ -63,6 +75,8 @@ export default function Products() {
 
   const openAddModal = () => {
     setEditingProduct(null);
+    setModalError('');
+    setNewSize('');
     setFormData({
       name: '',
       slug: '',
@@ -78,13 +92,16 @@ export default function Products() {
       isFeatured: false,
       isActive: true,
       imageUrls: '/assets/products/imperial-navy-velvet-front.webp',
-      variants: DEFAULT_SIZES.map(s => ({ size: s, sku: `MB-${s}`, stockQuantity: 3 }))
+      variants: DEFAULT_SIZES.map(s => ({ size: s, sku: buildDefaultSku('', s), stockQuantity: 3 }))
     });
     setIsModalOpen(true);
   };
 
   const openEditModal = async (product) => {
     try {
+      setError('');
+      setModalError('');
+      setNewSize('');
       setEditingProduct(product);
       // Fetch full details with variants
       const res = await api.get(`/products/id/${product.id}`);
@@ -95,6 +112,7 @@ export default function Products() {
         acc[v.size] = v;
         return acc;
       }, {});
+      const allSizes = Array.from(new Set([...DEFAULT_SIZES, ...(full.variants || []).map(v => v.size)]));
 
       setFormData({
         name: full.name,
@@ -105,15 +123,15 @@ export default function Products() {
         material: full.material || '',
         fit: full.fit || '',
         careInstructions: full.care_instructions || '',
-        salePrice: full.sale_price || '',
-        originalPrice: full.original_price || '',
+        salePrice: full.sale_price ?? '',
+        originalPrice: full.original_price ?? '',
         isPurchasable: Boolean(full.is_purchasable),
         isFeatured: Boolean(full.is_featured),
         isActive: Boolean(full.is_active),
         imageUrls: imgUrls,
-        variants: DEFAULT_SIZES.map(s => ({
+        variants: allSizes.map(s => ({
           size: s,
-          sku: vMap[s]?.sku || `MB-${full.slug}-${s}`,
+          sku: vMap[s]?.sku || buildDefaultSku(full.slug, s),
           stockQuantity: vMap[s]?.stock_quantity ?? 0
         }))
       });
@@ -126,10 +144,40 @@ export default function Products() {
   const handleNameChange = (e) => {
     const val = e.target.value;
     const generatedSlug = val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    setFormData(prev => {
+      const nextSlug = editingProduct ? prev.slug : generatedSlug;
+      const nextVariants = editingProduct
+        ? prev.variants
+        : prev.variants.map(v => {
+            const prevAuto = buildDefaultSku(prev.slug, v.size);
+            return {
+              ...v,
+              sku: !v.sku || v.sku === prevAuto ? buildDefaultSku(nextSlug, v.size) : v.sku,
+            };
+          });
+      return {
+        ...prev,
+        name: val,
+        slug: nextSlug,
+        variants: nextVariants,
+      };
+    });
+  };
+
+  const handleSlugChange = (e) => {
+    const nextSlug = e.target.value;
     setFormData(prev => ({
       ...prev,
-      name: val,
-      slug: editingProduct ? prev.slug : generatedSlug
+      slug: nextSlug,
+      variants: editingProduct
+        ? prev.variants
+        : prev.variants.map(v => {
+            const prevAuto = buildDefaultSku(prev.slug, v.size);
+            return {
+              ...v,
+              sku: !v.sku || v.sku === prevAuto ? buildDefaultSku(nextSlug, v.size) : v.sku,
+            };
+          }),
     }));
   };
 
@@ -141,29 +189,73 @@ export default function Products() {
     });
   };
 
-  const handleFileUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      alert('Only JPEG, PNG and WebP images are permitted.');
+  const handleAddSize = () => {
+    const cleanSize = newSize.trim().toUpperCase();
+    if (!cleanSize) return;
+    if (formData.variants.some(v => v.size.toUpperCase() === cleanSize)) {
+      setModalError(`Size "${cleanSize}" already exists.`);
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      alert('File exceeds 5MB limit.');
-      return;
+    setModalError('');
+    setFormData(prev => ({
+      ...prev,
+      variants: [
+        ...prev.variants,
+        { size: cleanSize, sku: buildDefaultSku(prev.slug, cleanSize), stockQuantity: 0 },
+      ],
+    }));
+    setNewSize('');
+  };
+
+  const handleSetPrimaryImage = (index) => {
+    const list = formData.imageUrls.split('\n').map(u => u.trim()).filter(Boolean);
+    if (index <= 0 || index >= list.length) return;
+    const [chosen] = list.splice(index, 1);
+    setFormData(prev => ({ ...prev, imageUrls: [chosen, ...list].join('\n') }));
+  };
+
+  const handleRemoveImage = (index) => {
+    const list = formData.imageUrls.split('\n').map(u => u.trim()).filter(Boolean);
+    list.splice(index, 1);
+    setFormData(prev => ({ ...prev, imageUrls: list.join('\n') }));
+  };
+
+  const handleFileUpload = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    setModalError('');
+    for (const file of files) {
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+        setModalError(`"${file.name}" has an unsupported format. Only JPEG, PNG and WebP images are permitted.`);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        setModalError(`"${file.name}" exceeds the 5MB size limit.`);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        return;
+      }
     }
 
     try {
       setUploadingImg(true);
-      const res = await uploadImage(file);
-      const uploadedUrl = res.data.url;
-      setFormData(prev => ({
-        ...prev,
-        imageUrls: prev.imageUrls ? `${prev.imageUrls}\n${uploadedUrl}` : uploadedUrl,
-      }));
+      const uploadedUrls = [];
+      for (const file of files) {
+        const res = await uploadImage(file);
+        if (res?.data?.url) uploadedUrls.push(res.data.url);
+      }
+      if (uploadedUrls.length) {
+        setFormData(prev => {
+          const existing = prev.imageUrls.split('\n').map(u => u.trim()).filter(Boolean);
+          return {
+            ...prev,
+            imageUrls: [...existing, ...uploadedUrls].join('\n'),
+          };
+        });
+      }
     } catch (err) {
-      alert(err.message || 'Image upload failed');
+      setModalError(err.message || 'Image upload failed');
     } finally {
       setUploadingImg(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -172,9 +264,59 @@ export default function Products() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
+    if (submitting) return;
+
+    setModalError('');
     setError('');
     setSuccess('');
+
+    const cleanName = formData.name.trim();
+    const cleanSlug = formData.slug.trim().toLowerCase();
+    if (cleanName.length < 2) {
+      setModalError('Garment name must be at least 2 characters.');
+      return;
+    }
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(cleanSlug)) {
+      setModalError('Slug may only contain lowercase letters, numbers, and hyphens.');
+      return;
+    }
+    if (!formData.categoryId) {
+      setModalError('Please select a category.');
+      return;
+    }
+    const salePriceNum = formData.salePrice !== '' && formData.salePrice !== null ? Number(formData.salePrice) : null;
+    const origPriceNum = formData.originalPrice !== '' && formData.originalPrice !== null ? Number(formData.originalPrice) : null;
+    if (salePriceNum !== null && (Number.isNaN(salePriceNum) || salePriceNum < 0)) {
+      setModalError('Retail selling price must be 0 or greater.');
+      return;
+    }
+    if (origPriceNum !== null && (Number.isNaN(origPriceNum) || origPriceNum < 0)) {
+      setModalError('Original MRP must be 0 or greater.');
+      return;
+    }
+
+    const seenSkus = new Set();
+    const preparedVariants = [];
+    for (const v of formData.variants) {
+      const sku = (v.sku || buildDefaultSku(cleanSlug, v.size)).trim();
+      const qty = Number(v.stockQuantity);
+      if (!sku) {
+        setModalError(`SKU is required for size ${v.size}.`);
+        return;
+      }
+      if (!Number.isInteger(qty) || qty < 0) {
+        setModalError(`Stock units for size ${v.size} must be 0 or a positive whole number.`);
+        return;
+      }
+      if (seenSkus.has(sku.toLowerCase())) {
+        setModalError(`Duplicate SKU "${sku}" detected. Each size must have a unique SKU.`);
+        return;
+      }
+      seenSkus.add(sku.toLowerCase());
+      preparedVariants.push({ size: v.size.trim(), sku, stockQuantity: qty });
+    }
+
+    setSubmitting(true);
 
     try {
       const images = formData.imageUrls
@@ -183,30 +325,26 @@ export default function Products() {
         .filter(Boolean)
         .map((url, i) => ({
           url,
-          altText: formData.name,
+          altText: cleanName,
           isPrimary: i === 0
         }));
 
       const payload = {
         categoryId: Number(formData.categoryId),
-        name: formData.name,
-        slug: formData.slug,
+        name: cleanName,
+        slug: cleanSlug,
         description: formData.description,
         color: formData.color,
         material: formData.material,
         fit: formData.fit,
         careInstructions: formData.careInstructions,
-        salePrice: formData.salePrice ? Number(formData.salePrice) : null,
-        originalPrice: formData.originalPrice ? Number(formData.originalPrice) : null,
+        salePrice: salePriceNum,
+        originalPrice: origPriceNum,
         isPurchasable: Boolean(formData.isPurchasable),
         isFeatured: Boolean(formData.isFeatured),
         isActive: Boolean(formData.isActive),
         images,
-        variants: formData.variants.map(v => ({
-          size: v.size,
-          sku: v.sku || `${formData.slug}-${v.size}`,
-          stockQuantity: Number(v.stockQuantity) || 0
-        }))
+        variants: preparedVariants
       };
 
       if (editingProduct) {
@@ -218,27 +356,36 @@ export default function Products() {
       }
 
       setIsModalOpen(false);
-      loadData();
+      await loadData();
     } catch (err) {
-      setError(err.message || 'Operation failed');
+      setModalError(err.message || 'Operation failed');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id, name) => {
+    if (busyId === id) return;
     if (!window.confirm(`Are you sure you want to delete "${name}" from the catalog?`)) return;
     try {
-      await api.delete(`/products/${id}`);
-      setSuccess('Product removed');
-      loadData();
+      setBusyId(id);
+      setError('');
+      setSuccess('');
+      const res = await api.delete(`/products/${id}`);
+      setSuccess(res?.message || 'Product removed');
+      await loadData();
     } catch (err) {
       setError(err.message || 'Failed to delete product');
+    } finally {
+      setBusyId(null);
     }
   };
 
   const handleToggleActive = async (product) => {
+    if (busyId === product.id) return;
     try {
+      setBusyId(product.id);
+      setError('');
       await api.put(`/products/${product.id}`, {
         categoryId: product.category_id,
         name: product.name,
@@ -247,9 +394,11 @@ export default function Products() {
         isPurchasable: product.is_purchasable,
         salePrice: product.sale_price
       });
-      loadData();
+      await loadData();
     } catch (err) {
       setError(err.message || 'Failed to toggle status');
+    } finally {
+      setBusyId(null);
     }
   };
 
@@ -323,8 +472,8 @@ export default function Products() {
                 <tr key={p.id}>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <img 
-                        src={p.primary_image || '/assets/products/imperial-navy-velvet-front.webp'} 
+                      <img
+                        src={p.image_url || p.primary_image || '/assets/products/imperial-navy-velvet-front.webp'}
                         alt={p.name}
                         style={{ width: '42px', height: '52px', objectFit: 'cover', borderRadius: '2px', border: '1px solid #E5E5E5' }}
                       />
@@ -363,7 +512,7 @@ export default function Products() {
               ))
             ) : (
               <tr>
-                <td colSpan="8" className={styles.emptyState}>
+                <td colSpan="5" className={styles.emptyState}>
                   {loading ? 'Fetching catalog...' : 'No blazers found matching your criteria.'}
                 </td>
               </tr>
@@ -382,6 +531,11 @@ export default function Products() {
             </div>
 
             <form onSubmit={handleSubmit}>
+              {modalError && (
+                <div className={`${styles.badge} ${styles.badgeDanger}`} role="alert" style={{ marginBottom: '1rem', display: 'block', padding: '0.65rem 0.85rem' }}>
+                  {modalError}
+                </div>
+              )}
               <div className={styles.formGrid}>
                 <div className={styles.formGroup}>
                   <label>Garment Name *</label>
@@ -402,7 +556,7 @@ export default function Products() {
                     required
                     className={styles.input}
                     value={formData.slug}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                    onChange={handleSlugChange}
                     placeholder="royal-emerald-velvet-tuxedo"
                   />
                 </div>
@@ -526,6 +680,7 @@ export default function Products() {
                         type="file"
                         ref={fileInputRef}
                         accept="image/jpeg,image/png,image/webp"
+                        multiple
                         style={{ display: 'none' }}
                         onChange={handleFileUpload}
                       />
@@ -535,7 +690,7 @@ export default function Products() {
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploadingImg}
                       >
-                        <Upload size={13} /> {uploadingImg ? 'Uploading...' : 'Upload Local Image'}
+                        <Upload size={13} /> {uploadingImg ? 'Uploading...' : 'Upload Images'}
                       </button>
                     </div>
                   </div>
@@ -547,18 +702,39 @@ export default function Products() {
                     placeholder="https://images.unsplash.com/...&#10;https://images.unsplash.com/..."
                   />
                   {formData.imageUrls && (
-                    <div style={{ display: 'flex', gap: '8px', marginTop: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
-                      {formData.imageUrls.split('\n').filter(Boolean).map((u, i) => (
-                        <div key={i} style={{ position: 'relative' }}>
-                          <img
-                            src={u.trim()}
-                            alt={`Preview ${i}`}
-                            style={{ width: '56px', height: '70px', objectFit: 'cover', borderRadius: '2px', border: i === 0 ? '2px solid #b99a58' : '1px solid #333' }}
-                          />
-                          {i === 0 && (
-                            <span style={{ position: 'absolute', bottom: 2, left: 2, background: '#b99a58', color: '#000', fontSize: '9px', fontWeight: 700, padding: '1px 3px', borderRadius: '1px' }}>
-                              Primary
-                            </span>
+                    <div style={{ display: 'flex', gap: '10px', marginTop: '8px', overflowX: 'auto', paddingBottom: '6px' }}>
+                      {formData.imageUrls.split('\n').map(u => u.trim()).filter(Boolean).map((u, i) => (
+                        <div key={`${u}-${i}`} style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                          <div style={{ position: 'relative' }}>
+                            <img
+                              src={u}
+                              alt={`Preview ${i + 1}`}
+                              style={{ width: '64px', height: '78px', objectFit: 'cover', borderRadius: '2px', border: i === 0 ? '2px solid #b99a58' : '1px solid #333' }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveImage(i)}
+                              title="Remove image"
+                              aria-label={`Remove image ${i + 1}`}
+                              style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(0,0,0,0.75)', color: '#fff', border: 'none', borderRadius: '2px', width: '18px', height: '18px', fontSize: '12px', lineHeight: '16px', cursor: 'pointer', padding: 0 }}
+                            >
+                              ×
+                            </button>
+                            {i === 0 && (
+                              <span style={{ position: 'absolute', bottom: 2, left: 2, background: '#b99a58', color: '#000', fontSize: '9px', fontWeight: 700, padding: '1px 4px', borderRadius: '1px' }}>
+                                Primary
+                              </span>
+                            )}
+                          </div>
+                          {i > 0 && (
+                            <button
+                              type="button"
+                              className={`${styles.btnSecondary} ${styles.btnSmall}`}
+                              style={{ fontSize: '10px', padding: '2px 6px' }}
+                              onClick={() => handleSetPrimaryImage(i)}
+                            >
+                              Set Primary
+                            </button>
                           )}
                         </div>
                       ))}
@@ -595,6 +771,23 @@ export default function Products() {
                         />
                       </div>
                     ))}
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '10px', alignItems: 'center' }}>
+                      <input
+                        type="text"
+                        className={styles.input}
+                        style={{ maxWidth: '140px', padding: '4px 8px' }}
+                        placeholder="Custom size (e.g. 46R)"
+                        value={newSize}
+                        onChange={(e) => setNewSize(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className={`${styles.btnSecondary} ${styles.btnSmall}`}
+                        onClick={handleAddSize}
+                      >
+                        + Add Size
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

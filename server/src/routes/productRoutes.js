@@ -9,7 +9,7 @@ router.get('/', validate(productListRules), ctrl.list);
 router.get('/id/:id', ctrl.getById);
 router.get('/:slug', ctrl.getBySlug);
 router.post('/', authenticate, authorize('admin'), validate(productRules), ctrl.create);
-router.put('/:id', authenticate, authorize('admin'), ctrl.update);
+router.put('/:id', authenticate, authorize('admin'), validate(productRules), ctrl.update);
 router.delete('/:id', authenticate, authorize('admin'), ctrl.remove);
 
 export default router;

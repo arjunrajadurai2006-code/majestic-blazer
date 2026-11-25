@@ -64,7 +64,11 @@ export const update = asyncHandler(async (req, res) => {
 });
 
 export const remove = asyncHandler(async (req, res) => {
-  const success = await Product.remove(req.params.id);
-  if (!success) throw new AppError('Product not found', 404);
-  res.json({ success: true, message: 'Product removed' });
+  const result = await Product.remove(req.params.id);
+  if (!result) throw new AppError('Product not found', 404);
+  res.json({
+    success: true,
+    archived: Boolean(result.archived),
+    message: result.archived ? 'Product archived because it is linked to existing orders' : 'Product removed',
+  });
 });

@@ -46,7 +46,17 @@ router.post(
   '/',
   authenticate,
   authorize('admin'),
-  upload.single('image'),
+  (req, res, next) => {
+    upload.single('image')(req, res, (err) => {
+      if (err) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return next(new AppError('Image exceeds 5MB size limit.', 400));
+        }
+        return next(err instanceof AppError ? err : new AppError(err.message || 'Image upload failed', 400));
+      }
+      return next();
+    });
+  },
   (req, res, next) => {
     if (!req.file) {
       return next(new AppError('No image file uploaded', 400));

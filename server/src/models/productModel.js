@@ -1,4 +1,5 @@
 import { pool } from '../config/db.js';
+import { AppError } from '../utils/AppError.js';
 
 const LIST_COLUMNS = `p.id, p.name, p.slug, p.description, p.color, p.material, p.fit,
   p.sale_price, p.original_price,
@@ -171,10 +172,29 @@ export const findById = async (id) => {
   return { ...product, images, variants };
 };
 
+function mapProductDbError(err) {
+  if (err?.code === '23505') {
+    const detail = `${err.constraint || ''} ${err.detail || ''}`.toLowerCase();
+    if (detail.includes('slug')) {
+      return new AppError('A product with this slug already exists. Please choose a unique slug.', 409);
+    }
+    if (detail.includes('sku')) {
+      return new AppError('A variant with this SKU already exists. Please use unique SKU codes.', 409);
+    }
+    return new AppError('A product or variant with these details already exists.', 409);
+  }
+  return err;
+}
+
 export const create = async (p) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
+    const { rows: catRows } = await client.query('SELECT id FROM categories WHERE id = $1 LIMIT 1', [p.categoryId]);
+    if (!catRows.length) {
+      throw new AppError('Selected category does not exist', 400);
+    }
+
     const { rows } = await client.query(
       `INSERT INTO products (
         category_id, name, slug, description, color, material, fit, care_instructions,
@@ -224,7 +244,7 @@ export const create = async (p) => {
     return productId;
   } catch (err) {
     await client.query('ROLLBACK');
-    throw err;
+    throw mapProductDbError(err);
   } finally {
     client.release();
   }
@@ -234,6 +254,11 @@ export const update = async (id, p) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
+    const { rows: catRows } = await client.query('SELECT id FROM categories WHERE id = $1 LIMIT 1', [p.categoryId]);
+    if (!catRows.length) {
+      throw new AppError('Selected category does not exist', 400);
+    }
+
     const { rows } = await client.query(
       `UPDATE products SET
         category_id = $1, name = $2, slug = $3, description = $4, color = $5, material = $6,
@@ -288,15 +313,27 @@ export const update = async (id, p) => {
     return rows[0] ? rows[0].id : null;
   } catch (err) {
     await client.query('ROLLBACK');
-    throw err;
+    throw mapProductDbError(err);
   } finally {
     client.release();
   }
 };
 
 export const remove = async (id) => {
-  const { rowCount } = await pool.query('DELETE FROM products WHERE id = $1', [id]);
-  return rowCount > 0;
+  try {
+    const { rowCount } = await pool.query('DELETE FROM products WHERE id = $1', [id]);
+    return rowCount > 0 ? { removed: true, archived: false } : null;
+  } catch (err) {
+    if (err?.code === '23503') {
+      // Preserve order history by archiving products referenced by existing orders
+      const { rowCount } = await pool.query(
+        'UPDATE products SET is_active = false, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
+        [id]
+      );
+      return rowCount > 0 ? { removed: true, archived: true } : null;
+    }
+    throw err;
+  }
 };
 
 export const getRelated = async (productId, categoryId, limit = 4) => {
