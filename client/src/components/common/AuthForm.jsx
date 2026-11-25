@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, UserCheck, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
@@ -12,7 +12,7 @@ import Logo from './Logo';
 import styles from './AuthForm.module.css';
 
 export default function AuthForm({ mode = 'login' }) {
-  const { login, register, demoCustomerLogin, adminLogin, demoAdminLogin } = useAuth();
+  const { login, register, adminLogin } = useAuth();
   const { addToCart } = useCart();
   const { loadWishlist } = useWishlist();
   const { success, error: toastError } = useToast();
@@ -35,7 +35,6 @@ export default function AuthForm({ mode = 'login' }) {
   const [actionSuccess, setActionSuccess] = useState('');
   const [busy, setBusy] = useState(false);
   const [cooldown, setCooldown] = useState(0);
-  const [demoMode, setDemoMode] = useState(true);
   const [brandTagline, setBrandTagline] = useState('STYLE THAT SPEAKS');
 
   // Forgot password modal
@@ -44,18 +43,8 @@ export default function AuthForm({ mode = 'login' }) {
   const [forgotMsg, setForgotMsg] = useState('');
   const [forgotBusy, setForgotBusy] = useState(false);
 
-  // Check demo mode from backend configuration
+  // Fetch brand tagline
   useEffect(() => {
-    api('/auth/config', { auth: false })
-      .then((res) => {
-        if (res.data?.demoMode !== undefined) {
-          setDemoMode(Boolean(res.data.demoMode));
-        }
-      })
-      .catch(() => {
-        // Graceful fallback to true
-      });
-
     api('/settings', { auth: false })
       .then((res) => {
         if (res.data?.brand_tagline) {
@@ -113,7 +102,7 @@ export default function AuthForm({ mode = 'login' }) {
       return;
     }
 
-    if (mode === 'register' && !demoMode) {
+    if (mode === 'register') {
       if (password.length < 8) {
         setError('Password must be at least 8 characters long.');
         return;
@@ -189,67 +178,6 @@ export default function AuthForm({ mode = 'login' }) {
         setError(`Too many attempts. For security, please wait ${waitSec} seconds before trying again.`);
       } else {
         setError(err.details?.[0]?.message || err.message || 'Authentication failed. Please verify your credentials.');
-      }
-      setBusy(false);
-    }
-  };
-
-  // 1-Click Customer Demo Login
-  const handleContinueAsDemoCustomer = async () => {
-    if (cooldown > 0) return;
-    setError('');
-    setActionSuccess('');
-    setBusy(true);
-
-    try {
-      const authenticatedUser = await demoCustomerLogin();
-      success('Welcome to Majestic Blazer. Demo Customer session started.');
-      const pending = getPendingGuestAction();
-      const returnTo = location.state?.from || pending?.returnUrl || '/';
-      const result = await executePendingGuestAction({
-        api,
-        user: authenticatedUser,
-        addToCart,
-        loadWishlist,
-        success,
-        toastError,
-      });
-      const destination = (result?.action === 'buyNow' ? '/checkout' : null) || returnTo;
-      navigate(destination, { replace: true });
-    } catch (err) {
-      if (err.status === 429) {
-        const waitSec = Math.max(1, Number(err.retryAfter) || 60);
-        setCooldown(waitSec);
-        setError(`Too many attempts. For security, please wait ${waitSec} seconds before trying again.`);
-      } else {
-        setError(err.message || 'Unable to start demo customer session.');
-      }
-      setBusy(false);
-    }
-  };
-
-  // 1-Click Admin Demo Login
-  const handleEnterAdminDemo = async () => {
-    if (cooldown > 0) return;
-    setError('');
-    setActionSuccess('');
-    setBusy(true);
-
-    try {
-      const data = await demoAdminLogin();
-      localStorage.setItem('mb_admin_token', data.token);
-      localStorage.setItem('mb_token', data.token);
-      setActionSuccess('Demo administrator authenticated. Redirecting to Atelier Console...');
-      setTimeout(() => {
-        window.location.href = `${ADMIN_APP_URL}/`;
-      }, 350);
-    } catch (err) {
-      if (err.status === 429) {
-        const waitSec = Math.max(1, Number(err.retryAfter) || 60);
-        setCooldown(waitSec);
-        setError(`Too many attempts. For security, please wait ${waitSec} seconds before trying again.`);
-      } else {
-        setError(err.message || 'Unable to access demo administrator portal.');
       }
       setBusy(false);
     }
@@ -406,7 +334,7 @@ export default function AuthForm({ mode = 'login' }) {
               name="password"
               type="password"
               placeholder={
-                mode === 'register' && !demoMode
+                mode === 'register'
                   ? 'Min 8 chars, 1 letter, 1 number'
                   : 'Your account password'
               }
@@ -450,35 +378,6 @@ export default function AuthForm({ mode = 'login' }) {
               <span>SIGN IN</span>
             )}
           </button>
-
-          {/* Demo Action Buttons (When DEMO_MODE is active) */}
-          {demoMode && mode === 'login' && (
-            <div className={styles.demoActionWrap}>
-              {activeRole === 'customer' ? (
-                <button
-                  type="button"
-                  disabled={busy || cooldown > 0}
-                  className={styles.demoActionBtn}
-                  onClick={handleContinueAsDemoCustomer}
-                  title="Sign in instantly with a generated demo customer account"
-                >
-                  <UserCheck size={14} />
-                  <span>{cooldown > 0 ? `Please wait (${cooldown}s)` : 'Continue as Demo Customer'}</span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  disabled={busy || cooldown > 0}
-                  className={styles.demoActionBtn}
-                  onClick={handleEnterAdminDemo}
-                  title="Sign in to the Atelier Management Portal using secure backend admin verification"
-                >
-                  <ShieldCheck size={14} />
-                  <span>{cooldown > 0 ? `Please wait (${cooldown}s)` : 'Enter Admin Demo'}</span>
-                </button>
-              )}
-            </div>
-          )}
 
           {/* Footer Navigation Link */}
           {mode === 'login' ? (

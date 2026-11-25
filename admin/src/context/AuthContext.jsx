@@ -119,19 +119,9 @@ export function AuthProvider({ children }) {
       setAdmin(res.data.user);
       return res.data.user;
     },
-    demoAdminLogin: async () => {
-      const res = await api('/auth/demo-admin', { method: 'POST', auth: false });
-      tokenStore.set(res.data.token);
-      setAdmin(res.data.user);
-      return res.data.user;
-    },
     customerLogin: async (body) => {
       const res = await api('/auth/login', { method: 'POST', body, auth: false });
       localStorage.setItem('mb_token', res.data.token);
-      return res.data;
-    },
-    demoCustomerLogin: async () => {
-      const res = await api('/auth/demo-customer?handoff=true', { method: 'POST', auth: false });
       return res.data;
     },
     logout: async () => {

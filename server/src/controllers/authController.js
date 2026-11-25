@@ -21,33 +21,6 @@ const publicUser = (u) => ({
   createdAt: u.created_at,
 });
 
-export const getAuthConfig = (req, res) => {
-  res.json({
-    success: true,
-    data: {
-      demoMode: Boolean(env.demoMode),
-    },
-  });
-};
-
-export const ensureDemoAdmin = async () => {
-  const adminEmail = (process.env.DEMO_ADMIN_EMAIL || 'admin@majesticblazer.com').trim().toLowerCase();
-  const adminPass = process.env.DEMO_ADMIN_PASSWORD || process.env.ADMIN_INITIAL_PASSWORD || 'MajesticAdmin2026!Secure';
-  let admin = await User.findByEmail(adminEmail);
-  if (!admin) {
-    const passwordHash = await bcrypt.hash(adminPass, BCRYPT_ROUNDS);
-    await User.create({
-      fullName: 'Atelier Administrator',
-      email: adminEmail,
-      phone: '8903238882',
-      passwordHash,
-      role: 'admin',
-    });
-  } else if (admin.role !== 'admin' || !admin.is_active) {
-    await pool.query("UPDATE users SET role = 'admin', is_active = true WHERE id = $1", [admin.id]);
-  }
-};
-
 export const register = asyncHandler(async (req, res) => {
   const { fullName, email, phone, password } = req.body;
   const normalizedEmail = (email || '').trim().toLowerCase();
@@ -204,69 +177,6 @@ export const deleteAddress = asyncHandler(async (req, res) => {
   const success = await Address.remove(req.params.id, req.user.id);
   if (!success) throw new AppError('Address not found', 404);
   res.json({ success: true, message: 'Address removed' });
-});
-
-// Demo customer auto-login endpoint
-export const demoCustomerLogin = asyncHandler(async (req, res) => {
-  if (!env.demoMode) {
-    throw new AppError('Demo customer access is disabled', 403);
-  }
-  const uniqueId = crypto.randomBytes(4).toString('hex');
-  const demoEmail = `patron.demo.${uniqueId}@majesticblazer.com`;
-  const passwordHash = await bcrypt.hash(`DemoPass_${uniqueId}!`, BCRYPT_ROUNDS);
-  const id = await User.create({
-    fullName: `Demo Patron ${uniqueId.toUpperCase()}`,
-    email: demoEmail,
-    phone: '8903238882',
-    passwordHash,
-    role: 'customer',
-  });
-  const user = await User.findById(id);
-
-  const handoffRequested = req.query.handoff === 'true' || req.body?.handoff === true;
-  let handoffCode;
-  if (handoffRequested) {
-    const handoff = await createHandoffCode({ userId: user.id, userRole: user.role, targetApp: 'customer' });
-    handoffCode = handoff.code;
-  }
-
-  res.status(200).json({
-    success: true,
-    data: {
-      token: signToken(user),
-      user: publicUser(user),
-      ...(handoffCode ? { handoffCode } : {}),
-    },
-  });
-});
-
-// Demo admin auto-login endpoint
-export const demoAdminLogin = asyncHandler(async (req, res) => {
-  if (!env.demoMode) {
-    throw new AppError('Demo administrator access is disabled', 403);
-  }
-  await ensureDemoAdmin();
-  const adminEmail = (process.env.DEMO_ADMIN_EMAIL || 'admin@majesticblazer.com').trim().toLowerCase();
-  const user = await User.findByEmail(adminEmail);
-  if (!user || user.role !== 'admin' || !user.is_active) {
-    throw new AppError('Configured administrator account not found or inactive', 404);
-  }
-
-  const handoffRequested = req.query.handoff === 'true' || req.body?.handoff === true;
-  let handoffCode;
-  if (handoffRequested) {
-    const handoff = await createHandoffCode({ userId: user.id, userRole: user.role, targetApp: 'admin' });
-    handoffCode = handoff.code;
-  }
-
-  res.status(200).json({
-    success: true,
-    data: {
-      token: signToken(user),
-      user: publicUser(user),
-      ...(handoffCode ? { handoffCode } : {}),
-    },
-  });
 });
 
 // Generate a secure single-use cross-application handoff code for the authenticated user

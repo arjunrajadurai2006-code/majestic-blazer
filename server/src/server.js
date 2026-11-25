@@ -1,7 +1,6 @@
 import app from './app.js';
 import { env } from './config/env.js';
 import { pool, testConnection } from './config/db.js';
-import { ensureDemoAdmin } from './controllers/authController.js';
 import { initReservationSchema, cleanupExpiredReservations } from './models/reservationModel.js';
 import { initHandoffSchema } from './services/handoffService.js';
 
@@ -12,9 +11,6 @@ try {
   console.log('PostgreSQL connected');
   await initReservationSchema();
   await initHandoffSchema();
-  if (env.demoMode) {
-    await ensureDemoAdmin();
-  }
   // Schedule 1-minute interval for cleaning up expired inventory reservations
   cleanupTimer = setInterval(() => {
     cleanupExpiredReservations().catch((err) => console.error('Reservation cleanup error:', err.message));

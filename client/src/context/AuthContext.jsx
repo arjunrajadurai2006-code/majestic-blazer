@@ -122,18 +122,8 @@ export function AuthProvider({ children }) {
       loading,
       login: (body) => authenticate('/auth/login', body),
       register: (body) => authenticate('/auth/register', body),
-      demoCustomerLogin: async () => {
-        const res = await api('/auth/demo-customer', { method: 'POST', auth: false });
-        tokenStore.set(res.data.token);
-        setUser(res.data.user);
-        return res.data.user;
-      },
       adminLogin: async (body) => {
         const res = await api('/auth/admin/login', { method: 'POST', body, auth: false });
-        return res.data;
-      },
-      demoAdminLogin: async () => {
-        const res = await api('/auth/demo-admin?handoff=true', { method: 'POST', auth: false });
         return res.data;
       },
       logout: async () => {

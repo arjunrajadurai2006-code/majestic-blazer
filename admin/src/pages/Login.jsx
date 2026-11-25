@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { ShieldCheck, UserCheck, AlertCircle, CheckCircle2, Lock } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
 import { CUSTOMER_APP_URL } from '../config/urls';
@@ -9,7 +9,7 @@ import logo from '../assets/majestic-blazer-logo.jpeg';
 import styles from './Login.module.css';
 
 export default function Login() {
-  const { admin, loading, login, demoAdminLogin, customerLogin, demoCustomerLogin } = useAuth();
+  const { admin, loading, login, customerLogin } = useAuth();
   const { settings } = useSettings();
   const brandTagline = settings?.brand_tagline || 'Style That Speaks';
   const storeName = settings?.store_name || 'Majestic Blazer';
@@ -26,20 +26,6 @@ export default function Login() {
   const [error, setError] = useState('');
   const [actionSuccess, setActionSuccess] = useState('');
   const [busy, setBusy] = useState(false);
-  const [demoMode, setDemoMode] = useState(true);
-
-  // Check demo mode from backend configuration
-  useEffect(() => {
-    api('/auth/config', { auth: false })
-      .then((res) => {
-        if (res.data?.demoMode !== undefined) {
-          setDemoMode(Boolean(res.data.demoMode));
-        }
-      })
-      .catch(() => {
-        // Fallback gracefully
-      });
-  }, []);
 
   // Clear errors and form fields on role switch
   useEffect(() => {
@@ -104,49 +90,6 @@ export default function Login() {
       }
     } catch (err) {
       setError(err.details?.[0]?.message || err.message || 'Authentication failed. Please verify your credentials.');
-      setBusy(false);
-    }
-  };
-
-  const handleEnterAdminDemo = async () => {
-    setError('');
-    setActionSuccess('');
-    setBusy(true);
-
-    try {
-      await demoAdminLogin();
-      navigate('/', { replace: true });
-    } catch (err) {
-      setError(err.message || 'Unable to access demo administrator portal.');
-      setBusy(false);
-    }
-  };
-
-  const handleContinueAsDemoCustomer = async () => {
-    setError('');
-    setActionSuccess('');
-    setBusy(true);
-
-    try {
-      const data = await demoCustomerLogin();
-      setActionSuccess('Demo Customer authenticated. Redirecting to Customer Storefront...');
-
-      let handoffCode = data.handoffCode;
-      if (!handoffCode) {
-        const handoffRes = await api('/auth/handoff/create', {
-          method: 'POST',
-          body: { targetApp: 'customer' },
-          headers: { Authorization: `Bearer ${data.token}` },
-          auth: false,
-        });
-        handoffCode = handoffRes.data.handoffCode;
-      }
-
-      setTimeout(() => {
-        window.location.href = `${storefrontUrl.replace(/\/$/, '')}/?code=${encodeURIComponent(handoffCode)}`;
-      }, 350);
-    } catch (err) {
-      setError(err.message || 'Unable to start demo customer session.');
       setBusy(false);
     }
   };
@@ -262,35 +205,6 @@ export default function Login() {
               <span>SIGN IN</span>
             )}
           </button>
-
-          {/* Demo Action Buttons (When DEMO_MODE is active) */}
-          {demoMode && (
-            <div className={styles.demoActionWrap}>
-              {activeRole === 'admin' ? (
-                <button
-                  type="button"
-                  disabled={busy}
-                  className={styles.demoActionBtn}
-                  onClick={handleEnterAdminDemo}
-                  title="Sign in to the Atelier Management Portal using secure backend admin verification"
-                >
-                  <ShieldCheck size={14} />
-                  <span>Enter Admin Demo</span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  disabled={busy}
-                  className={styles.demoActionBtn}
-                  onClick={handleContinueAsDemoCustomer}
-                  title="Sign in instantly with a generated demo customer account"
-                >
-                  <UserCheck size={14} />
-                  <span>Continue as Demo Customer</span>
-                </button>
-              )}
-            </div>
-          )}
 
           {/* Customer mode storefront link */}
           {activeRole === 'customer' && (

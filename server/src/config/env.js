@@ -121,7 +121,6 @@ export const env = {
   isProd: process.env.NODE_ENV === 'production',
   isTest: process.env.NODE_ENV === 'test',
   isDev: (process.env.NODE_ENV || 'development') === 'development',
-  demoMode: process.env.DEMO_MODE !== 'false',
   port: Number(process.env.PORT) || 5000,
   clientUrl: process.env.CLIENT_URL || '',
   adminUrl: process.env.ADMIN_URL || '',

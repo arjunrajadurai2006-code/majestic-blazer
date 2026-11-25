@@ -1,5 +1,4 @@
 import { body } from 'express-validator';
-import { env } from '../config/env.js';
 
 const email = body('email').trim().toLowerCase().isEmail().withMessage('Enter a valid email address');
 
@@ -11,16 +10,14 @@ export const registerRules = [
     if (!val || typeof val !== 'string' || !val.trim()) {
       throw new Error('Password is required');
     }
-    if (!env.demoMode) {
-      if (val.length < 8 || val.length > 72) {
-        throw new Error('Password must be 8 to 72 characters');
-      }
-      if (!/[A-Za-z]/.test(val)) {
-        throw new Error('Password must include a letter');
-      }
-      if (!/\d/.test(val)) {
-        throw new Error('Password must include a number');
-      }
+    if (val.length < 8 || val.length > 72) {
+      throw new Error('Password must be 8 to 72 characters');
+    }
+    if (!/[A-Za-z]/.test(val)) {
+      throw new Error('Password must include a letter');
+    }
+    if (!/\d/.test(val)) {
+      throw new Error('Password must include a number');
     }
     return true;
   }),
