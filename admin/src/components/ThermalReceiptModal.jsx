@@ -1,15 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { Printer, Download, X, Receipt } from 'lucide-react';
 import { api } from '../services/api';
 import styles from './ThermalReceiptModal.module.css';
 
-export default function ThermalReceiptModal({ orderId, onClose, onPrintReady }) {
+export default function ThermalReceiptModal({ orderId, onClose, autoPrint = false, onPrintReady }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [printing, setPrinting] = useState(false);
+  const receiptRef = useRef(null);
+  const isPrintingRef = useRef(false);
+  const autoPrintedRef = useRef(false);
 
   useEffect(() => {
     let isMounted = true;
+    autoPrintedRef.current = false;
     async function fetchThermalData() {
       try {
         setLoading(true);
@@ -35,24 +40,67 @@ export default function ThermalReceiptModal({ orderId, onClose, onPrintReady }) 
     return () => {
       isMounted = false;
     };
-  }, [orderId]);
+  }, [orderId, onPrintReady]);
+
+  const triggerPrint = useCallback(async () => {
+    if (isPrintingRef.current || loading || !data || !receiptRef.current) return;
+    isPrintingRef.current = true;
+    setPrinting(true);
+    try {
+      if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready.catch(() => {});
+      }
+      await new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve))
+      );
+      if (receiptRef.current) {
+        window.print();
+      }
+    } catch (err) {
+      setError(err.message || 'Unable to open browser print dialog.');
+    } finally {
+      isPrintingRef.current = false;
+      setPrinting(false);
+    }
+  }, [loading, data]);
+
+  // Reset print lock when browser print dialog closes
+  useEffect(() => {
+    const handleAfterPrint = () => {
+      isPrintingRef.current = false;
+      setPrinting(false);
+    };
+    window.addEventListener('afterprint', handleAfterPrint);
+    return () => {
+      window.removeEventListener('afterprint', handleAfterPrint);
+      isPrintingRef.current = false;
+    };
+  }, []);
+
+  // Auto-print once receipt DOM is committed when triggered from "Print Thermal Bill"
+  useEffect(() => {
+    if (autoPrint && !loading && data && !autoPrintedRef.current && receiptRef.current) {
+      autoPrintedRef.current = true;
+      triggerPrint();
+    }
+  }, [autoPrint, loading, data, triggerPrint]);
 
   // Support Ctrl + P / Cmd + P while modal is open
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P')) {
         e.preventDefault();
-        window.print();
+        triggerPrint();
       } else if (e.key === 'Escape') {
         onClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  }, [onClose, triggerPrint]);
 
   const handlePrint = () => {
-    window.print();
+    triggerPrint();
   };
 
   const formatCurrency = (amt) =>
@@ -79,11 +127,11 @@ export default function ThermalReceiptModal({ orderId, onClose, onPrintReady }) 
             type="button"
             className={styles.btnPrint}
             onClick={handlePrint}
-            disabled={loading || !data}
+            disabled={loading || !data || printing}
             title="Open Browser Print Dialog (Ctrl + P)"
           >
             <Printer size={15} />
-            <span>Print Thermal Bill</span>
+            <span>{printing ? 'Preparing Print...' : 'Print Thermal Bill'}</span>
           </button>
           <a
             href={api.getApiUrl(`/invoices/${orderId}/thermal-pdf`)}
@@ -104,7 +152,7 @@ export default function ThermalReceiptModal({ orderId, onClose, onPrintReady }) 
           ) : error ? (
             <div className={styles.errorBox}>{error}</div>
           ) : data ? (
-            <div className={styles.receiptContainer} id="thermal-receipt-container">
+            <div ref={receiptRef} className={styles.receiptContainer} id="thermal-receipt-container">
               {/* 1. BUSINESS HEADER */}
               <div className={styles.headerSection}>
                 <div className={styles.brandName}>{data.business?.name || 'MAJESTIC BLAZER'}</div>

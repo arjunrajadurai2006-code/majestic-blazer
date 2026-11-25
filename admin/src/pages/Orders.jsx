@@ -552,11 +552,11 @@ export default function Orders() {
       {thermalReceiptOrderId && (
         <ThermalReceiptModal
           orderId={thermalReceiptOrderId}
+          autoPrint={triggerPrintOnOpen}
           onClose={() => {
             setThermalReceiptOrderId(null);
             setTriggerPrintOnOpen(false);
           }}
-          onPrintReady={triggerPrintOnOpen ? () => setTimeout(() => window.print(), 350) : undefined}
         />
       )}
     </div>

@@ -375,10 +375,13 @@
 
   html, body {
     width: 80mm !important;
+    height: auto !important;
+    min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
+    overflow: visible !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -388,13 +391,46 @@
     visibility: hidden !important;
   }
 
-  /* Make ONLY the thermal receipt container visible */
-  #thermal-receipt-container,
-  #thermal-receipt-container * {
+  /* Reset modal wrappers so #thermal-receipt-container is NOT removed by display:none */
+  .overlay,
+  .modal,
+  .modalBody {
+    position: static !important;
+    display: block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    overflow: visible !important;
+    animation: none !important;
+  }
+
+  /* Exclude modal header, toolbar, and status boxes from print output */
+  .modalHeader,
+  .actionBar,
+  .closeBtn,
+  .btnPrint,
+  .btnDownload,
+  .badge80mm,
+  .loadingBox,
+  .errorBox {
+    display: none !important;
+  }
+
+  /* Make ONLY the thermal receipt container visible at top-left of 80mm page */
+  .receiptContainer,
+  .receiptContainer * {
     visibility: visible !important;
   }
 
-  #thermal-receipt-container {
+  .receiptContainer {
     position: absolute !important;
     left: 0 !important;
     top: 0 !important;
@@ -405,20 +441,9 @@
     padding: 3mm 3mm !important;
     box-shadow: none !important;
     border: none !important;
+    border-radius: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
     box-sizing: border-box !important;
-  }
-
-  /* Prevent browser header and footer spacing leaks */
-  .overlay,
-  .modal,
-  .modalHeader,
-  .actionBar,
-  .closeBtn,
-  .btnPrint,
-  .btnDownload,
-  .badge80mm {
-    display: none !important;
   }
 }
