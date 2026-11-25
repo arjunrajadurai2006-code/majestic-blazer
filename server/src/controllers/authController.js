@@ -53,110 +53,52 @@ export const register = asyncHandler(async (req, res) => {
   const normalizedEmail = (email || '').trim().toLowerCase();
 
   const existing = await User.findByEmail(normalizedEmail);
-
-  if (env.demoMode) {
-    if (existing) {
-      if (existing.role !== 'customer') {
-        throw new AppError('An account with this email already exists', 409);
-      }
-      return res.status(200).json({
-        success: true,
-        data: { token: signToken(existing), user: publicUser(existing) },
-      });
-    }
-
-    const defaultName = (fullName && fullName.trim()) || (normalizedEmail.split('@')[0] || 'Patron');
-    const name = defaultName.charAt(0).toUpperCase() + defaultName.slice(1);
-    const passwordHash = await bcrypt.hash(password || 'DemoPassword123!', BCRYPT_ROUNDS);
-    const id = await User.create({
-      fullName: name,
-      email: normalizedEmail,
-      phone: (phone || '').trim(),
-      passwordHash,
-      role: 'customer',
-    });
-    const user = await User.findById(id);
-    return res.status(201).json({
-      success: true,
-      data: { token: signToken(user), user: publicUser(user) },
-    });
+  if (existing) {
+    throw new AppError('An account with this email already exists', 409);
   }
 
-  // Non-demo mode
-  if (existing) throw new AppError('An account with this email already exists', 409);
+  const defaultName = (fullName && fullName.trim()) || (normalizedEmail.split('@')[0] || 'Customer');
+  const name = defaultName.charAt(0).toUpperCase() + defaultName.slice(1);
   const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
+
   const id = await User.create({
-    fullName: fullName.trim(),
+    fullName: name,
     email: normalizedEmail,
     phone: (phone || '').trim(),
     passwordHash,
     role: 'customer',
   });
+
   const user = await User.findById(id);
-  res.status(201).json({ success: true, data: { token: signToken(user), user: publicUser(user) } });
+  return res.status(201).json({
+    success: true,
+    data: { token: signToken(user), user: publicUser(user) },
+  });
 });
 
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const normalizedEmail = (email || '').trim().toLowerCase();
 
-  let user = await User.findByEmail(normalizedEmail);
+  const user = await User.findByEmail(normalizedEmail);
 
-  // If user is an administrator, strictly verify their password hash
-  if (user && user.role === 'admin') {
-    if (!user.is_active) {
-      throw new AppError('Account is inactive', 401);
-    }
-    const valid = await bcrypt.compare(password, user.password_hash);
-    if (!valid) {
-      throw new AppError('Invalid email or password', 401);
-    }
-    return res.status(200).json({
-      success: true,
-      data: { token: signToken(user), user: publicUser(user) },
-    });
-  }
-
-  // Customer authentication flow (existing logic preserved)
-  if (env.demoMode) {
-    if (user) {
-      if (user.role !== 'customer') {
-        throw new AppError('Invalid email or password', 401);
-      }
-      if (!user.is_active) {
-        throw new AppError('Account is inactive', 401);
-      }
-      // In demo mode: accept any valid password without blocking customer
-      return res.json({
-        success: true,
-        data: { token: signToken(user), user: publicUser(user) },
-      });
-    } else {
-      // Auto-create customer in demo mode
-      const namePrefix = normalizedEmail.split('@')[0] || 'Demo Patron';
-      const formattedName = namePrefix.charAt(0).toUpperCase() + namePrefix.slice(1);
-      const passwordHash = await bcrypt.hash(password || 'DemoPassword123!', BCRYPT_ROUNDS);
-      const id = await User.create({
-        fullName: formattedName,
-        email: normalizedEmail,
-        phone: '',
-        passwordHash,
-        role: 'customer',
-      });
-      user = await User.findById(id);
-      return res.status(200).json({
-        success: true,
-        data: { token: signToken(user), user: publicUser(user) },
-      });
-    }
-  }
-
-  // DEMO_MODE=false: strict customer verification
-  const valid = await bcrypt.compare(password, user ? user.password_hash : DUMMY_HASH);
-  if (!user || !valid || !user.is_active || user.role !== 'customer') {
+  // If user does not exist or password is missing
+  if (!user) {
+    await bcrypt.compare(password || '', DUMMY_HASH);
     throw new AppError('Invalid email or password', 401);
   }
-  res.json({
+
+  if (!user.is_active) {
+    throw new AppError('Account is inactive', 401);
+  }
+
+  // Strictly verify password hash for all accounts using bcrypt
+  const valid = await bcrypt.compare(password, user.password_hash);
+  if (!valid) {
+    throw new AppError('Invalid email or password', 401);
+  }
+
+  return res.status(200).json({
     success: true,
     data: { token: signToken(user), user: publicUser(user) },
   });
