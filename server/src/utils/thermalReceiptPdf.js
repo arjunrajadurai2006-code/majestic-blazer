@@ -57,6 +57,7 @@ export function calculateThermalReceiptHeight(data) {
   h += 10; // Dotted line
 
   // Payment Breakdown
+  h += 11; // Payment Method & Status
   h += 11; // Amount Received
   h += 13; // Balance Amount
   h += 10; // Dotted line
@@ -260,7 +261,10 @@ export function generateThermalReceiptPdf(data) {
       // 6. RECEIVED & BALANCE BREAKDOWN
       const amountReceived = Number(financials.amountReceived || 0);
       const balanceAmount = Number(financials.balanceAmount || 0);
+      const payProvider = String(data.paymentInfo?.provider || 'N/A').toUpperCase();
+      const payStatus = String(data.paymentInfo?.status || 'pending').toUpperCase();
 
+      printRow('Payment:', `${payProvider} (${payStatus})`, false, 7);
       printRow('Amount Received:', fmt(amountReceived), true, 8, amountReceived > 0 ? '#000000' : '#444444');
       printRow('Balance Amount:', fmt(balanceAmount), true, 8.5, balanceAmount > 0 ? '#990000' : '#000000');
 

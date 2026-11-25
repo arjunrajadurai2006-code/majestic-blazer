@@ -5,28 +5,37 @@ import { generateThermalReceiptPdf } from '../utils/thermalReceiptPdf.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
 
+function setNoCacheHeaders(res) {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+}
+
+async function findInvoiceByIdentifier(id, lookupType = null) {
+  const raw = String(id || '').trim();
+  const isNumeric = /^\d+$/.test(raw);
+  let sql;
+  if (lookupType === 'invoice') {
+    sql = isNumeric
+      ? `SELECT i.*, o.user_id, o.order_number FROM invoices i LEFT JOIN orders o ON o.id = i.order_id WHERE i.id = $1 LIMIT 1`
+      : `SELECT i.*, o.user_id, o.order_number FROM invoices i LEFT JOIN orders o ON o.id = i.order_id WHERE i.invoice_number = $1 LIMIT 1`;
+  } else if (lookupType === 'order') {
+    sql = isNumeric
+      ? `SELECT i.*, o.user_id, o.order_number FROM invoices i LEFT JOIN orders o ON o.id = i.order_id WHERE i.order_id = $1 ORDER BY i.id DESC LIMIT 1`
+      : `SELECT i.*, o.user_id, o.order_number FROM invoices i LEFT JOIN orders o ON o.id = i.order_id WHERE o.order_number = $1 ORDER BY i.id DESC LIMIT 1`;
+  } else {
+    sql = isNumeric
+      ? `SELECT i.*, o.user_id, o.order_number FROM invoices i LEFT JOIN orders o ON o.id = i.order_id WHERE i.id = $1 OR i.order_id = $1 ORDER BY (CASE WHEN i.id = $1 THEN 0 ELSE 1 END), i.id DESC LIMIT 1`
+      : `SELECT i.*, o.user_id, o.order_number FROM invoices i LEFT JOIN orders o ON o.id = i.order_id WHERE i.invoice_number = $1 OR o.order_number = $1 ORDER BY (CASE WHEN i.invoice_number = $1 THEN 0 ELSE 1 END), i.id DESC LIMIT 1`;
+  }
+  const { rows } = await pool.query(sql, [isNumeric ? Number(raw) : raw]);
+  return rows[0] || null;
+}
+
 export const getByNumberOrId = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const isNumeric = /^\d+$/.test(id);
-  const sql = isNumeric
-    ? `SELECT i.*, 
-              o.user_id,
-              o.order_number
-       FROM invoices i
-       LEFT JOIN orders o ON o.id = i.order_id
-       WHERE i.id = $1 OR i.order_id = $1
-       ORDER BY (CASE WHEN i.id = $1 THEN 0 ELSE 1 END), i.id DESC 
-       LIMIT 1`
-    : `SELECT i.*, 
-              o.user_id,
-              o.order_number
-       FROM invoices i
-       LEFT JOIN orders o ON o.id = i.order_id
-       WHERE i.invoice_number = $1 OR o.order_number = $1
-       ORDER BY (CASE WHEN i.invoice_number = $1 THEN 0 ELSE 1 END), i.id DESC 
-       LIMIT 1`;
-  const { rows } = await pool.query(sql, [id]);
-  const invoice = rows[0];
+  const lookupType = req.query.type === 'invoice' || req.query.type === 'order' ? req.query.type : null;
+  const invoice = await findInvoiceByIdentifier(id, lookupType);
   if (!invoice) throw new AppError('Invoice not found', 404);
 
   const isOwner = Number(invoice.user_id) === Number(req.user?.id);
@@ -35,31 +44,14 @@ export const getByNumberOrId = asyncHandler(async (req, res) => {
     throw new AppError('You do not have permission to access this invoice', 403);
   }
 
+  setNoCacheHeaders(res);
   res.json({ success: true, data: invoice });
 });
 
 export const downloadPdf = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const isNumeric = /^\d+$/.test(id);
-  const sql = isNumeric
-    ? `SELECT i.*, 
-              o.user_id,
-              o.order_number
-       FROM invoices i
-       LEFT JOIN orders o ON o.id = i.order_id
-       WHERE i.id = $1 OR i.order_id = $1
-       ORDER BY (CASE WHEN i.id = $1 THEN 0 ELSE 1 END), i.id DESC 
-       LIMIT 1`
-    : `SELECT i.*, 
-              o.user_id,
-              o.order_number
-       FROM invoices i
-       LEFT JOIN orders o ON o.id = i.order_id
-       WHERE i.invoice_number = $1 OR o.order_number = $1
-       ORDER BY (CASE WHEN i.invoice_number = $1 THEN 0 ELSE 1 END), i.id DESC 
-       LIMIT 1`;
-  const { rows } = await pool.query(sql, [id]);
-  const invoice = rows[0];
+  const lookupType = req.query.type === 'invoice' || req.query.type === 'order' ? req.query.type : null;
+  const invoice = await findInvoiceByIdentifier(id, lookupType);
   if (!invoice) throw new AppError('Invoice not found', 404);
 
   const isOwner = Number(invoice.user_id) === Number(req.user?.id);
@@ -135,6 +127,7 @@ export const downloadPdf = asyncHandler(async (req, res) => {
   const pdfBuffer = await generateInvoicePdf(invoicePayload);
   const refNumber = invoicePayload?.orderOrBookingNumber || invoice.invoice_number;
   const filename = `Majestic-Blazer-Invoice-${refNumber}.pdf`;
+  setNoCacheHeaders(res);
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
   res.send(pdfBuffer);
@@ -167,37 +160,49 @@ export const list = asyncHandler(async (req, res) => {
  * @param {string|number} id - Order ID, Order Number, Invoice ID, or Invoice Number
  * @returns {Promise<Object>}
  */
-export async function getThermalReceiptData(id) {
-  const isNumeric = /^\d+$/.test(String(id || '').trim());
+export async function getThermalReceiptData(id, lookupType = null) {
+  const raw = String(id || '').trim();
+  const isNumeric = /^\d+$/.test(raw);
   let orderId = null;
 
-  // 1. Prioritize direct Order lookup (since Admin Orders page passes order.id or order_number)
-  if (isNumeric) {
-    const { rows: ordRows } = await pool.query(
-      'SELECT id FROM orders WHERE id = $1 LIMIT 1',
-      [parseInt(id, 10)]
-    );
-    if (ordRows.length > 0) {
-      orderId = ordRows[0].id;
-    }
-  } else {
-    const { rows: ordRows } = await pool.query(
-      'SELECT id FROM orders WHERE order_number = $1 LIMIT 1',
-      [String(id).trim()]
-    );
-    if (ordRows.length > 0) {
-      orderId = ordRows[0].id;
-    }
-  }
-
-  // 2. If not found by direct order ID/number, check invoices table (for Invoice Archive lookups)
-  if (!orderId) {
+  if (lookupType === 'invoice') {
+    // Explicit Invoice lookup (used by Invoices Archive)
     const invoiceSql = isNumeric
-      ? 'SELECT order_id FROM invoices WHERE id = $1 OR order_id = $1 ORDER BY id DESC LIMIT 1'
-      : 'SELECT order_id FROM invoices WHERE invoice_number = $1 ORDER BY id DESC LIMIT 1';
-    const { rows: invRows } = await pool.query(invoiceSql, [id]);
+      ? 'SELECT order_id FROM invoices WHERE id = $1 LIMIT 1'
+      : 'SELECT order_id FROM invoices WHERE invoice_number = $1 LIMIT 1';
+    const { rows: invRows } = await pool.query(invoiceSql, [isNumeric ? parseInt(raw, 10) : raw]);
     if (invRows.length > 0 && invRows[0].order_id) {
       orderId = invRows[0].order_id;
+    }
+  } else {
+    // 1. Prioritize direct Order lookup (since Admin Orders page passes order.id or order_number)
+    if (isNumeric) {
+      const { rows: ordRows } = await pool.query(
+        'SELECT id FROM orders WHERE id = $1 LIMIT 1',
+        [parseInt(raw, 10)]
+      );
+      if (ordRows.length > 0) {
+        orderId = ordRows[0].id;
+      }
+    } else {
+      const { rows: ordRows } = await pool.query(
+        'SELECT id FROM orders WHERE order_number = $1 LIMIT 1',
+        [raw]
+      );
+      if (ordRows.length > 0) {
+        orderId = ordRows[0].id;
+      }
+    }
+
+    // 2. If not found by direct order ID/number and not forced to 'order', check invoices table
+    if (!orderId && lookupType !== 'order') {
+      const invoiceSql = isNumeric
+        ? 'SELECT order_id FROM invoices WHERE id = $1 OR order_id = $1 ORDER BY id DESC LIMIT 1'
+        : 'SELECT order_id FROM invoices WHERE invoice_number = $1 ORDER BY id DESC LIMIT 1';
+      const { rows: invRows } = await pool.query(invoiceSql, [isNumeric ? parseInt(raw, 10) : raw]);
+      if (invRows.length > 0 && invRows[0].order_id) {
+        orderId = invRows[0].order_id;
+      }
     }
   }
 
@@ -334,7 +339,9 @@ export async function getThermalReceiptData(id) {
  */
 export const getThermalData = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const receiptData = await getThermalReceiptData(id);
+  const lookupType = req.query.type === 'invoice' || req.query.type === 'order' ? req.query.type : null;
+  const receiptData = await getThermalReceiptData(id, lookupType);
+  setNoCacheHeaders(res);
   res.json({ success: true, data: receiptData });
 });
 
@@ -344,10 +351,12 @@ export const getThermalData = asyncHandler(async (req, res) => {
  */
 export const downloadThermalPdf = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const receiptData = await getThermalReceiptData(id);
+  const lookupType = req.query.type === 'invoice' || req.query.type === 'order' ? req.query.type : null;
+  const receiptData = await getThermalReceiptData(id, lookupType);
   const pdfBuffer = await generateThermalReceiptPdf(receiptData);
 
   const filename = `Majestic-Blazer-Thermal-${receiptData.invoice.invoiceNumber || id}.pdf`;
+  setNoCacheHeaders(res);
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
   res.send(pdfBuffer);

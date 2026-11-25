@@ -24,6 +24,7 @@ export default function Invoices() {
     }
   };
 
+
   useEffect(() => {
     loadInvoices();
   }, []);
@@ -130,7 +131,7 @@ export default function Invoices() {
                     <td>
                       <div style={{ display: 'flex', gap: '6px' }}>
                         <a
-                          href={api.getApiUrl(`/invoices/${inv.id}/pdf`)}
+                          href={api.getApiUrl(`/invoices/${encodeURIComponent(inv.invoice_number || inv.id)}/pdf?type=invoice`)}
                           target="_blank"
                           rel="noreferrer"
                           className={styles.btnSecondary}
@@ -143,7 +144,7 @@ export default function Invoices() {
                           type="button"
                           className={styles.btnSecondary}
                           style={{ padding: '0.35rem 0.65rem' }}
-                          onClick={() => setThermalReceiptInvoiceId(inv.id)}
+                          onClick={() => setThermalReceiptInvoiceId(inv.invoice_number || inv.id)}
                           title="Generate / Print 80mm Thermal Receipt"
                         >
                           <Receipt size={14} /> Thermal
@@ -168,6 +169,7 @@ export default function Invoices() {
       {thermalReceiptInvoiceId && (
         <ThermalReceiptModal
           orderId={thermalReceiptInvoiceId}
+          lookupType="invoice"
           onClose={() => setThermalReceiptInvoiceId(null)}
         />
       )}

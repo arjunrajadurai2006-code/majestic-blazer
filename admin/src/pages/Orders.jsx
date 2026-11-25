@@ -239,13 +239,13 @@ export default function Orders() {
                       <button
                         type="button"
                         className={styles.btnSecondary}
-                        onClick={() => handleOpenThermalBill(o.id)}
+                        onClick={() => handleOpenThermalBill(o.order_number || o.id)}
                         title="Generate 80mm Thermal Receipt"
                       >
                         <Receipt size={14} /> Thermal Bill
                       </button>
                       <a
-                        href={api.getApiUrl(`/invoices/${o.id}/pdf`)}
+                        href={api.getApiUrl(`/invoices/${encodeURIComponent(o.order_number || o.id)}/pdf?type=order`)}
                         target="_blank"
                         rel="noreferrer"
                         className={styles.btnSecondary}
@@ -493,7 +493,7 @@ export default function Orders() {
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                         {/* 1. Download Customer Invoice (Existing functionality unchanged) */}
                         <a
-                          href={api.getApiUrl(`/invoices/${selectedOrder.id}/pdf`)}
+                          href={api.getApiUrl(`/invoices/${encodeURIComponent(selectedOrder.order_number || selectedOrder.id)}/pdf?type=order`)}
                           target="_blank"
                           rel="noreferrer"
                           className={styles.btnSecondary}
@@ -505,7 +505,7 @@ export default function Orders() {
                         {/* 2. Generate Thermal Bill (New functionality) */}
                         <button
                           type="button"
-                          onClick={() => handleOpenThermalBill(selectedOrder.id)}
+                          onClick={() => handleOpenThermalBill(selectedOrder.order_number || selectedOrder.id)}
                           className={styles.btnSecondary}
                           title="Generate and preview 80mm thermal receipt"
                         >
@@ -515,7 +515,7 @@ export default function Orders() {
                         {/* 3. Print Thermal Bill (New functionality) */}
                         <button
                           type="button"
-                          onClick={() => handlePrintThermalBill(selectedOrder.id)}
+                          onClick={() => handlePrintThermalBill(selectedOrder.order_number || selectedOrder.id)}
                           className={styles.btnSecondary}
                           title="Open browser print dialog for 80mm printer"
                         >
@@ -524,7 +524,7 @@ export default function Orders() {
 
                         {/* 4. Download Thermal Bill PDF (New functionality) */}
                         <a
-                          href={api.getApiUrl(`/invoices/${selectedOrder.id}/thermal-pdf`)}
+                          href={api.getApiUrl(`/invoices/${encodeURIComponent(selectedOrder.order_number || selectedOrder.id)}/thermal-pdf?type=order`)}
                           target="_blank"
                           rel="noreferrer"
                           className={styles.btnSecondary}
@@ -552,6 +552,7 @@ export default function Orders() {
       {thermalReceiptOrderId && (
         <ThermalReceiptModal
           orderId={thermalReceiptOrderId}
+          lookupType="order"
           autoPrint={triggerPrintOnOpen}
           onClose={() => {
             setThermalReceiptOrderId(null);

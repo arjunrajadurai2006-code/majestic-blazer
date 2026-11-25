@@ -3,7 +3,7 @@ import { Printer, Download, X, Receipt } from 'lucide-react';
 import { api } from '../services/api';
 import styles from './ThermalReceiptModal.module.css';
 
-export default function ThermalReceiptModal({ orderId, onClose, autoPrint = false, onPrintReady }) {
+export default function ThermalReceiptModal({ orderId, lookupType = 'order', onClose, autoPrint = false, onPrintReady }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -15,11 +15,14 @@ export default function ThermalReceiptModal({ orderId, onClose, autoPrint = fals
   useEffect(() => {
     let isMounted = true;
     autoPrintedRef.current = false;
+    setData(null);
     async function fetchThermalData() {
       try {
         setLoading(true);
         setError('');
-        const res = await api.get(`/invoices/${orderId}/thermal-data`);
+        const encodedId = encodeURIComponent(orderId);
+        const typeParam = lookupType ? `?type=${encodeURIComponent(lookupType)}` : '';
+        const res = await api.get(`/invoices/${encodedId}/thermal-data${typeParam}`);
         if (isMounted) {
           setData(res.data);
           if (onPrintReady) onPrintReady();
@@ -40,7 +43,7 @@ export default function ThermalReceiptModal({ orderId, onClose, autoPrint = fals
     return () => {
       isMounted = false;
     };
-  }, [orderId, onPrintReady]);
+  }, [orderId, lookupType, onPrintReady]);
 
   const triggerPrint = useCallback(async () => {
     if (isPrintingRef.current || loading || !data || !receiptRef.current) return;
@@ -134,7 +137,7 @@ export default function ThermalReceiptModal({ orderId, onClose, autoPrint = fals
             <span>{printing ? 'Preparing Print...' : 'Print Thermal Bill'}</span>
           </button>
           <a
-            href={api.getApiUrl(`/invoices/${orderId}/thermal-pdf`)}
+            href={api.getApiUrl(`/invoices/${encodeURIComponent(orderId)}/thermal-pdf${lookupType ? `?type=${encodeURIComponent(lookupType)}` : ''}`)}
             target="_blank"
             rel="noreferrer"
             className={styles.btnDownload}
@@ -255,6 +258,13 @@ export default function ThermalReceiptModal({ orderId, onClose, autoPrint = fals
 
               {/* 5. PAYMENT BREAKDOWN */}
               <div className={styles.paymentBreakdown}>
+                <div className={styles.summaryRow}>
+                  <span>Payment:</span>
+                  <span>
+                    {String(data.paymentInfo?.provider || 'N/A').toUpperCase()} (
+                    {String(data.paymentInfo?.status || 'pending').toUpperCase()})
+                  </span>
+                </div>
                 <div className={styles.receivedRow}>
                   <span>Amount Received:</span>
                   <span>{formatCurrency(data.financials?.amountReceived)}</span>
