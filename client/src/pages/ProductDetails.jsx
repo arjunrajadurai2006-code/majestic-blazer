@@ -9,6 +9,7 @@ import { useWishlist } from '../context/WishlistContext';
 import { useToast } from '../context/ToastContext';
 import { useBackNavigation } from '../context/BackNavigationContext';
 import { savePendingGuestAction } from '../services/guestAction';
+import { getResponsiveWebpSrcSet } from '../utils/responsiveImage';
 import styles from './ProductDetails.module.css';
 
 export default function ProductDetails() {
@@ -192,9 +193,13 @@ export default function ProductDetails() {
           <div className={styles.mainImageWrap}>
             <img
               src={currentImage.url}
+              srcSet={getResponsiveWebpSrcSet(currentImage.url)}
+              sizes={getResponsiveWebpSrcSet(currentImage.url) ? '(max-width: 768px) 92vw, 560px' : undefined}
               alt={currentImage.alt_text || product.name}
               className={styles.mainImage}
-              fetchPriority="high"
+              width="600"
+              height="800"
+              fetchpriority="high"
               decoding="sync"
             />
             {discountPercent > 0 && (

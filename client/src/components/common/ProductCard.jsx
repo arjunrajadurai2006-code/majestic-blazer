@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Heart, Eye, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -7,7 +7,7 @@ import { savePendingGuestAction } from '../../services/guestAction';
 import { getResponsiveWebpSrcSet } from '../../utils/responsiveImage';
 import styles from './ProductCard.module.css';
 
-export default function ProductCard({ product, onQuickView }) {
+function ProductCard({ product, onQuickView }) {
   const { isWishlisted, toggleWishlist } = useWishlist();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -116,4 +116,6 @@ export default function ProductCard({ product, onQuickView }) {
     </article>
   );
 }
+
+export default memo(ProductCard);
 

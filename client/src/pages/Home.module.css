@@ -18,6 +18,13 @@
   overflow: hidden;
 }
 
+@media (max-width: 768px) {
+  .hero {
+    background-image: radial-gradient(circle at 75% 35%, rgba(20, 20, 20, 0.4) 0%, rgba(8, 8, 8, 0.96) 75%),
+      url('/assets/hero/luxury-menswear-hero-mobile.webp');
+  }
+}
+
 .heroBackdrop {
   position: absolute;
   inset: 0;

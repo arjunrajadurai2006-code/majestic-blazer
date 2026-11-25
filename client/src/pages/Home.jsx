@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Sparkles, Clock, MapPin, Award, CheckCircle2, ArrowRight } from 'lucide-react';
 import ProductCard from '../components/common/ProductCard';
@@ -84,6 +84,7 @@ export default function Home() {
   const [formalwearProducts, setFormalwearProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const handleQuickView = useCallback((prod) => setQuickViewProduct(prod), []);
 
   useEffect(() => {
     async function loadCatalog() {
@@ -215,7 +216,7 @@ export default function Home() {
               <ProductCard
                 key={p.id}
                 product={p}
-                onQuickView={(prod) => setQuickViewProduct(prod)}
+                onQuickView={handleQuickView}
               />
             ))}
           </div>
@@ -368,7 +369,7 @@ export default function Home() {
               <ProductCard
                 key={p.id}
                 product={p}
-                onQuickView={(prod) => setQuickViewProduct(prod)}
+                onQuickView={handleQuickView}
               />
             ))}
           </div>

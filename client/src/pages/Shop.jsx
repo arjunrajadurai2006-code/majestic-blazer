@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Filter, SlidersHorizontal, X, Search, RotateCcw } from 'lucide-react';
 import ProductCard from '../components/common/ProductCard';
@@ -28,6 +28,19 @@ export default function Shop() {
   const currentPage = Number(searchParams.get('page')) || 1;
   const currentMinPrice = searchParams.get('minPrice') || '';
   const currentMaxPrice = searchParams.get('maxPrice') || '';
+
+  const [minPriceDraft, setMinPriceDraft] = useState(currentMinPrice);
+  const [maxPriceDraft, setMaxPriceDraft] = useState(currentMaxPrice);
+
+  useEffect(() => {
+    setMinPriceDraft(currentMinPrice);
+  }, [currentMinPrice]);
+
+  useEffect(() => {
+    setMaxPriceDraft(currentMaxPrice);
+  }, [currentMaxPrice]);
+
+  const handleQuickView = useCallback((prod) => setQuickViewProduct(prod), []);
 
   // Load categories
   useEffect(() => {
@@ -62,7 +75,7 @@ export default function Shop() {
     fetchProducts();
   }, [searchParams]);
 
-  const updateParam = (key, val) => {
+  const updateParam = useCallback((key, val) => {
     const next = new URLSearchParams(searchParams);
     if (val) {
       next.set(key, val);
@@ -71,7 +84,20 @@ export default function Shop() {
     }
     next.set('page', '1'); // reset page on filter change
     setSearchParams(next);
-  };
+  }, [searchParams, setSearchParams]);
+
+  // Debounce price inputs so typing doesn't trigger an API fetch on every keystroke (improves INP)
+  useEffect(() => {
+    if (minPriceDraft === currentMinPrice) return;
+    const timer = setTimeout(() => updateParam('minPrice', minPriceDraft), 300);
+    return () => clearTimeout(timer);
+  }, [minPriceDraft, currentMinPrice, updateParam]);
+
+  useEffect(() => {
+    if (maxPriceDraft === currentMaxPrice) return;
+    const timer = setTimeout(() => updateParam('maxPrice', maxPriceDraft), 300);
+    return () => clearTimeout(timer);
+  }, [maxPriceDraft, currentMaxPrice, updateParam]);
 
   const clearAllFilters = () => {
     setSearchParams(new URLSearchParams());
@@ -205,16 +231,18 @@ export default function Shop() {
                 <input
                   type="number"
                   placeholder="Min"
-                  value={currentMinPrice}
-                  onChange={(e) => updateParam('minPrice', e.target.value)}
+                  aria-label="Minimum price"
+                  value={minPriceDraft}
+                  onChange={(e) => setMinPriceDraft(e.target.value)}
                   className={styles.priceInput}
                 />
                 <span className={styles.priceDash}>–</span>
                 <input
                   type="number"
                   placeholder="Max"
-                  value={currentMaxPrice}
-                  onChange={(e) => updateParam('maxPrice', e.target.value)}
+                  aria-label="Maximum price"
+                  value={maxPriceDraft}
+                  onChange={(e) => setMaxPriceDraft(e.target.value)}
                   className={styles.priceInput}
                 />
               </div>
@@ -299,7 +327,7 @@ export default function Shop() {
                   <ProductCard
                     key={p.id}
                     product={p}
-                    onQuickView={(prod) => setQuickViewProduct(prod)}
+                    onQuickView={handleQuickView}
                   />
                 ))}
               </div>

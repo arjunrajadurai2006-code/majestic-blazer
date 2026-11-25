@@ -7,8 +7,17 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { ToastProvider } from './context/ToastContext';
+import { initWebVitalsMonitor } from './utils/webVitalsMonitor';
 import './styles/fonts.css';
 import './styles/global.css';
+
+if (typeof window !== 'undefined') {
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(() => initWebVitalsMonitor());
+  } else {
+    setTimeout(() => initWebVitalsMonitor(), 1000);
+  }
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
