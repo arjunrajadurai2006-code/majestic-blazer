@@ -115,3 +115,5 @@ Commits pushed to the GitHub repository on branch **`ui-styling`**:
 3. `3aaa590` — Server watch path restriction & port stability handling.
 4. `2189068` — Fixed `tokenStore` reference error on customer login.
 5. `092a2d2` — Shortened mobile footer with touch accordions & compact newsletter.
+6. `997280f` — Implemented 80mm thermal receipt billing system & added initial report.
+7. `1aabf4a` — Merged latest changes from `origin/main` into `ui-styling` (resolved asset & footer conflicts cleanly).
