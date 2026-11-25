@@ -2,16 +2,15 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   ChevronDown, ExternalLink, LogOut, Settings, LayoutDashboard, 
-  Calendar, Shield, AlertCircle
+  AlertCircle, Menu
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useSettings } from '../context/SettingsContext';
 import { CUSTOMER_APP_URL } from '../config/urls';
+import logo from '../assets/majestic-blazer-logo.jpeg';
 import styles from './AdminHeader.module.css';
 
-export default function AdminHeader({ onToggleMobileNav }) {
+export default function AdminHeader({ mobileMenuOpen = false, onToggleMobileNav, hamburgerBtnRef }) {
   const { admin, logout } = useAuth();
-  const { settings } = useSettings();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -76,6 +75,22 @@ export default function AdminHeader({ onToggleMobileNav }) {
     <>
       <header className={styles.header}>
         <div className={styles.leftSection}>
+          <button
+            ref={hamburgerBtnRef}
+            type="button"
+            className={styles.hamburgerBtn}
+            onClick={onToggleMobileNav}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="admin-navigation-drawer"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          >
+            <Menu size={22} aria-hidden="true" />
+          </button>
+
+          <Link to="/" title="Atelier Dashboard" className={styles.mobileLogoLink}>
+            <img src={logo} alt="Majestic Blazer" className={styles.mobileLogo} />
+          </Link>
+
           <div className={styles.atelierBadge}>
             <span className={styles.pulseDot} />
             <span>Sathy Road Atelier &bull; Admin Console</span>

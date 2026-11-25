@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link, NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Link, NavLink, Navigate, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, AlertCircle, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useSettings } from '../context/SettingsContext';
 import logo from '../assets/majestic-blazer-logo.jpeg';
 import AdminHeader from './AdminHeader';
 import styles from './AdminLayout.module.css';
@@ -25,15 +24,64 @@ export const ADMIN_NAV = [
 // Guards every admin route: redirects to /login unless a valid admin session exists.
 export default function AdminLayout() {
   const { admin, loading, logout } = useAuth();
-  const { settings } = useSettings();
-  const storeName = settings?.store_name || 'Majestic Blazer';
   const [sidebarSignOutModal, setSidebarSignOutModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const navigate = useNavigate();
-  const signOutTriggerRef = useRef(null);
-  const cancelBtnRef = useRef(null);
+  const location = useLocation();
+  const sidebarRef = useRef(null);
+  const hamburgerBtnRef = useRef(null);
+  const closeDrawerBtnRef = useRef(null);
+
+  const closeMobileMenu = useCallback((restoreFocus = false) => {
+    setMobileMenuOpen(false);
+    if (restoreFocus) {
+      requestAnimationFrame(() => hamburgerBtnRef.current?.focus());
+    }
+  }, []);
+
+  // Close mobile drawer automatically on route navigation
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Prevent background scroll, manage focus, Escape, and Tab trap for mobile drawer
+  useEffect(() => {
+    if (!mobileMenuOpen) return undefined;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => closeDrawerBtnRef.current?.focus());
+
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeMobileMenu(true);
+        return;
+      }
+      if (e.key === 'Tab' && sidebarRef.current) {
+        const focusables = sidebarRef.current.querySelectorAll(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [mobileMenuOpen, closeMobileMenu]);
 
   useEffect(() => {
     if (!sidebarSignOutModal) return undefined;
@@ -55,7 +103,7 @@ export default function AdminLayout() {
     try {
       setSigningOut(true);
       await logout();
-      navigate('/login', { 
+      navigate('/login', {
         replace: true,
         state: { message: 'You have been signed out of the Atelier Portal.' }
       });
@@ -70,38 +118,77 @@ export default function AdminLayout() {
   return (
     <div className={styles.shell}>
       <a href="#admin-main-content" className="skip-link">Skip to main content</a>
-      <aside className={styles.sidebar}>
-        <Link to="/" title="Atelier Dashboard" className={styles.logoLink}>
-          <img src={logo} alt="Majestic Blazer" className={styles.logo} />
-        </Link>
+
+      {mobileMenuOpen && (
+        <div
+          className={styles.backdrop}
+          onClick={() => closeMobileMenu(true)}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        ref={sidebarRef}
+        id="admin-navigation-drawer"
+        aria-label="Admin navigation"
+        className={`${styles.sidebar} ${mobileMenuOpen ? styles.sidebarOpen : ''}`}
+      >
+        <div className={styles.sidebarHeader}>
+          <Link
+            to="/"
+            title="Atelier Dashboard"
+            className={styles.logoLink}
+            onClick={() => closeMobileMenu(false)}
+          >
+            <img src={logo} alt="Majestic Blazer" className={styles.logo} />
+          </Link>
+          <button
+            ref={closeDrawerBtnRef}
+            type="button"
+            className={styles.closeDrawerBtn}
+            onClick={() => closeMobileMenu(true)}
+            aria-label="Close navigation menu"
+          >
+            <X size={20} aria-hidden="true" />
+          </button>
+        </div>
+
         <nav aria-label="Admin">
           <ul className={styles.nav}>
             {ADMIN_NAV.map((item) => (
               <li key={item.to}>
-                <NavLink to={item.to} end={item.end} className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}>
+                <NavLink
+                  to={item.to}
+                  end={item.end}
+                  className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}
+                  onClick={() => closeMobileMenu(false)}
+                >
                   {item.label}
                 </NavLink>
               </li>
             ))}
           </ul>
         </nav>
-        <button 
-          ref={signOutTriggerRef}
+        <button
           type="button"
-          className={styles.logout} 
+          className={styles.logout}
           onClick={() => {
             setMobileMenuOpen(false);
             setSidebarSignOutModal(true);
           }}
           title="Sign out of Atelier Console"
         >
-          <LogOut size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+          <LogOut size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} aria-hidden="true" />
           Sign out
         </button>
       </aside>
 
       <div className={styles.mainWrapper}>
-        <AdminHeader />
+        <AdminHeader
+          mobileMenuOpen={mobileMenuOpen}
+          onToggleMobileNav={() => setMobileMenuOpen((prev) => !prev)}
+          hamburgerBtnRef={hamburgerBtnRef}
+        />
         <main id="admin-main-content" tabIndex={-1} className={styles.content}>
           <Outlet />
         </main>
@@ -109,7 +196,7 @@ export default function AdminLayout() {
 
       {/* Confirmation Modal for Sidebar Sign Out */}
       {sidebarSignOutModal && (
-        <div 
+        <div
           style={{
             position: 'fixed',
             inset: 0,
@@ -123,7 +210,7 @@ export default function AdminLayout() {
           }}
           onClick={() => !signingOut && setSidebarSignOutModal(false)}
         >
-          <div 
+          <div
             style={{
               background: '#FFFFFF',
               border: '1px solid #E5E5E5',
@@ -136,7 +223,6 @@ export default function AdminLayout() {
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
-            aria-labelledby="admin-signout-title"
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
               <div style={{
@@ -152,7 +238,7 @@ export default function AdminLayout() {
               }}>
                 <AlertCircle size={22} />
               </div>
-              <h2 id="admin-signout-title" style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', color: '#111111', margin: 0 }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', color: '#111111', margin: 0 }}>
                 Confirm Sign Out
               </h2>
             </div>
@@ -163,7 +249,6 @@ export default function AdminLayout() {
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button
-                ref={cancelBtnRef}
                 type="button"
                 style={{
                   padding: '0.6rem 1.2rem',
@@ -174,10 +259,7 @@ export default function AdminLayout() {
                   fontSize: '0.85rem',
                   cursor: 'pointer'
                 }}
-                onClick={() => {
-                  setSidebarSignOutModal(false);
-                  signOutTriggerRef.current?.focus();
-                }}
+                onClick={() => setSidebarSignOutModal(false)}
                 disabled={signingOut}
               >
                 Cancel
