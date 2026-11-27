@@ -529,8 +529,8 @@ export default function OrderDetails() {
                 <div className={styles.methodTag}>Flagship Boutique Collection</div>
                 <strong className={styles.boutiqueTitle}>Majestic Blazer Flagship Atelier</strong>
                 <p className={styles.boutiqueAddress}>
-                  Sathy Road, Kurumbampalayam<br />
-                  Coimbatore, Tamil Nadu - 641107<br />
+                  First Floor, Shop No. 99/6, Sathy Rd, Opp. to Saravana Bhavan Hotel<br />
+                  Kurumbapalayam, Coimbatore, Tamil Nadu - 641107<br />
                   Phone: +91 8903238882
                 </p>
                 <span className={styles.pickupHours}>

@@ -300,7 +300,7 @@ export default function Orders() {
                 {selectedOrder.fulfillment_type === 'pickup' || selectedOrder.delivery_type === 'pickup' ? (
                   <div style={{ fontSize: '0.85rem', color: '#111111' }}>
                     <strong>Flagship Atelier In-Store Pickup</strong><br />
-                    Sathy Road, Kurumbampalayam, Coimbatore - 641107
+                    Shop 99/6, Sathy Rd, Opp. Saravana Bhavan Hotel, Kurumbapalayam, Coimbatore - 641107
                   </div>
                 ) : (
                   <div style={{ fontSize: '0.85rem', color: '#555555' }}>

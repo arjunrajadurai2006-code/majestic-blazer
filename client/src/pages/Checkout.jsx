@@ -424,7 +424,7 @@ export default function Checkout() {
                     <span className={styles.pickupPill}>Atelier Ready</span>
                   </div>
                   <p className={styles.methodDesc}>
-                    Sathy Road, Kurumbampalayam, Coimbatore • Private fitting room & steam ready.
+                    Shop 99/6, Sathy Rd, Opp. Saravana Bhavan Hotel, Kurumbapalayam, Coimbatore • Private fitting room ready.
                   </p>
                 </div>
                 <div className={styles.methodRadioCircle}>
@@ -604,8 +604,9 @@ export default function Checkout() {
                   protective suit bag at our flagship Coimbatore store.
                 </p>
                 <address className={styles.pickupAddress}>
-                  <strong>Majestic Blazer Flagship</strong>
-                  <span>Sathy Road, Kurumbampalayam, Coimbatore - 641107</span>
+                  <strong>Majestic Blazer Flagship Shop</strong>
+                  <span>First Floor, Shop No. 99/6, Sathy Rd, Opp. to Saravana Bhavan Hotel</span>
+                  <span>Kurumbapalayam, Coimbatore - 641107</span>
                   <span>Phone: +91 8903238882</span>
                   <span>Collection Hours: Mon – Sun, 10:00 AM – 8:30 PM</span>
                 </address>

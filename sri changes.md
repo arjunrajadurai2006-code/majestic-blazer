@@ -117,3 +117,26 @@ Commits pushed to the GitHub repository on branch **`ui-styling`**:
 5. `092a2d2` — Shortened mobile footer with touch accordions & compact newsletter.
 6. `997280f` — Implemented 80mm thermal receipt billing system & added initial report.
 7. `1aabf4a` — Merged latest changes from `origin/main` into `ui-styling` (resolved asset & footer conflicts cleanly).
+8. `b02dc30` — Updated `sri changes.md` report with thermal billing & merge verification.
+
+---
+
+## 8. Footer Overhaul, Address Alignment & Instagram Integration
+
+* **Footer Compaction & Column Cleanup:**
+  * Removed the wide `Sartorial Collections` column to reduce footer clutter.
+  * Removed `The Private Gazette` newsletter box and subscription form completely.
+  * Reduced desktop vertical footer padding from `80px` to `48px`, and bottom copyright margin from `56px` to `36px`.
+* **Streamlined Client Service Column:**
+  * Reduced column to strictly 4 essential links: **Contact Us**, **Privacy Policy**, **Return & Delivery Policy**, and **Terms & Conditions**.
+* **Address Correction & Alignment:**
+  * Fixed phone number line-breaking bug (`+91` wrapping onto its own line above the digits) with `white-space: nowrap` and `+91&nbsp;8903238882`.
+  * Updated and structured physical store address to:
+    * **Majestic Blazer Shop**
+    * First Floor, Shop No. 99/6, Sathy Rd
+    * Opp. to Saravana Bhavan Hotel
+    * Kurumbapalayam, Coimbatore - 641107
+  * Synchronized the corrected address and phone across `Footer.jsx`, `Home.jsx`, `Contact.jsx`, `Checkout.jsx`, `OrderDetails.jsx`, `PrivacyPolicy.jsx`, `TermsAndConditions.jsx`, `invoiceController.js`, `pdfInvoice.js`, `thermalReceiptPdf.js`, and `SettingsContext.jsx`.
+* **Official Instagram Link & Logo:**
+  * Added direct link to the store Instagram page (`https://www.instagram.com/majesticblazers/`).
+  * Implemented official vector Instagram camera logo with `target="_blank"` redirection and luxury gold hover styling.

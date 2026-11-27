@@ -17,7 +17,7 @@ export default function PrivacyPolicy() {
         <section>
           <h2>1. Introduction & Brand Commitment</h2>
           <p>
-            Majestic Blazer ("we", "our", or "us"), operating our flagship menswear atelier on Sathy Road, Kurumbampalayam, Coimbatore - 641107, is committed to safeguarding the privacy and personal data of our esteemed patrons. This Privacy Policy outlines our procedures regarding collection, use, and protection of your personal information.
+            Majestic Blazer ("we", "our", or "us"), operating our boutique at Majestic Blazer Shop – First Floor, Shop No. 99/6, Sathy Rd, Opp. to Saravana Bhavan Hotel, Kurumbapalayam, Coimbatore - 641107, is committed to safeguarding the privacy and personal data of our esteemed patrons. This Privacy Policy outlines our procedures regarding collection, use, and protection of your personal information.
           </p>
         </section>
 
@@ -55,7 +55,7 @@ export default function PrivacyPolicy() {
             <br />
             <strong>Majestic Blazer</strong>
             <br />
-            Sathy Road, Kurumbampalayam, Coimbatore - 641107
+            Majestic Blazer Shop – First Floor, Shop No. 99/6, Sathy Rd, Opp. to Saravana Bhavan Hotel, Kurumbapalayam, Coimbatore - 641107
             <br />
             Phone: +91 8903238882 | Email: contact@majesticblazer.com
           </p>
