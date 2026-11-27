@@ -2,21 +2,22 @@
   margin-top: auto;
   background: var(--color-obsidian);
   border-top: 1px solid var(--color-border-dark);
-  padding: 80px 0 36px;
+  padding: 48px 0 24px;
   color: var(--color-text-light-secondary);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1.8fr;
+  grid-template-columns: 2.2fr 1fr 1fr;
   gap: 48px;
+  align-items: start;
 }
 
 .brand {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .brandLogo {
@@ -34,18 +35,47 @@
 
 .address {
   font-style: normal;
-  line-height: 1.75;
+  line-height: 1.6;
   color: var(--color-text-light-secondary);
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  font-size: 0.88rem;
+  gap: 3px;
+  font-size: 0.86rem;
+}
+
+.addressTitle {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-white);
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+}
+
+.addressLine {
+  margin: 0;
+  color: var(--color-text-light-secondary);
 }
 
 .contactRow {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.phoneLink,
+.emailLink {
+  color: var(--color-text-light);
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: 0.86rem;
+  transition: color var(--transition-fast);
+}
+
+.phoneLink:hover,
+.emailLink:hover {
+  color: var(--color-gold, #C5A059);
 }
 
 .dotSeparator {
@@ -53,25 +83,56 @@
   font-size: 0.75rem;
 }
 
-.phoneLink,
-.emailLink {
-  color: var(--color-text-light);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-.phoneLink:hover,
-.emailLink:hover {
-  color: var(--color-white);
-}
-
 .hours {
   color: var(--color-text-light-secondary);
-  font-size: 0.82rem;
-  margin-top: 4px;
+  font-size: 0.8rem;
+  margin: 4px 0 0;
+  line-height: 1.5;
 }
 
-/* Accordion Header / Heading */
+.hoursLabel {
+  color: var(--color-text-light);
+  font-weight: 500;
+}
+
+/* Instagram Official Button */
+.socialRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.instagramLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-light);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 7px 14px;
+  border: 1px solid var(--color-border-dark);
+  border-radius: var(--radius-sm, 4px);
+  background: rgba(255, 255, 255, 0.03);
+  transition: all var(--transition-fast, 0.2s ease);
+  width: fit-content;
+  letter-spacing: 0.02em;
+}
+
+.instagramLink:hover {
+  color: var(--color-gold, #C5A059);
+  border-color: var(--color-gold, #C5A059);
+  background: rgba(197, 160, 89, 0.08);
+  transform: translateY(-1px);
+}
+
+.instagramIcon {
+  flex-shrink: 0;
+  color: inherit;
+}
+
+/* Column Headers & Accordion */
 .colHeaderBtn {
   background: none;
   border: none;
@@ -85,7 +146,7 @@
   font-family: var(--font-body);
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   font-weight: 600;
   text-align: left;
   cursor: default;
@@ -95,20 +156,10 @@
   display: none;
 }
 
-.newsletter h3 {
-  color: var(--color-white);
-  font-size: 0.82rem;
-  font-family: var(--font-body);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-  font-weight: 600;
-}
-
 .colList {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -119,7 +170,7 @@
   text-decoration: none;
   transition: all var(--transition-fast);
   display: inline-block;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
 }
 
 .col a:hover {
@@ -127,73 +178,16 @@
   transform: translateX(4px);
 }
 
-.adminFooterLink {
-  opacity: 0.85;
-}
-
-.newsletter {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.newsletter p {
-  color: var(--color-text-light-secondary);
-  line-height: 1.6;
-  font-size: 0.86rem;
-}
-
-.newsForm {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 8px;
-}
-
-.newsInput {
-  background: var(--color-rich-black);
-  border: 1px solid var(--color-border-dark);
-  color: var(--color-white);
-  padding: 13px 16px;
-  font-size: 0.88rem;
-  border-radius: var(--radius-sm);
-  outline: none;
-  transition: border-color var(--transition-fast);
-}
-
-.newsInput:focus {
-  border-color: #666666;
-}
-
-.newsBtn {
-  background: var(--color-white);
-  color: var(--color-obsidian);
-  border: 1px solid var(--color-white);
-  padding: 13px 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all var(--transition-smooth);
-}
-
-.newsBtn:hover {
-  background: #F0F0F0;
-  border-color: #F0F0F0;
-  transform: translateY(-1px);
-}
-
+/* Bottom Copyright Bar */
 .bottom {
-  margin-top: 56px;
-  padding-top: 24px;
+  margin-top: 36px;
+  padding-top: 18px;
   border-top: 1px solid var(--color-border-dark);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 12px;
   font-size: 0.78rem;
   color: var(--color-text-light-secondary);
 }
@@ -204,15 +198,12 @@
 }
 
 /* Tablet Layout */
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 36px;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
   }
   .brand {
-    grid-column: span 2;
-  }
-  .newsletter {
     grid-column: span 2;
   }
 }
@@ -220,21 +211,19 @@
 /* Mobile Layout - Ultra-compact, luxury touch-friendly */
 @media (max-width: 640px) {
   .footer {
-    padding: 36px 0 20px;
+    padding: 28px 0 16px;
   }
 
   .grid {
     grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
-  .brand, 
-  .newsletter {
-    grid-column: auto;
+    gap: 12px;
   }
 
   .brand {
+    grid-column: auto;
     gap: 10px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--color-border-dark);
   }
 
   .tagline {
@@ -245,7 +234,7 @@
   .address {
     font-size: 0.82rem;
     line-height: 1.5;
-    gap: 5px;
+    gap: 4px;
   }
 
   .contactRow {
@@ -258,14 +247,17 @@
     margin-top: 2px;
   }
 
-  /* Accordion Rows for Link Columns */
+  .socialRow {
+    margin-top: 4px;
+  }
+
   .col {
     border-bottom: 1px solid var(--color-border-dark);
   }
 
   .colHeaderBtn {
     cursor: pointer;
-    padding: 13px 0;
+    padding: 12px 0;
     margin-bottom: 0;
     font-size: 0.8rem;
     letter-spacing: 0.12em;
@@ -293,9 +285,9 @@
   }
 
   .listOpen {
-    max-height: 380px;
+    max-height: 250px;
     opacity: 1;
-    padding: 4px 0 16px;
+    padding: 4px 0 14px;
   }
 
   .col a {
@@ -303,59 +295,12 @@
     padding: 2px 0;
   }
 
-  /* Compact Newsletter */
-  .newsletter {
-    padding-top: 6px;
-    gap: 10px;
-  }
-
-  .newsletter h3 {
-    margin-bottom: 4px;
-    font-size: 0.8rem;
-    letter-spacing: 0.14em;
-  }
-
-  .newsletter p {
-    font-size: 0.8rem;
-    line-height: 1.45;
-  }
-
-  .newsForm {
-    flex-direction: row;
-    gap: 8px;
-    margin-top: 4px;
-  }
-
-  .newsInput {
-    flex: 1;
-    padding: 10px 12px;
-    font-size: 0.82rem;
-    box-sizing: border-box;
-  }
-
-  .newsBtn {
-    padding: 10px 18px;
-    font-size: 0.74rem;
-    white-space: nowrap;
-    box-sizing: border-box;
-    width: auto;
-  }
-
   .bottom {
     flex-direction: column;
     text-align: center;
     gap: 6px;
-    margin-top: 24px;
-    padding-top: 14px;
+    margin-top: 18px;
+    padding-top: 12px;
     font-size: 0.72rem;
-  }
-}
-
-@media (max-width: 380px) {
-  .newsForm {
-    flex-direction: column;
-  }
-  .newsBtn {
-    width: 100%;
   }
 }

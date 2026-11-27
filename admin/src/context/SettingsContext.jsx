@@ -6,7 +6,7 @@ const SettingsContext = createContext(null);
 export const DEFAULT_SETTINGS = {
   store_name: 'Majestic Blazer',
   brand_tagline: 'Style That Speaks',
-  store_address: 'Sathy Road, Kurumbampalayam, Coimbatore - 641107',
+  store_address: 'Majestic Blazer Shop – First Floor, Shop No. 99/6, Sathy Rd, Opp. to Saravana Bhavan Hotel, Kurumbapalayam, Coimbatore - 641107',
   store_phone: '8903238882',
   store_email: 'contact@majesticblazer.com',
   tax_percentage: '0',

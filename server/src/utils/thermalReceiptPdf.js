@@ -158,7 +158,7 @@ export function generateThermalReceiptPdf(data) {
       y += 1;
       printCenter(business.tagline || 'STYLE THAT SPEAKS', 6.5, false);
       y += 2;
-      printCenter(business.address || 'Sathy Road, Kurumbampalayam, Coimbatore - 641107', 6.5, false);
+      printCenter(business.address || 'Majestic Blazer Shop – First Floor, Shop No. 99/6, Sathy Rd, Opp. to Saravana Bhavan Hotel, Kurumbapalayam, Coimbatore - 641107', 6.5, false);
       printCenter(`Phone: ${business.phone || '+91 8903238882'} | ${business.email || 'contact@majesticblazer.com'}`, 6.5, false);
 
       drawDottedLine();

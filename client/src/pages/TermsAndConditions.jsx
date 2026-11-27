@@ -17,7 +17,7 @@ export default function TermsAndConditions() {
         <section>
           <h2>1. Agreement to Terms</h2>
           <p>
-            Welcome to Majestic Blazer ("Majestic Blazer", "we", "us", or "our"). By accessing or using our website or purchasing our premium menswear from our boutique located at Sathy Road, Kurumbampalayam, Coimbatore - 641107, you agree to be bound by these Terms and Conditions.
+            Welcome to Majestic Blazer ("Majestic Blazer", "we", "us", or "our"). By accessing or using our website or purchasing our premium menswear from our boutique located at Majestic Blazer Shop – First Floor, Shop No. 99/6, Sathy Rd, Opp. to Saravana Bhavan Hotel, Kurumbapalayam, Coimbatore - 641107, you agree to be bound by these Terms and Conditions.
           </p>
         </section>
 
@@ -79,7 +79,7 @@ export default function TermsAndConditions() {
             Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts in Coimbatore, Tamil Nadu, India.
             <br /><br />
             <strong>Majestic Blazer Flagship Boutique</strong><br />
-            Sathy Road, Kurumbampalayam, Coimbatore - 641107<br />
+            Majestic Blazer Shop – First Floor, Shop No. 99/6, Sathy Rd, Opp. to Saravana Bhavan Hotel, Kurumbapalayam, Coimbatore - 641107<br />
             Helpline: +91 8903238882 | Email: contact@majesticblazer.com
           </p>
         </section>

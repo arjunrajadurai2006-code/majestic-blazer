@@ -29,8 +29,8 @@ export function generateInvoicePdf(invoiceData) {
 
       // Store Details (right aligned)
       doc.fillColor('#C0C0C0').font('Helvetica').fontSize(8);
-      doc.text('Sathy Road, Kurumbampalayam', 340, 50, { align: 'right', width: 200 });
-      doc.text('Coimbatore - 641107, India', 340, 62, { align: 'right', width: 200 });
+      doc.text('Shop 99/6, 1st Flr, Opp Saravana Bhavan', 340, 50, { align: 'right', width: 200 });
+      doc.text('Sathy Rd, Kurumbapalayam, Coimbatore - 641107', 340, 62, { align: 'right', width: 200 });
       doc.text('Phone: +91 8903238882', 340, 74, { align: 'right', width: 200 });
       doc.text('contact@majesticblazer.com', 340, 86, { align: 'right', width: 200 });
 

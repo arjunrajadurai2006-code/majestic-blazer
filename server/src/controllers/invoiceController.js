@@ -283,7 +283,7 @@ export async function getThermalReceiptData(id) {
     business: {
       name: 'MAJESTIC BLAZER',
       tagline: 'STYLE THAT SPEAKS',
-      address: 'Sathy Road, Kurumbampalayam, Coimbatore - 641107',
+      address: 'Majestic Blazer Shop – First Floor, Shop No. 99/6, Sathy Rd, Opp. to Saravana Bhavan Hotel, Kurumbapalayam, Coimbatore - 641107',
       phone: '+91 8903238882',
       email: 'contact@majesticblazer.com',
     },
